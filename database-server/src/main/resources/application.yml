@@ -1,0 +1,13 @@
+
+server:
+  port: 8080
+spring:
+  application:
+    name: database-server
+  r2dbc:
+    pool:
+      initial-size: 25
+      max-size: 50
+    url: r2dbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
