@@ -97,6 +97,7 @@ public final class IdentityMapper {
                                                                                         .format(ofPattern("dd.MM.yyyy, hh:mm:ss"))
                                                                         )
                                                                         .enabled(identity.getEnabled())
+                                                                        .imageId(identity.getImageId())
                                                                         .build()
                                                         )
                                                 )

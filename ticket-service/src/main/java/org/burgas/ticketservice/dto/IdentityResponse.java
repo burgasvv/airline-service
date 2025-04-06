@@ -18,6 +18,7 @@ public final class IdentityResponse implements UserDetails {
     private String phone;
     private String registeredAt;
     private Boolean enabled;
+    private Long imageId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -84,6 +85,10 @@ public final class IdentityResponse implements UserDetails {
         return enabled;
     }
 
+    public Long getImageId() {
+        return imageId;
+    }
+
     @Override
     public String toString() {
         return "IdentityResponse{" +
@@ -95,6 +100,7 @@ public final class IdentityResponse implements UserDetails {
                ", phone='" + phone + '\'' +
                ", registeredAt='" + registeredAt + '\'' +
                ", enabled=" + enabled +
+               ", imageId=" + imageId +
                '}';
     }
 
@@ -147,6 +153,11 @@ public final class IdentityResponse implements UserDetails {
 
         public Builder enabled(Boolean enabled) {
             this.identityResponse.enabled = enabled;
+            return this;
+        }
+
+        public Builder imageId(Long imageId) {
+            this.identityResponse.imageId = imageId;
             return this;
         }
 

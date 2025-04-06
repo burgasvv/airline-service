@@ -24,7 +24,9 @@ public class IdentityFilterFunction implements HandlerFilterFunction<ServerRespo
 
         if (
                 request.path().equals("/identities/by-id") || request.path().equals("/identities/update") ||
-                request.path().equals("/identities/change-password") || request.path().equals("/identities/set-password")
+                request.path().equals("/identities/change-password") || request.path().equals("/identities/set-password") ||
+                request.path().equals("/identities/upload-image") || request.path().equals("/identities/change-image") ||
+                request.path().equals("/identities/delete-image")
         ) {
             return ReactiveSecurityContextHolder.getContext()
                     .flatMap(

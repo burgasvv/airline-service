@@ -7,6 +7,7 @@ import org.burgas.ticketservice.service.IdentityService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -109,6 +110,49 @@ public class IdentityRouter {
                                                 request.queryParam("password").orElse(null)
                                         ),
                                         IdentityResponse.class
+                                )
+                )
+                .POST(
+                        "/identities/upload-image", request -> request.multipartData()
+                                .flatMap(
+                                        valueMap -> {
+                                            FilePart file = (FilePart) valueMap.getFirst("file");
+                                            return ServerResponse
+                                                    .status(OK)
+                                                    .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                                    .body(
+                                                            identityService.uploadIdentityImage(
+                                                                    request.queryParam("identityId").orElse(null), file
+                                                            ),
+                                                            String.class
+                                                    );
+                                        }
+                                )
+                )
+                .PUT(
+                        "/identities/change-image", request -> request.multipartData()
+                                .flatMap(
+                                        valueMap -> {
+                                            FilePart file = (FilePart) valueMap.getFirst("file");
+                                            return ServerResponse
+                                                    .status(OK)
+                                                    .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                                    .body(
+                                                            identityService.changeIdentityImage(
+                                                                    request.queryParam("identityId").orElse(null),file
+                                                            ),
+                                                            String.class
+                                                    );
+                                        }
+                                )
+                )
+                .DELETE(
+                        "/identities/delete-image", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        identityService.deleteImage(request.queryParam("identityId").orElse(null)),
+                                        String.class
                                 )
                 )
                 .build();

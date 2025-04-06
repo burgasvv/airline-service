@@ -9,8 +9,10 @@ import org.burgas.ticketservice.exception.WrongRestoreTokenException;
 import org.burgas.ticketservice.mapper.IdentityMapper;
 import org.burgas.ticketservice.repository.IdentityRepository;
 import org.burgas.ticketservice.repository.RestoreTokenRepository;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,6 +22,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import static org.burgas.ticketservice.message.IdentityMessage.*;
+import static org.burgas.ticketservice.message.ImageMessage.IDENTITY_IMAGE_CHANGED;
+import static org.burgas.ticketservice.message.ImageMessage.IDENTITY_IMAGE_UPLOADED;
 import static org.burgas.ticketservice.message.RestoreTokenMessage.WRONG_RESTORE_TOKEN;
 import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -37,16 +41,19 @@ public class IdentityService {
     private final CustomJavaMailSender customJavaMailSender;
     private final RestoreTokenRepository restoreTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
 
     public IdentityService(
             IdentityRepository identityRepository, IdentityMapper identityMapper,
-            CustomJavaMailSender customJavaMailSender, RestoreTokenRepository restoreTokenRepository, PasswordEncoder passwordEncoder
+            CustomJavaMailSender customJavaMailSender, RestoreTokenRepository restoreTokenRepository,
+            PasswordEncoder passwordEncoder, ImageService imageService
     ) {
         this.identityRepository = identityRepository;
         this.identityMapper = identityMapper;
         this.customJavaMailSender = customJavaMailSender;
         this.restoreTokenRepository = restoreTokenRepository;
         this.passwordEncoder = passwordEncoder;
+        this.imageService = imageService;
     }
 
     public Flux<IdentityResponse> findAll() {
@@ -167,6 +174,59 @@ public class IdentityService {
                 )
                 .switchIfEmpty(
                         Mono.error(new WrongRestoreTokenException(WRONG_RESTORE_TOKEN.getMessage()))
+                );
+    }
+
+    @Transactional(
+            isolation = Isolation.SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public Mono<String> uploadIdentityImage(final String identityId, final FilePart filePart) {
+        return this.identityRepository
+                .findById(Long.valueOf(identityId))
+                .flatMap(
+                        identity -> this.imageService.uploadImage(filePart)
+                                .flatMap(
+                                        image -> {
+                                            identity.setImageId(image.getId());
+                                            identity.setNew(false);
+                                            return this.identityRepository.save(identity)
+                                                    .then(Mono.fromCallable(IDENTITY_IMAGE_UPLOADED::getMessage));
+                                        }
+                                )
+                )
+                .switchIfEmpty(
+                        Mono.error(new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage()))
+                );
+    }
+
+    @Transactional(
+            isolation = Isolation.SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public Mono<String> changeIdentityImage(final String identityId, final FilePart filePart) {
+        return this.identityRepository
+                .findById(Long.valueOf(identityId))
+                .flatMap(
+                        identity -> this.imageService.changeImage(identity.getImageId(), filePart)
+                                .then(Mono.fromCallable(IDENTITY_IMAGE_CHANGED::getMessage))
+                )
+                .switchIfEmpty(
+                        Mono.fromCallable(IDENTITY_NOT_FOUND::getMessage)
+                );
+    }
+
+    @Transactional(
+            isolation = Isolation.SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public Mono<String> deleteImage(final String identityId) {
+        return this.identityRepository.findById(Long.valueOf(identityId))
+                .flatMap(
+                        identity -> this.imageService.deleteImage(identity.getImageId())
+                )
+                .switchIfEmpty(
+                        Mono.fromCallable(IDENTITY_NOT_FOUND::getMessage)
                 );
     }
 }

@@ -35,17 +35,19 @@ public class SecurityConfig {
                         authorizeExchangeSpec -> authorizeExchangeSpec
 
                                 .pathMatchers(
-                                        "/identities/create"
+                                        "/identities/create", "/images/by-id"
                                 )
                                 .permitAll()
 
                                 .pathMatchers(
                                         "/identities/by-id", "/identities/by-username", "/identities/update",
-                                        "/identities/change-password", "/identities/set-password"
+                                        "/identities/change-password", "/identities/set-password",
+                                        "/identities/upload-image", "/identities/change-image", "/identities/delete-image"
                                 )
                                 .hasAnyAuthority("ADMIN", "EMPLOYEE", "USER")
 
                                 .pathMatchers(
+                                        "/images/upload",
                                         "/identities", "/identities/enable-disable",
                                         "/authorities", "/authorities/by-id",
                                         "/authorities/create-update", "/authorities/delete"

@@ -88,6 +88,6 @@ Host: localhost:9000
 Authorization: Basic burgasvv@mail.ru cg3audio
 
 ###
-PUT /identities/enable-disable?identityId=3&enabled=true
+PUT /identities/enable-disable?identityId=3&enabled=false
 Host: localhost:9000
 Authorization: Basic admin@gmail.com admin

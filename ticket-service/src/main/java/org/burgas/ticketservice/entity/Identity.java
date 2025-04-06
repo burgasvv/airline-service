@@ -19,6 +19,7 @@ public final class Identity implements Persistable<Long> {
     private String phone;
     private LocalDateTime registeredAt;
     private Boolean enabled;
+    private Long imageId;
 
     @Transient
     private Boolean isNew;
@@ -87,6 +88,14 @@ public final class Identity implements Persistable<Long> {
         this.enabled = enabled;
     }
 
+    public Long getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
+    }
+
     @Override
     public boolean isNew() {
         return isNew || id == null;
@@ -103,12 +112,13 @@ public final class Identity implements Persistable<Long> {
         return Objects.equals(id, identity.id) && Objects.equals(authorityId, identity.authorityId) &&
                Objects.equals(username, identity.username) && Objects.equals(password, identity.password) &&
                Objects.equals(email, identity.email) && Objects.equals(phone, identity.phone) &&
-               Objects.equals(registeredAt, identity.registeredAt) && Objects.equals(enabled, identity.enabled) && Objects.equals(isNew, identity.isNew);
+               Objects.equals(registeredAt, identity.registeredAt) && Objects.equals(enabled, identity.enabled) &&
+               Objects.equals(imageId, identity.imageId) && Objects.equals(isNew, identity.isNew);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, authorityId, username, password, email, phone, registeredAt, enabled, isNew);
+        return Objects.hash(id, authorityId, username, password, email, phone, registeredAt, enabled, imageId, isNew);
     }
 
     @Override
@@ -122,6 +132,7 @@ public final class Identity implements Persistable<Long> {
                ", phone='" + phone + '\'' +
                ", registeredAt=" + registeredAt +
                ", enabled=" + enabled +
+               ", imageId=" + imageId +
                ", isNew=" + isNew +
                '}';
     }
@@ -175,6 +186,11 @@ public final class Identity implements Persistable<Long> {
 
         public Builder enabled(Boolean enabled) {
             this.identity.enabled = enabled;
+            return this;
+        }
+
+        public Builder imageId(Long imageId) {
+            this.identity.imageId = imageId;
             return this;
         }
 
