@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 .pathMatchers(
                                         "/identities/by-id", "/identities/by-username", "/identities/update",
                                         "/identities/change-password", "/identities/set-password",
-                                        "/identities/upload-image", "/identities/change-image", "/identities/delete-image"
+                                        "/identities/upload-image", "/identities/change-image", "/identities/delete-image",
+                                        "/airports", "/airports/by-city"
                                 )
                                 .hasAnyAuthority("ADMIN", "EMPLOYEE", "USER")
 
@@ -50,7 +51,9 @@ public class SecurityConfig {
                                         "/images/upload",
                                         "/identities", "/identities/enable-disable",
                                         "/authorities", "/authorities/by-id",
-                                        "/authorities/create-update", "/authorities/delete"
+                                        "/authorities/create-update", "/authorities/delete",
+                                        "/addresses", "/addresses/create-update-secured",
+                                        "/airports/create-update"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )

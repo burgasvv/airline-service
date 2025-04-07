@@ -91,3 +91,65 @@ Authorization: Basic burgasvv@mail.ru cg3audio
 PUT /identities/enable-disable?identityId=3&enabled=false
 Host: localhost:9000
 Authorization: Basic admin@gmail.com admin
+
+### Address Requests
+
+###
+POST /addresses/create-update-secured
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "cityId": 1,
+    "street": "Калужская",
+    "house": "12a",
+    "apartment": "56"
+}
+
+###
+POST /addresses/create-update-secured
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 1,
+    "cityId": 1,
+    "street": "Московская",
+    "house": "78/1",
+    "apartment": "45"
+}
+
+### Airport Requests
+
+###
+POST /airports/create-update
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "Домодедово",
+    "address": {
+        "cityId": 1,
+        "street": "Московская",
+        "house": "15/2"
+    },
+    "opened": true
+}
+
+###
+POST /airports/create-update
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "Шереметьево",
+    "address": {
+        "id": 1
+    },
+    "opened": true
+}
