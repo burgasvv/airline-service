@@ -57,26 +57,16 @@ public class IdentityService {
     }
 
     public Flux<IdentityResponse> findAll() {
-        return this.identityRepository
-                .findAll()
+        return this.identityRepository.findAll()
                 .log(FIND_IDENTITY, Level.INFO, SignalType.ON_NEXT)
-                .flatMap(
-                        identity -> this.identityMapper.toIdentityResponse(
-                                Mono.fromCallable(() -> identity)
-                        )
-                )
+                .flatMap(identity -> this.identityMapper.toIdentityResponse(Mono.fromCallable(() -> identity)))
                 .log(TRANSFORM_TO_RESPONSE, Level.FINE, SignalType.ON_COMPLETE);
     }
 
     public Mono<IdentityResponse> findById(final String identityId) {
-        return this.identityRepository
-                .findById(Long.parseLong(identityId))
+        return this.identityRepository.findById(Long.parseLong(identityId))
                 .log(FIND_IDENTITY, Level.INFO, SignalType.ON_NEXT)
-                .flatMap(
-                        identity -> this.identityMapper.toIdentityResponse(
-                                Mono.fromCallable(() -> identity)
-                        )
-                )
+                .flatMap(identity -> this.identityMapper.toIdentityResponse(Mono.fromCallable(() -> identity)))
                 .log(TRANSFORM_TO_RESPONSE, Level.FINE, SignalType.ON_COMPLETE);
     }
 
@@ -84,11 +74,7 @@ public class IdentityService {
         return this.identityRepository
                 .findIdentityByUsername(username)
                 .log(FIND_IDENTITY, Level.INFO, SignalType.ON_NEXT)
-                .flatMap(
-                        identity -> this.identityMapper.toIdentityResponse(
-                                Mono.fromCallable(() -> identity)
-                        )
-                )
+                .flatMap(identity -> this.identityMapper.toIdentityResponse(Mono.fromCallable(() -> identity)))
                 .log(TRANSFORM_TO_RESPONSE, Level.FINE, SignalType.ON_COMPLETE);
     }
 
@@ -115,8 +101,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public Mono<String> accountEnableOrDisable(final String identityId, final String enabled) {
-        return this.identityRepository
-                .findById(Long.valueOf(identityId))
+        return this.identityRepository.findById(Long.valueOf(identityId))
                 .flatMap(
                         identity -> {
                             Boolean value = Boolean.valueOf(enabled);
@@ -222,9 +207,7 @@ public class IdentityService {
     )
     public Mono<String> deleteImage(final String identityId) {
         return this.identityRepository.findById(Long.valueOf(identityId))
-                .flatMap(
-                        identity -> this.imageService.deleteImage(identity.getImageId())
-                )
+                .flatMap(identity -> this.imageService.deleteImage(identity.getImageId()))
                 .switchIfEmpty(
                         Mono.fromCallable(IDENTITY_NOT_FOUND::getMessage)
                 );

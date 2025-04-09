@@ -153,3 +153,126 @@ Content-Type: application/json
     },
     "opened": true
 }
+
+### Filial Requests
+
+###
+POST /filials/create-update
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "Филиал на Клюквенной",
+    "address": {
+        "cityId": 2,
+        "street": "Клюквенная",
+        "house": "78"
+    },
+    "opensAt": "08:00",
+    "closesAt": "22:00",
+    "opened": true
+}
+
+### Department Requests
+
+###
+GET /departments
+Host: localhost:9000
+
+###
+GET /departments/by-id?departmentId=1
+Host: localhost:9000
+
+###
+POST /departments/create-update
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "New Department",
+    "description": "New description for department"
+}
+
+###
+POST /departments/create-update
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "New Department EDITED",
+    "description": "New description for department EDITED"
+}
+
+###
+DELETE /departments/delete?departmentId=1
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+
+### Filial Department Requests
+
+###
+GET /filial-departments
+Host: localhost:9000
+
+###
+GET /filial-departments/by-filial-department?filialId=1&departmentId=1
+Host: localhost:9000
+
+###
+POST /filial-departments/create-update
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "filial": {
+        "name": "Филиал на Мурманской",
+        "address": {
+            "cityId": 2,
+            "street": "Мурманская",
+            "house": "90"
+        },
+        "opensAt": "08:00",
+        "closesAt": "22:00",
+        "opened": true
+    },
+    "department": {
+        "name": "New Department",
+        "description": "New description for department"
+    }
+}
+
+### Position Requests
+
+###
+POST /positions/create-update
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "New Position",
+    "description": "New position description",
+    "departmentId": 1
+}
+
+###
+POST /positions/create-update
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "New Position EDITED",
+    "description": "New position description EDITED"
+}
+
+###
+DELETE /positions/delete?positionId=1
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin

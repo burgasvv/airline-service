@@ -39,6 +39,11 @@ public class AirportService {
                 .flatMap(airport -> this.airportMapper.toAirportResponse(Mono.fromCallable(() -> airport)));
     }
 
+    public Flux<AirportResponse> findByCountryId(final String countryId) {
+        return this.airportRepository.findAirportsByCountryId(Long.valueOf(countryId))
+                .flatMap(airport -> this.airportMapper.toAirportResponse(Mono.fromCallable(() -> airport)));
+    }
+
     public Flux<AirportResponse> findByCityId(final String cityId) {
         return this.airportRepository.findAirportsByCityId(Long.valueOf(cityId))
                 .flatMap(airport -> this.airportMapper.toAirportResponse(Mono.fromCallable(() -> airport)));

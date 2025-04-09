@@ -22,7 +22,9 @@ public class CustomJavaMailSender {
     private final RestoreTokenService restoreTokenService;
     private final JavaMailSender javaMailSender;
 
-    public CustomJavaMailSender(IdentityRepository identityRepository, RestoreTokenService restoreTokenService, JavaMailSender javaMailSender) {
+    public CustomJavaMailSender(
+            IdentityRepository identityRepository, RestoreTokenService restoreTokenService, JavaMailSender javaMailSender
+    ) {
         this.identityRepository = identityRepository;
         this.restoreTokenService = restoreTokenService;
         this.javaMailSender = javaMailSender;

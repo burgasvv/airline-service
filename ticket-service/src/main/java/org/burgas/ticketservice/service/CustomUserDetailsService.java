@@ -20,12 +20,7 @@ public class CustomUserDetailsService implements ReactiveUserDetailsService {
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        return this.identityRepository
-                .findIdentityByEmail(username)
-                .flatMap(
-                        identity -> this.identityMapper.toIdentityResponse(
-                                Mono.fromCallable(() -> identity)
-                        )
-                );
+        return this.identityRepository.findIdentityByEmail(username)
+                .flatMap(identity -> this.identityMapper.toIdentityResponse(Mono.fromCallable(() -> identity)));
     }
 }

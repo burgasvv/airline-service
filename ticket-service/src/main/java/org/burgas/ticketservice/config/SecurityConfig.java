@@ -35,7 +35,11 @@ public class SecurityConfig {
                         authorizeExchangeSpec -> authorizeExchangeSpec
 
                                 .pathMatchers(
-                                        "/identities/create", "/images/by-id"
+                                        "/identities/create", "/images/by-id",
+                                        "/airports", "/airports/by-country", "/airports/by-city",
+                                        "/filials", "/filials/by-country", "/filials/by-city",
+                                        "/departments", "/departments/by-id",
+                                        "/filial-departments", "/filial-departments/by-filial-department"
                                 )
                                 .permitAll()
 
@@ -43,17 +47,24 @@ public class SecurityConfig {
                                         "/identities/by-id", "/identities/by-username", "/identities/update",
                                         "/identities/change-password", "/identities/set-password",
                                         "/identities/upload-image", "/identities/change-image", "/identities/delete-image",
-                                        "/airports", "/airports/by-city"
+                                        "/positions", "/positions/by-id"
                                 )
                                 .hasAnyAuthority("ADMIN", "EMPLOYEE", "USER")
 
                                 .pathMatchers(
+                                        "/departments", "/departments/by-id"
+                                )
+                                .hasAnyAuthority("ADMIN", "EMPLOYEE")
+
+                                .pathMatchers(
                                         "/images/upload",
                                         "/identities", "/identities/enable-disable",
-                                        "/authorities", "/authorities/by-id",
-                                        "/authorities/create-update", "/authorities/delete",
+                                        "/authorities", "/authorities/by-id", "/authorities/create-update", "/authorities/delete",
                                         "/addresses", "/addresses/create-update-secured",
-                                        "/airports/create-update"
+                                        "/airports/create-update", "/filials/create-update",
+                                        "/departments/create-update", "/departments/delete",
+                                        "/filial-departments/create-update", "/filial-departments/delete",
+                                        "/positions/create-update", "/positions/delete"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )

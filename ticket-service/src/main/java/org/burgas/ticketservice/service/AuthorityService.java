@@ -38,25 +38,19 @@ public class AuthorityService {
     }
 
     public Flux<AuthorityResponse> findAll() {
-        return this.authorityRepository
-                .findAll()
+        return this.authorityRepository.findAll()
                 .log(FIND_AUTHORITY, INFO, ON_NEXT)
                 .flatMap(
-                        authority -> this.authorityMapper.toAuthorityResponse(
-                                Mono.fromCallable(() -> authority)
-                        )
+                        authority -> this.authorityMapper.toAuthorityResponse(Mono.fromCallable(() -> authority))
                 )
                 .log(COMPLETE_RESPONSE, FINE, ON_COMPLETE);
     }
 
     public Mono<AuthorityResponse> findById(final String authorityId) {
-        return this.authorityRepository
-                .findById(Long.valueOf(authorityId))
+        return this.authorityRepository.findById(Long.valueOf(authorityId))
                 .log(FIND_AUTHORITY, INFO, ON_NEXT)
                 .flatMap(
-                        authority -> this.authorityMapper.toAuthorityResponse(
-                                Mono.fromCallable(() -> authority)
-                        )
+                        authority -> this.authorityMapper.toAuthorityResponse(Mono.fromCallable(() -> authority))
                 )
                 .log(COMPLETE_RESPONSE, FINE, ON_COMPLETE);
     }
@@ -66,20 +60,18 @@ public class AuthorityService {
             rollbackFor = Exception.class
     )
     public Mono<Long> createOrUpdate(final Mono<AuthorityRequest> authorityRequestMono) {
-        return authorityRequestMono
-                .flatMap(
-                        authorityRequest ->
-                                this.authorityMapper.toAuthority(Mono.fromCallable(() -> authorityRequest))
-                                        .flatMap(authorityRepository::save)
-                                        .log(AUTHORITY_SAVED, INFO, ON_NEXT)
-                                        .flatMap(
-                                                authority -> this.authorityMapper.toAuthorityResponse(
-                                                        Mono.fromCallable(() -> authority)
-                                                )
-                                        )
-                                        .log(COMPLETE_RESPONSE)
-                                        .flatMap(authorityResponse -> Mono.fromCallable(authorityResponse::getId))
-                );
+        return authorityRequestMono.flatMap(
+                authorityRequest -> this.authorityMapper.toAuthority(Mono.fromCallable(() -> authorityRequest))
+                        .flatMap(authorityRepository::save)
+                        .log(AUTHORITY_SAVED, INFO, ON_NEXT)
+                        .flatMap(
+                                authority -> this.authorityMapper.toAuthorityResponse(
+                                        Mono.fromCallable(() -> authority)
+                                )
+                        )
+                        .log(COMPLETE_RESPONSE)
+                        .flatMap(authorityResponse -> Mono.fromCallable(authorityResponse::getId))
+        );
     }
 
     @Transactional(
@@ -87,15 +79,11 @@ public class AuthorityService {
             rollbackFor = Exception.class
     )
     public Mono<String> deleteById(final String authorityId) {
-        return this.authorityRepository
-                .findById(Long.valueOf(authorityId))
+        return this.authorityRepository.findById(Long.valueOf(authorityId))
                 .flatMap(
-                        authority -> this.authorityRepository
-                                .deleteById(requireNonNull(authority.getId()))
+                        authority -> this.authorityRepository.deleteById(requireNonNull(authority.getId()))
                                 .thenReturn(AUTHORITY_DELETED.getMessage())
                 )
-                .switchIfEmpty(
-                        Mono.error(new AuthorityNotFoundException(AUTHORITY_NOT_FOUND.getMessage()))
-                );
+                .switchIfEmpty(Mono.error(new AuthorityNotFoundException(AUTHORITY_NOT_FOUND.getMessage())));
     }
 }

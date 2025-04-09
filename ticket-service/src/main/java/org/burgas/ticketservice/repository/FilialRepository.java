@@ -1,32 +1,32 @@
 package org.burgas.ticketservice.repository;
 
-import org.burgas.ticketservice.entity.Airport;
+import org.burgas.ticketservice.entity.Filial;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
 @Repository
-public interface AirportRepository extends R2dbcRepository<Airport, Long> {
+public interface FilialRepository extends R2dbcRepository<Filial, Long> {
 
     @Query(
             value = """
-                    select a.* from airport a
-                        join address a2 on a2.id = a.address_id
-                        join city c on a2.city_id = c.id
+                    select f.* from filial f
+                        join address a on a.id = f.address_id
+                        join city c on c.id = a.city_id
                         join country c2 on c2.id = c.country_id
                     where c2.id = :countryId
                     """
     )
-    Flux<Airport> findAirportsByCountryId(Long countryId);
+    Flux<Filial> findFilialsByCountryId(Long countryId);
 
     @Query(
             value = """
-                    select air.* from airport air
-                        join address a on a.id = air.address_id
+                    select f.* from filial f
+                        join address a on a.id = f.address_id
                         join city c on c.id = a.city_id
                     where c.id = :cityId
                     """
     )
-    Flux<Airport> findAirportsByCityId(Long cityId);
+    Flux<Filial> findFilialsByCityId(Long cityId);
 }

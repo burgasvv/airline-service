@@ -1,11 +1,16 @@
 package org.burgas.ticketservice.entity;
 
+import org.burgas.ticketservice.exception.PhoneNotMatchesException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.burgas.ticketservice.message.IdentityMessage.PHONE_NOT_MATCHES;
 
 @SuppressWarnings("unused")
 public final class Identity implements Persistable<Long> {
@@ -23,6 +28,11 @@ public final class Identity implements Persistable<Long> {
 
     @Transient
     private Boolean isNew;
+
+    public Matcher validatePhone(String phone) {
+        Pattern compile = Pattern.compile("^\\d{10}$");
+        return compile.matcher(phone);
+    }
 
     public Long getId() {
         return id;
@@ -69,7 +79,14 @@ public final class Identity implements Persistable<Long> {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        Matcher matcher = this.validatePhone(phone);
+        if (matcher.matches()) {
+            String[] arr = phone.split("");
+            phone = "(" + arr[0]+arr[1]+arr[2] + ")-" + arr[3]+arr[4]+arr[5] + "-" + arr[6]+arr[7]+arr[8]+arr[9];
+            this.phone = phone;
+        } else {
+            throw new PhoneNotMatchesException(PHONE_NOT_MATCHES.getMessage());
+        }
     }
 
     public LocalDateTime getRegisteredAt() {
@@ -175,8 +192,15 @@ public final class Identity implements Persistable<Long> {
         }
 
         public Builder phone(String phone) {
-            this.identity.phone = phone;
-            return this;
+            Matcher matcher = this.identity.validatePhone(phone);
+            if (matcher.matches()) {
+                String[] arr = phone.split("");
+                phone = "(" + arr[0]+arr[1]+arr[2] + ")-" + arr[3]+arr[4]+arr[5] + "-" + arr[6]+arr[7]+arr[8]+arr[9];
+                this.identity.phone = phone;
+                return this;
+            } else {
+                throw new PhoneNotMatchesException(PHONE_NOT_MATCHES.getMessage());
+            }
         }
 
         public Builder registeredAt(LocalDateTime registeredAt) {

@@ -1,8 +1,8 @@
 package org.burgas.ticketservice.router;
 
-import org.burgas.ticketservice.dto.AirportRequest;
-import org.burgas.ticketservice.dto.AirportResponse;
-import org.burgas.ticketservice.service.AirportService;
+import org.burgas.ticketservice.dto.FilialRequest;
+import org.burgas.ticketservice.dto.FilialResponse;
+import org.burgas.ticketservice.service.FilialService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -15,41 +15,41 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 
 @Configuration
-public class AirportRouter {
+public class FilialRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> airportRoutes(final AirportService airportService) {
+    public RouterFunction<ServerResponse> filialRoutes(final FilialService filialService) {
         return RouterFunctions
                 .route(
-                        GET("/airports"), _ ->
+                        GET("/filials"), _ ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(airportService.findAll(), AirportResponse.class)
+                                        .body(filialService.findAll(), FilialResponse.class)
                 )
                 .andRoute(
-                        GET("/airports/by-country"), request ->
+                        GET("/filials/by-country"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(airportService.findByCountryId(request.queryParam("countryId").orElse(null)),
-                                                AirportResponse.class)
+                                        .body(filialService.findByCountryId(request.queryParam("countryId").orElse(null)),
+                                                FilialResponse.class)
                 )
                 .andRoute(
-                        GET("/airports/by-city"), request ->
+                        GET("/filials/by-city"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(airportService.findByCityId(request.queryParam("cityId").orElse(null)),
-                                                AirportResponse.class)
+                                        .body(filialService.findByCityId(request.queryParam("cityId").orElse(null)),
+                                                FilialResponse.class)
                 )
                 .andRoute(
-                        POST("/airports/create-update"), request ->
+                        POST("/filials/create-update"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(airportService.createOrUpdate(request.bodyToMono(AirportRequest.class)),
-                                                AirportResponse.class)
+                                        .body(filialService.createOrUpdate(request.bodyToMono(FilialRequest.class)),
+                                                FilialResponse.class)
                 );
     }
 }
