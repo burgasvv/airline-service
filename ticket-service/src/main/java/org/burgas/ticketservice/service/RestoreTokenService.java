@@ -8,6 +8,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
 @Service
@@ -20,6 +22,10 @@ public class RestoreTokenService {
         this.restoreTokenRepository = restoreTokenRepository;
     }
 
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
     public Mono<RestoreToken> createOrUpdateByIdentityId(final Long identityId) {
         return this.restoreTokenRepository
                 .findRestoreTokenByIdentityId(identityId)

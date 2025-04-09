@@ -15,7 +15,7 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.INFO;
 import static org.burgas.ticketservice.message.AuthorityMessage.AUTHORITY_DELETED;
 import static org.burgas.ticketservice.message.AuthorityMessage.AUTHORITY_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
+import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 import static reactor.core.publisher.SignalType.ON_COMPLETE;
@@ -56,7 +56,7 @@ public class AuthorityService {
     }
 
     @Transactional(
-            isolation = READ_COMMITTED, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Mono<Long> createOrUpdate(final Mono<AuthorityRequest> authorityRequestMono) {
@@ -75,7 +75,7 @@ public class AuthorityService {
     }
 
     @Transactional(
-            isolation = READ_COMMITTED, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Mono<String> deleteById(final String authorityId) {

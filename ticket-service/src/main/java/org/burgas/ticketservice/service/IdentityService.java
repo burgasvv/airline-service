@@ -25,7 +25,7 @@ import static org.burgas.ticketservice.message.IdentityMessage.*;
 import static org.burgas.ticketservice.message.ImageMessage.IDENTITY_IMAGE_CHANGED;
 import static org.burgas.ticketservice.message.ImageMessage.IDENTITY_IMAGE_UPLOADED;
 import static org.burgas.ticketservice.message.RestoreTokenMessage.WRONG_RESTORE_TOKEN;
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
+import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -79,7 +79,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = READ_COMMITTED, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Mono<IdentityResponse> createOrUpdate(final Mono<IdentityRequest> identityRequestMono) {
@@ -97,7 +97,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = READ_COMMITTED, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Mono<String> accountEnableOrDisable(final String identityId, final String enabled) {
@@ -125,7 +125,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = READ_COMMITTED, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Mono<String> changePassword(final String identityId) {
@@ -133,7 +133,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = READ_COMMITTED, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Mono<IdentityResponse> setPassword(final String identityId, final String token, final String password) {

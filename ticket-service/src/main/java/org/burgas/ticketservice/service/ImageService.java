@@ -57,8 +57,7 @@ public class ImageService {
             rollbackFor = Exception.class
     )
     public Mono<Image> changeImage(final Long previousImageId, final FilePart filePart) {
-        return this.imageRepository
-                .findById(previousImageId)
+        return this.imageRepository.findById(previousImageId)
                 .flatMap(
                         image -> filePart.content().singleOrEmpty()
                                 .flatMap(

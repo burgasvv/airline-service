@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import static org.burgas.ticketservice.message.IdentityMessage.IDENTITY_TOKEN_WAS_SEND;
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
+import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -31,7 +31,7 @@ public class CustomJavaMailSender {
     }
 
     @Transactional(
-            isolation = READ_COMMITTED, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Mono<String> sendTokenByEmail(final Long identityId) {

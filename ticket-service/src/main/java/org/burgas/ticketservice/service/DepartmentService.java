@@ -13,7 +13,6 @@ import reactor.core.publisher.Mono;
 import static java.util.Objects.requireNonNull;
 import static org.burgas.ticketservice.message.DepartmentMessage.DEPARTMENT_DELETED;
 import static org.burgas.ticketservice.message.DepartmentMessage.DEPARTMENT_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -41,7 +40,7 @@ public class DepartmentService {
     }
 
     @Transactional(
-            isolation = READ_COMMITTED, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Mono<DepartmentResponse> createOrUpdate(final Mono<DepartmentRequest> departmentRequestMono) {
