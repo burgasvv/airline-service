@@ -7,7 +7,9 @@ public enum IdentityMessage {
     IDENTITY_NOT_FOUND("Пользователь не найден"),
     IDENTITY_SAME_STATUS("Данный статус аккаунта уже установлен"),
     IDENTITY_TOKEN_WAS_SEND("Письмо с кодом было отправлено на вашу почту"),
-    PHONE_NOT_MATCHES("Введенная строка не может быть телефоном");
+    PHONE_NOT_MATCHES("Введенная строка не может быть телефоном"),
+    IDENTITY_WRONG_ID("Неверный идентификатор пользователя"),
+    IDENTITY_WRONG_TOKEN("Указанный вами токен не существует");
 
     private final String message;
 

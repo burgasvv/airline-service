@@ -52,9 +52,19 @@ public class SecurityConfig {
                                 .hasAnyAuthority("ADMIN", "EMPLOYEE", "USER")
 
                                 .pathMatchers(
-                                        "/departments", "/departments/by-id"
+                                        "/departments", "/departments/by-id", "/employees"
                                 )
                                 .hasAnyAuthority("ADMIN", "EMPLOYEE")
+
+                                .pathMatchers(
+                                        "/employees/by-id"
+                                )
+                                .hasAnyAuthority("EMPLOYEE")
+
+                                .pathMatchers(
+                                        "/requires/create-update", "/require-answers/by-user", "/employees/create"
+                                )
+                                .hasAnyAuthority("USER")
 
                                 .pathMatchers(
                                         "/images/upload",
@@ -64,7 +74,9 @@ public class SecurityConfig {
                                         "/airports/create-update", "/filials/create-update",
                                         "/departments/create-update", "/departments/delete",
                                         "/filial-departments/create-update", "/filial-departments/delete",
-                                        "/positions/create-update", "/positions/delete"
+                                        "/positions/create-update", "/positions/delete",
+                                        "/requires/by-closed",
+                                        "/require-answers/by-admin", "/require-answers/send-answer-or-token"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )

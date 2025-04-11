@@ -276,3 +276,69 @@ Content-Type: application/json
 DELETE /positions/delete?positionId=1
 Host: localhost:9000
 Authorization: Basic admin@gmail.com admin
+
+### Require Requests
+
+###
+POST /requires/create-update?userId=3
+Host: localhost:9000
+Authorization: Basic user@gmail.com user
+Content-Type: application/json
+
+{
+    "name": "Victor",
+    "surname": "Carov",
+    "patronymic": "Sergeich",
+    "passport": "8080 345678",
+    "adminId": 1
+}
+
+### Require Answer Requests
+
+###
+GET /require-answers/by-user?userId=3
+Host: localhost:9000
+Authorization: Basic user@gmail.com user
+
+###
+GET /require-answers/by-admin?adminId=1
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /require-answers/send-answer-or-token?adminId=1
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "allowed": true,
+    "explanation": "Вам разрешено стать сотрудником компании",
+    "requireId": 1
+}
+
+### Employee Requests
+
+###
+GET /employees/by-id?employeeId=1
+Host: localhost:9000
+Authorization: Basic user@gmail.com user
+
+###
+POST /employees/create?token=f475a09b-34a0-42f4-ac04-d0d0b7732e43
+Host: localhost:9000
+Authorization: Basic user@gmail.com user
+Content-Type: application/json
+
+{
+    "about": "New description for employee",
+    "address": {
+        "cityId": 1,
+        "street": "Novakova",
+        "house": 36,
+        "apartment": 12
+    },
+    "identityId": 3,
+    "positionId": 1,
+    "filialDepartmentId": 1
+}
