@@ -5,7 +5,7 @@ spring:
   application:
     name: ticket-service
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/postgres
+    url: r2dbc:postgresql://localhost:5432/ticket_service
     username: postgres
     password: postgres
     pool:
