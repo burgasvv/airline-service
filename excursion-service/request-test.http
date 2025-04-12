@@ -1,0 +1,135 @@
+
+### Authority Requests
+
+###
+GET /authorities
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /authorities/sse
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /authorities/async
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /authorities/by-id?authorityId=1
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /authorities/by-id/async?authorityId=1
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /authorities/create-update
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "MODER"
+}
+
+###
+POST /authorities/create-update
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 3,
+    "name": "MODERATOR"
+}
+
+###
+DELETE /authorities/delete?authorityId=3
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /authorities/create-update/async
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "MODER ASYNC"
+}
+
+###
+POST /authorities/create-update/async
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 3,
+    "name": "MODERATOR ASYNC"
+}
+
+###
+DELETE /authorities/delete/async?authorityId=3
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+### Identity Requests
+
+###
+GET /identities
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /identities/sse
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /identities/async
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /identities/by-id?identityId=1
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /identities/by-id/async?identityId=2
+Host: localhost:9010
+Authorization: Basic user@gmail.com user
+
+###
+POST /identities/create
+Host: localhost:9010
+Content-Type: application/json
+
+{
+    "username": "burgvv",
+    "password": "cg3audio",
+    "email": "burgvv@gmail.com",
+    "phone": "9139045678",
+    "authorityId": 2
+}
+
+###
+POST /identities/update?identityId=3
+Host: localhost:9010
+Authorization: Basic burgvv@gmail.com cg3audio
+Content-Type: application/json
+
+{
+    "username": "burgasvv",
+    "email": "burgasvv@gmail.com"
+}
+
+###
+DELETE /identities/delete?identityId=3
+Host: localhost:9010
+Authorization: Basic burgasvv@gmail.com cg3audio
