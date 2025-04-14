@@ -5,9 +5,10 @@ import org.springframework.stereotype.Component;
 import javax.crypto.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Base64.getDecoder;
+import static java.util.Base64.getEncoder;
 import static javax.crypto.Cipher.*;
 
 @SuppressWarnings("unused")
@@ -32,7 +33,7 @@ public final class CipherHandler {
         Cipher cipher = getInstance("AES");
         cipher.init(ENCRYPT_MODE, secretKey);
         byte[] bytes = cipher.doFinal(stringForEncode.getBytes(UTF_8));
-        return Base64.getEncoder().encodeToString(bytes);
+        return getEncoder().encodeToString(bytes);
     }
 
     public String decode(String stringForDecode)
@@ -40,7 +41,7 @@ public final class CipherHandler {
 
         Cipher cipher = getInstance("AES");
         cipher.init(DECRYPT_MODE, secretKey);
-        byte[] decode = Base64.getDecoder().decode(stringForDecode.getBytes(UTF_8));
+        byte[] decode = getDecoder().decode(stringForDecode.getBytes(UTF_8));
         return new String(cipher.doFinal(decode), UTF_8);
     }
 }

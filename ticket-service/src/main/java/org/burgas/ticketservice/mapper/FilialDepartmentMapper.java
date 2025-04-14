@@ -5,6 +5,7 @@ import org.burgas.ticketservice.dto.FilialDepartmentRequest;
 import org.burgas.ticketservice.dto.FilialDepartmentResponse;
 import org.burgas.ticketservice.dto.FilialResponse;
 import org.burgas.ticketservice.entity.FilialDepartment;
+import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.DepartmentRepository;
 import org.burgas.ticketservice.repository.FilialDepartmentRepository;
 import org.burgas.ticketservice.repository.FilialRepository;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public final class FilialDepartmentMapper {
+public final class FilialDepartmentMapper implements MapperDataHandler {
 
     private final FilialDepartmentRepository filialDepartmentRepository;
     private final FilialRepository filialRepository;
@@ -29,10 +30,6 @@ public final class FilialDepartmentMapper {
         this.filialMapper = filialMapper;
         this.departmentRepository = departmentRepository;
         this.departmentMapper = departmentMapper;
-    }
-
-    private <T> T getData(final T first, final T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Mono<FilialDepartment> toFilialDepartment(final Mono<FilialDepartmentRequest> filialDepartmentRequestMono) {

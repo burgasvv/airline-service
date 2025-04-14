@@ -143,3 +143,60 @@ Authorization: Basic admin@gmail.com admin
 PUT /identities/control/async?identityId=2&enable=true
 Host: localhost:9010
 Authorization: Basic admin@gmail.com admin
+
+### Country Requests
+
+###
+GET /countries
+Host: localhost:9010
+
+###
+GET /countries/sse
+Host: localhost:9010
+
+###
+GET /countries/async
+Host: localhost:9010
+
+###
+GET /countries/by-id?countryId=1
+Host: localhost:9010
+
+###
+GET /countries/by-id/async?countryId=2
+Host: localhost:9010
+
+###
+POST /countries/create-update
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "Испания",
+    "description": "Описание страны Испания",
+    "population": 48356783
+}
+
+###
+DELETE /countries/delete?countryId=4
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+### City Requests
+
+###
+GET /cities
+Host: localhost:9010
+
+###
+GET /cities/async
+Host: localhost:9010
+
+###
+GET /cities/by-id?cityId=3
+Host: localhost:9010
+
+###
+GET /cities/by-id/async?cityId=4
+Host: localhost:9010

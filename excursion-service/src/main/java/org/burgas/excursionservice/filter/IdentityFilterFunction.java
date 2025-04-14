@@ -13,7 +13,7 @@ import org.springframework.web.servlet.function.HandlerFunction;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
 
-import static org.burgas.excursionservice.message.IdentityMessage.*;
+import static org.burgas.excursionservice.message.IdentityMessages.*;
 
 @Component
 public class IdentityFilterFunction implements HandlerFilterFunction<ServerResponse, ServerResponse> {

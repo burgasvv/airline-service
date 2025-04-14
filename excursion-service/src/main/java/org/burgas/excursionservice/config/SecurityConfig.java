@@ -39,7 +39,13 @@ public class SecurityConfig {
                         httpRequests -> httpRequests
 
                                 .requestMatchers(
-                                        "/identities/create", "/identities/create/async"
+                                        "/identities/create", "/identities/create/async",
+
+                                        "/countries","/countries/sse", "/countries/async",
+                                        "/countries/by-id", "/countries/by-id/async",
+
+                                        "/cities", "/cities/async", "/cities/sse",
+                                        "/cities/by-id", "/cities/by-id/async"
                                 )
                                 .permitAll()
 
@@ -57,7 +63,13 @@ public class SecurityConfig {
                                         "/authorities/delete", "/authorities/delete/async",
 
                                         "/identities", "/identities/sse", "/identities/async",
-                                        "/identities/control", "/identities/control/async"
+                                        "/identities/control", "/identities/control/async",
+
+                                        "/countries/create-update", "/countries/create-update/async",
+                                        "/countries/delete", "/countries/delete/async",
+
+                                        "/cities/create-update", "/cities/create-update/async",
+                                        "/cities/delete", "/cities/delete/async"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )

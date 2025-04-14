@@ -3,13 +3,14 @@ package org.burgas.ticketservice.mapper;
 import org.burgas.ticketservice.dto.PositionRequest;
 import org.burgas.ticketservice.dto.PositionResponse;
 import org.burgas.ticketservice.entity.Position;
+import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.DepartmentRepository;
 import org.burgas.ticketservice.repository.PositionRepository;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public final class PositionMapper {
+public final class PositionMapper implements MapperDataHandler {
 
     private final PositionRepository positionRepository;
     private final DepartmentRepository departmentRepository;
@@ -19,10 +20,6 @@ public final class PositionMapper {
         this.positionRepository = positionRepository;
         this.departmentRepository = departmentRepository;
         this.departmentMapper = departmentMapper;
-    }
-
-    private <T> T getData(final T first, final T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Mono<Position> toPosition(final Mono<PositionRequest> positionRequestMono) {

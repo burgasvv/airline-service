@@ -3,6 +3,7 @@ package org.burgas.ticketservice.mapper;
 import org.burgas.ticketservice.dto.IdentityRequest;
 import org.burgas.ticketservice.dto.IdentityResponse;
 import org.burgas.ticketservice.entity.Identity;
+import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.AuthorityRepository;
 import org.burgas.ticketservice.repository.IdentityRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Component
-public final class IdentityMapper {
+public final class IdentityMapper implements MapperDataHandler {
 
     private final IdentityRepository identityRepository;
     private final AuthorityRepository authorityRepository;
@@ -29,10 +30,6 @@ public final class IdentityMapper {
         this.authorityRepository = authorityRepository;
         this.authorityMapper = authorityMapper;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    private <T> T getData(T first, T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Mono<Identity> toIdentity(final Mono<IdentityRequest> identityRequestMono) {

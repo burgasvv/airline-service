@@ -17,8 +17,8 @@ import java.util.concurrent.CompletableFuture;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static org.burgas.excursionservice.message.AuthorityMessage.AUTHORITY_DELETED;
-import static org.burgas.excursionservice.message.AuthorityMessage.AUTHORITY_NOT_FOUND;
+import static org.burgas.excursionservice.message.AuthorityMessages.AUTHORITY_DELETED;
+import static org.burgas.excursionservice.message.AuthorityMessages.AUTHORITY_NOT_FOUND;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 

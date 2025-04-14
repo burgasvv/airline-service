@@ -4,6 +4,7 @@ import org.burgas.excursionservice.dto.AuthorityResponse;
 import org.burgas.excursionservice.dto.IdentityRequest;
 import org.burgas.excursionservice.dto.IdentityResponse;
 import org.burgas.excursionservice.entity.Identity;
+import org.burgas.excursionservice.handler.MapperDataHandler;
 import org.burgas.excursionservice.repository.AuthorityRepository;
 import org.burgas.excursionservice.repository.IdentityRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Component
-public final class IdentityMapper {
+public final class IdentityMapper implements MapperDataHandler {
 
     private final IdentityRepository identityRepository;
     private final AuthorityRepository authorityRepository;
@@ -29,10 +30,6 @@ public final class IdentityMapper {
         this.authorityRepository = authorityRepository;
         this.authorityMapper = authorityMapper;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    private <T> T getData(final T first, final T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Identity toIdentity(final IdentityRequest identityRequest) {

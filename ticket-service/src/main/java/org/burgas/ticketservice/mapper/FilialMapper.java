@@ -3,6 +3,7 @@ package org.burgas.ticketservice.mapper;
 import org.burgas.ticketservice.dto.FilialRequest;
 import org.burgas.ticketservice.dto.FilialResponse;
 import org.burgas.ticketservice.entity.Filial;
+import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.AddressRepository;
 import org.burgas.ticketservice.repository.FilialRepository;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import reactor.core.publisher.Mono;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Component
-public final class FilialMapper {
+public final class FilialMapper implements MapperDataHandler {
 
     private final FilialRepository filialRepository;
     private final AddressRepository addressRepository;
@@ -21,10 +22,6 @@ public final class FilialMapper {
         this.filialRepository = filialRepository;
         this.addressRepository = addressRepository;
         this.addressMapper = addressMapper;
-    }
-
-    private <T> T getData(final T first, final T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Mono<Filial> toFilial(final Mono<FilialRequest> filialRequestMono) {

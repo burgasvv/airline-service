@@ -3,6 +3,7 @@ package org.burgas.ticketservice.mapper;
 import org.burgas.ticketservice.dto.EmployeeRequest;
 import org.burgas.ticketservice.dto.EmployeeResponse;
 import org.burgas.ticketservice.entity.Employee;
+import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.*;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -10,7 +11,7 @@ import reactor.core.publisher.Mono;
 import static java.util.Objects.requireNonNull;
 
 @Component
-public final class EmployeeMapper {
+public final class EmployeeMapper implements MapperDataHandler {
 
     private final EmployeeRepository employeeRepository;
     private final IdentityRepository identityRepository;
@@ -36,10 +37,6 @@ public final class EmployeeMapper {
         this.positionMapper = positionMapper;
         this.filialDepartmentRepository = filialDepartmentRepository;
         this.filialDepartmentMapper = filialDepartmentMapper;
-    }
-
-    private <T> T getData(final T first, final T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Mono<Employee> toEmployee(final Mono<EmployeeRequest> employeeRequestMono) {

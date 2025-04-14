@@ -3,21 +3,18 @@ package org.burgas.ticketservice.mapper;
 import org.burgas.ticketservice.dto.AuthorityRequest;
 import org.burgas.ticketservice.dto.AuthorityResponse;
 import org.burgas.ticketservice.entity.Authority;
+import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.AuthorityRepository;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public final class AuthorityMapper {
+public final class AuthorityMapper implements MapperDataHandler {
 
     private final AuthorityRepository authorityRepository;
 
     public AuthorityMapper(AuthorityRepository authorityRepository) {
         this.authorityRepository = authorityRepository;
-    }
-
-    private <T> T getData(T first, T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Mono<Authority> toAuthority(final Mono<AuthorityRequest> authorityRequestMono) {

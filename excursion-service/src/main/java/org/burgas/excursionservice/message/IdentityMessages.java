@@ -1,6 +1,6 @@
 package org.burgas.excursionservice.message;
 
-public enum IdentityMessage {
+public enum IdentityMessages {
 
     IDENTITY_NOT_AUTHENTICATED("Пользователь не аутентифицирован"),
     IDENTITY_NOT_AUTHORIZED("Пользователь не авторизован"),
@@ -13,7 +13,7 @@ public enum IdentityMessage {
 
     private final String message;
 
-    IdentityMessage(String message) {
+    IdentityMessages(String message) {
         this.message = message;
     }
 

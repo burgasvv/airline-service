@@ -3,20 +3,17 @@ package org.burgas.excursionservice.mapper;
 import org.burgas.excursionservice.dto.AuthorityRequest;
 import org.burgas.excursionservice.dto.AuthorityResponse;
 import org.burgas.excursionservice.entity.Authority;
+import org.burgas.excursionservice.handler.MapperDataHandler;
 import org.burgas.excursionservice.repository.AuthorityRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class AuthorityMapper {
+public final class AuthorityMapper implements MapperDataHandler {
 
     private final AuthorityRepository authorityRepository;
 
     public AuthorityMapper(AuthorityRepository authorityRepository) {
         this.authorityRepository = authorityRepository;
-    }
-
-    private <T> T getData(final T first, final T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Authority toAuthority(final AuthorityRequest authorityRequest) {

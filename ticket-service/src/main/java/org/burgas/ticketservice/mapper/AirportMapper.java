@@ -3,13 +3,14 @@ package org.burgas.ticketservice.mapper;
 import org.burgas.ticketservice.dto.AirportRequest;
 import org.burgas.ticketservice.dto.AirportResponse;
 import org.burgas.ticketservice.entity.Airport;
+import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.AddressRepository;
 import org.burgas.ticketservice.repository.AirportRepository;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public final class AirportMapper {
+public final class AirportMapper implements MapperDataHandler {
 
     private final AirportRepository airportRepository;
     private final AddressRepository addressRepository;
@@ -19,10 +20,6 @@ public final class AirportMapper {
         this.airportRepository = airportRepository;
         this.addressRepository = addressRepository;
         this.addressMapper = addressMapper;
-    }
-
-    private <T> T getData(final T first, final T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Mono<Airport> toAirport(final Mono<AirportRequest> airportRequestMono) {

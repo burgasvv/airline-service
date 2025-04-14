@@ -3,13 +3,14 @@ package org.burgas.ticketservice.mapper;
 import org.burgas.ticketservice.dto.AddressRequest;
 import org.burgas.ticketservice.dto.AddressResponse;
 import org.burgas.ticketservice.entity.Address;
+import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.AddressRepository;
 import org.burgas.ticketservice.repository.CityRepository;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public final class AddressMapper {
+public final class AddressMapper implements MapperDataHandler {
 
     private final AddressRepository addressRepository;
     private final CityRepository cityRepository;
@@ -19,10 +20,6 @@ public final class AddressMapper {
         this.addressRepository = addressRepository;
         this.cityRepository = cityRepository;
         this.cityMapper = cityMapper;
-    }
-
-    private <T> T getData(final T first, final T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Mono<Address> toAddress(final Mono<AddressRequest> addressRequestMono) {

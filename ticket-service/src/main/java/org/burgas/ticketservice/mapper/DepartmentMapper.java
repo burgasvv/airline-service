@@ -3,21 +3,18 @@ package org.burgas.ticketservice.mapper;
 import org.burgas.ticketservice.dto.DepartmentRequest;
 import org.burgas.ticketservice.dto.DepartmentResponse;
 import org.burgas.ticketservice.entity.Department;
+import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.DepartmentRepository;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public final class DepartmentMapper {
+public final class DepartmentMapper implements MapperDataHandler {
 
     private final DepartmentRepository departmentRepository;
 
     public DepartmentMapper(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
-    }
-
-    private <T> T getData(final T first, final T second) {
-        return first == null || first == "" ? second : first;
     }
 
     public Mono<Department> toDepartment(final Mono<DepartmentRequest> departmentRequestMono) {
