@@ -133,3 +133,13 @@ Content-Type: application/json
 DELETE /identities/delete?identityId=3
 Host: localhost:9010
 Authorization: Basic burgasvv@gmail.com cg3audio
+
+###
+PUT /identities/control?identityId=2&enable=false
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+
+###
+PUT /identities/control/async?identityId=2&enable=true
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin

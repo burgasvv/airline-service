@@ -6,6 +6,7 @@ import org.burgas.excursionservice.filter.IdentityFilterFunction;
 import org.burgas.excursionservice.service.IdentityService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.ServerResponse;
@@ -13,11 +14,13 @@ import org.springframework.web.servlet.function.ServerResponse;
 import java.io.IOException;
 
 import static java.net.URI.create;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 @Configuration
 public class IdentityRouter {
@@ -118,6 +121,24 @@ public class IdentityRouter {
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.deleteByIdAsync(request.param("identityId").orElse(null)).get())
+                )
+                .PUT(
+                        "/identities/control", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(identityService.accountControl(
+                                        request.param("identityId").orElse(null),
+                                        request.param("enable").orElse(null)
+                                ))
+                )
+                .PUT(
+                        "/identities/control/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(identityService.accountControlAsync(
+                                        request.param("identityId").orElse(null),
+                                        request.param("enable").orElse(null)
+                                ))
                 )
                 .build();
     }

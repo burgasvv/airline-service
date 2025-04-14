@@ -45,6 +45,11 @@ Host: localhost:9000
 Authorization: Basic admin@gmail.com admin
 
 ###
+GET /identities/sse
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+
+###
 GET /identities/by-id?identityId=3
 Host: localhost:9000
 Authorization: Basic user@gmail.com user

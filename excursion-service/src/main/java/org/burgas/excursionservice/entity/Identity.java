@@ -3,12 +3,16 @@ package org.burgas.excursionservice.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import org.burgas.excursionservice.exception.PhoneNotMatchesException;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static org.burgas.excursionservice.message.IdentityMessage.PHONE_NOT_MATCHES;
 
 @Entity
 @SuppressWarnings(value = "unused")
@@ -24,6 +28,11 @@ public final class Identity implements Serializable {
     private LocalDateTime registeredAt;
     private Boolean enabled;
     private Long authorityId;
+
+    public Matcher validatePhone(String phone) {
+        Pattern compile = Pattern.compile("^\\d{10}$");
+        return compile.matcher(phone);
+    }
 
     public Long getId() {
         return id;
@@ -62,7 +71,14 @@ public final class Identity implements Serializable {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        Matcher matcher = this.validatePhone(phone);
+        if (matcher.matches()) {
+            String[] arr = phone.split("");
+            phone = "(" + arr[0]+arr[1]+arr[2] + ")-" + arr[3]+arr[4]+arr[5] + "-" + arr[6]+arr[7]+arr[8]+arr[9];
+            this.phone = phone;
+        } else {
+            throw new PhoneNotMatchesException(PHONE_NOT_MATCHES.getMessage());
+        }
     }
 
     public LocalDateTime getRegisteredAt() {
@@ -151,8 +167,16 @@ public final class Identity implements Serializable {
         }
 
         public Builder phone(String phone) {
-            this.identity.phone = phone;
-            return this;
+            Matcher matcher = this.identity.validatePhone(phone);
+            if (matcher.matches()) {
+                String[] arr = phone.split("");
+                phone = "(" + arr[0]+arr[1]+arr[2] + ")-" + arr[3]+arr[4]+arr[5] + "-" + arr[6]+arr[7]+arr[8]+arr[9];
+                this.identity.phone = phone;
+                return this;
+
+            } else {
+                throw new PhoneNotMatchesException(PHONE_NOT_MATCHES.getMessage());
+            }
         }
 
         public Builder registeredAt(LocalDateTime registeredAt) {

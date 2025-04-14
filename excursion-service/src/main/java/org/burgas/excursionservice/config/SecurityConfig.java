@@ -56,7 +56,8 @@ public class SecurityConfig {
                                         "/authorities/create-update", "/authorities/create-update/async",
                                         "/authorities/delete", "/authorities/delete/async",
 
-                                        "/identities", "/identities/sse", "/identities/async"
+                                        "/identities", "/identities/sse", "/identities/async",
+                                        "/identities/control", "/identities/control/async"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )

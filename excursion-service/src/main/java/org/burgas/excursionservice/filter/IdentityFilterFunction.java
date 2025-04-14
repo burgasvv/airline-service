@@ -3,6 +3,7 @@ package org.burgas.excursionservice.filter;
 import org.burgas.excursionservice.dto.IdentityResponse;
 import org.burgas.excursionservice.exception.IdentityNotAuthenticatedException;
 import org.burgas.excursionservice.exception.IdentityNotAuthorizedException;
+import org.burgas.excursionservice.exception.IdentitySelfControlException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,8 +13,7 @@ import org.springframework.web.servlet.function.HandlerFunction;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
 
-import static org.burgas.excursionservice.message.IdentityMessage.IDENTITY_NOT_AUTHENTICATED;
-import static org.burgas.excursionservice.message.IdentityMessage.IDENTITY_NOT_AUTHORIZED;
+import static org.burgas.excursionservice.message.IdentityMessage.*;
 
 @Component
 public class IdentityFilterFunction implements HandlerFilterFunction<ServerResponse, ServerResponse> {
@@ -44,8 +44,26 @@ public class IdentityFilterFunction implements HandlerFilterFunction<ServerRespo
                 throw new IdentityNotAuthenticatedException(IDENTITY_NOT_AUTHENTICATED.getMessage());
             }
 
-        } else {
-            return next.handle(request);
+        } else if (request.path().equals("/identities/control") || request.path().equals("/identities/control/async")) {
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String identityIdParam = request.param("identityId").orElse(null);
+
+            if (authentication.isAuthenticated()) {
+                Long identityId = Long.parseLong(identityIdParam == null || identityIdParam.isBlank() ? "0" : identityIdParam);
+                IdentityResponse identityResponse = (IdentityResponse) authentication.getPrincipal();
+
+                if (!identityResponse.getId().equals(identityId)) {
+                    return next.handle(request);
+
+                } else {
+                    throw new IdentitySelfControlException(IDENTITY_SELF_CONTROL.getMessage());
+                }
+
+            } else {
+                throw new IdentityNotAuthenticatedException(IDENTITY_NOT_AUTHENTICATED.getMessage());
+            }
         }
+        return next.handle(request);
     }
 }
