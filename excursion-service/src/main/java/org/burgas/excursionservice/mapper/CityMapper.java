@@ -58,6 +58,7 @@ public final class CityMapper implements MapperDataHandler {
                                 .orElseGet(CountryResponse::new)
                 )
                 .capital(city.getCapital())
+                .imageId(city.getImageId())
                 .build();
     }
 }

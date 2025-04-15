@@ -1,7 +1,10 @@
 package org.burgas.excursionservice.service;
 
+import jakarta.servlet.http.Part;
 import org.burgas.excursionservice.dto.CountryRequest;
 import org.burgas.excursionservice.dto.CountryResponse;
+import org.burgas.excursionservice.entity.Image;
+import org.burgas.excursionservice.exception.CountryImageNotFoundException;
 import org.burgas.excursionservice.exception.CountryNotFoundException;
 import org.burgas.excursionservice.mapper.CountryMapper;
 import org.burgas.excursionservice.repository.CountryRepository;
@@ -13,12 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
+import static java.lang.String.format;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.excursionservice.log.CountryLogs.*;
-import static org.burgas.excursionservice.message.CountryMessages.COUNTRY_DELETED;
-import static org.burgas.excursionservice.message.CountryMessages.COUNTRY_NOT_FOUND;
+import static org.burgas.excursionservice.message.CountryMessages.*;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -28,12 +33,15 @@ import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 public class CountryService {
 
     private static final Logger log = LoggerFactory.getLogger(CountryService.class);
+
     private final CountryRepository countryRepository;
     private final CountryMapper countryMapper;
+    private final ImageService imageService;
 
-    public CountryService(CountryRepository countryRepository, CountryMapper countryMapper) {
+    public CountryService(CountryRepository countryRepository, CountryMapper countryMapper, ImageService imageService) {
         this.countryRepository = countryRepository;
         this.countryMapper = countryMapper;
+        this.imageService = imageService;
     }
 
     public List<CountryResponse> findAll() {
@@ -128,6 +136,140 @@ public class CountryService {
                                     this.countryRepository.deleteById(foundCountry.getId());
                                     return COUNTRY_DELETED.getMessage();
                                 }
+                        )
+                                .orElseThrow(() -> new CountryNotFoundException(COUNTRY_NOT_FOUND.getMessage()))
+                );
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String uploadImage(final String countryId, final Part part) {
+        return this.countryRepository.findById(Long.valueOf(countryId))
+                .map(
+                        country -> {
+                            Image image = this.imageService.uploadImage(part);
+                            country.setImageId(image.getId());
+                            this.countryRepository.save(country);
+                            return format(IMAGE_UPLOADED.getMessage());
+                        }
+                )
+                .orElseThrow(() -> new CountryNotFoundException(COUNTRY_NOT_FOUND.getMessage()));
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> uploadImageAsync(final String countryId, final Part part) {
+        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId)))
+                .thenApplyAsync(
+                        country -> country.map(
+                                foundCountry -> {
+                                    try {
+                                        Image image = this.imageService.uploadImageAsync(part).get();
+                                        foundCountry.setImageId(image.getId());
+                                        this.countryRepository.save(foundCountry);
+                                        return format(IMAGE_UPLOADED_ASYNC.getMessage(), image.getId());
+
+                                    } catch (InterruptedException | ExecutionException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                        )
+                                .orElseThrow(() -> new CountryNotFoundException(COUNTRY_NOT_FOUND.getMessage()))
+                );
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String changeImage(final String countryId, final Part part) {
+        return this.countryRepository.findById(Long.valueOf(countryId))
+                .map(
+                        country -> of(country.getImageId())
+                                .map(
+                                        imageId -> {
+                                            Image image = this.imageService.changeImage(String.valueOf(imageId), part);
+                                            return format(IMAGE_CHANGED.getMessage(), image.getId());
+                                        }
+                                )
+                                .orElseThrow(() -> new CountryImageNotFoundException(COUNTRY_IMAGE_NOT_FOUND.getMessage()))
+                )
+                .orElseThrow(() -> new CountryNotFoundException(COUNTRY_NOT_FOUND.getMessage()));
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> changeImageAsync(final String countryId, final Part part) {
+        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId)))
+                .thenApplyAsync(
+                        country -> country.map(
+                                        foundCountry -> of(foundCountry.getImageId())
+                                                .map(
+                                                        imageId -> {
+                                                            try {
+                                                                Image image = this.imageService.changeImageAsync(String.valueOf(imageId), part).get();
+                                                                return format(IMAGE_CHANGED_ASYNC.getMessage(), image.getId());
+
+                                                            } catch (InterruptedException | ExecutionException e) {
+                                                                throw new RuntimeException(e);
+                                                            }
+                                                        }
+                                                )
+                                                .orElseThrow(() -> new CountryImageNotFoundException(COUNTRY_IMAGE_NOT_FOUND.getMessage()))
+                                )
+                                .orElseThrow(() -> new CountryNotFoundException(COUNTRY_NOT_FOUND.getMessage()))
+                );
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String deleteImage(final String countryId) {
+        return this.countryRepository.findById(Long.valueOf(countryId))
+                .map(
+                        country -> of(country.getImageId())
+                                .map(
+                                        imageId -> {
+                                            this.imageService.deleteImage(String.valueOf(imageId));
+                                            return format(IMAGE_DELETED.getMessage(), imageId);
+                                        }
+                                )
+                                .orElseThrow(() -> new CountryImageNotFoundException(COUNTRY_IMAGE_NOT_FOUND.getMessage()))
+                )
+                .orElseThrow(() -> new CountryNotFoundException(COUNTRY_NOT_FOUND.getMessage()));
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> deleteImageAsync(final String countryId) {
+        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId)))
+                .thenApplyAsync(
+                        country -> country.map(
+                                        foundCountry -> of(foundCountry.getImageId())
+                                                .map(
+                                                        imageId -> {
+                                                            try {
+                                                                this.imageService.deleteImageAsync(String.valueOf(imageId)).get();
+                                                                return format(IMAGE_DELETED_ASYNC.getMessage(), imageId);
+
+                                                            } catch (InterruptedException | ExecutionException e) {
+                                                                throw new RuntimeException(e);
+                                                            }
+                                                        }
+                                                )
+                                                .orElseThrow(() -> new CountryImageNotFoundException(COUNTRY_IMAGE_NOT_FOUND.getMessage()))
                         )
                                 .orElseThrow(() -> new CountryNotFoundException(COUNTRY_NOT_FOUND.getMessage()))
                 );

@@ -7,6 +7,7 @@ public final class CountryResponse {
     private String name;
     private String description;
     private Long population;
+    private Long imageId;
 
     public Long getId() {
         return id;
@@ -22,6 +23,10 @@ public final class CountryResponse {
 
     public Long getPopulation() {
         return population;
+    }
+
+    public Long getImageId() {
+        return imageId;
     }
 
     public static Builder builder() {
@@ -53,6 +58,11 @@ public final class CountryResponse {
 
         public Builder population(Long population) {
             this.countryResponse.population = population;
+            return this;
+        }
+
+        public Builder imageId(Long imageId) {
+            this.countryResponse.imageId = imageId;
             return this;
         }
 

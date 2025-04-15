@@ -101,6 +101,62 @@ public class CountryRouter {
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(countryService.deleteByIdAsync(request.param("countryId").orElse(null)).get())
                 )
+                .POST(
+                        "/countries/upload-image", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        countryService.uploadImage(
+                                                request.param("countryId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .POST(
+                        "/countries/upload-image/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        countryService.uploadImageAsync(
+                                                request.param("countryId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .PUT(
+                        "/countries/change-image", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        countryService.changeImage(
+                                                request.param("countryId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .PUT(
+                        "/countries/change-image/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        countryService.changeImageAsync(
+                                                request.param("countryId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .DELETE(
+                        "/countries/delete-image", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(countryService.deleteImage(request.param("countryId").orElse(null)))
+                )
+                .DELETE(
+                        "/countries/delete-image/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(countryService.deleteImageAsync(request.param("countryId").orElse(null)))
+                )
                 .build();
     }
 }

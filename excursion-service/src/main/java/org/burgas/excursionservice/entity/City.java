@@ -20,6 +20,7 @@ public final class City {
     private Long population;
     private Long countryId;
     private Boolean capital;
+    private Long imageId;
 
     public Long getId() {
         return id;
@@ -69,18 +70,26 @@ public final class City {
         this.capital = capital;
     }
 
+    public Long getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         City city = (City) o;
         return Objects.equals(id, city.id) && Objects.equals(name, city.name) &&
                Objects.equals(description, city.description) && Objects.equals(population, city.population) &&
-               Objects.equals(countryId, city.countryId) && Objects.equals(capital, city.capital);
+               Objects.equals(countryId, city.countryId) && Objects.equals(capital, city.capital) && Objects.equals(imageId, city.imageId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, population, countryId, capital);
+        return Objects.hash(id, name, description, population, countryId, capital, imageId);
     }
 
     @Override
@@ -92,6 +101,7 @@ public final class City {
                ", population=" + population +
                ", countryId=" + countryId +
                ", capital=" + capital +
+               ", imageId=" + imageId +
                '}';
     }
 
@@ -134,6 +144,11 @@ public final class City {
 
         public Builder capital(Boolean capital) {
             this.city.capital = capital;
+            return this;
+        }
+
+        public Builder imageId(Long imageId) {
+            this.city.imageId = imageId;
             return this;
         }
 

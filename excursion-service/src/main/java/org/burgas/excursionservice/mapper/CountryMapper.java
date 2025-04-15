@@ -42,6 +42,7 @@ public final class CountryMapper implements MapperDataHandler {
                 .name(country.getName())
                 .description(country.getDescription())
                 .population(country.getPopulation())
+                .imageId(country.getImageId())
                 .build();
     }
 }

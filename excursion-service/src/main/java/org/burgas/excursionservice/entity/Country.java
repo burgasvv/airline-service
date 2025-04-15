@@ -18,6 +18,7 @@ public final class Country {
     private String name;
     private String description;
     private Long population;
+    private Long imageId;
 
     public Long getId() {
         return id;
@@ -51,17 +52,26 @@ public final class Country {
         this.population = population;
     }
 
+    public Long getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Country country = (Country) o;
         return Objects.equals(id, country.id) && Objects.equals(name, country.name) &&
-               Objects.equals(description, country.description) && Objects.equals(population, country.population);
+               Objects.equals(description, country.description) && Objects.equals(population, country.population) &&
+               Objects.equals(imageId, country.imageId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, population);
+        return Objects.hash(id, name, description, population, imageId);
     }
 
     @Override
@@ -71,6 +81,7 @@ public final class Country {
                ", name='" + name + '\'' +
                ", description='" + description + '\'' +
                ", population=" + population +
+               ", imageId=" + imageId +
                '}';
     }
 
@@ -103,6 +114,11 @@ public final class Country {
 
         public Builder population(Long population) {
             this.country.population = population;
+            return this;
+        }
+
+        public Builder imageId(Long imageId) {
+            this.country.imageId = imageId;
             return this;
         }
 

@@ -9,6 +9,7 @@ public final class CityResponse {
     private Long population;
     private CountryResponse country;
     private Boolean capital;
+    private Long imageId;
 
     public Long getId() {
         return id;
@@ -34,6 +35,10 @@ public final class CityResponse {
         return capital;
     }
 
+    public Long getImageId() {
+        return imageId;
+    }
+
     @Override
     public String toString() {
         return "CityResponse{" +
@@ -43,6 +48,7 @@ public final class CityResponse {
                ", population=" + population +
                ", country=" + country +
                ", capital=" + capital +
+               ", imageId=" + imageId +
                '}';
     }
 
@@ -85,6 +91,11 @@ public final class CityResponse {
 
         public Builder capital(Boolean capital) {
             this.cityResponse.capital = capital;
+            return this;
+        }
+
+        public Builder imageId(Long imageId) {
+            this.cityResponse.imageId = imageId;
             return this;
         }
 

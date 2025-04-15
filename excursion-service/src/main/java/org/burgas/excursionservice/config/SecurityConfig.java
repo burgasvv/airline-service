@@ -72,8 +72,14 @@ public class SecurityConfig {
 
                                         "/countries/create-update", "/countries/create-update/async",
                                         "/countries/delete", "/countries/delete/async",
+                                        "/countries/upload-image", "/countries/upload-image/async",
+                                        "/countries/change-image", "/countries/change-image/async",
+                                        "/countries/delete-image", "/countries/delete-image/async",
 
                                         "/cities/create-update", "/cities/create-update/async",
+                                        "/cities/delete", "/cities/delete/async",
+                                        "/cities/upload-image", "/cities/upload-image/async",
+                                        "/cities/change-image", "/cities/change-image/async",
                                         "/cities/delete", "/cities/delete/async",
 
                                         "/images/upload", "/images/upload/async", "/images/change", "/images/change/async",

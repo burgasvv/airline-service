@@ -101,6 +101,62 @@ public class CityRouter {
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(cityService.deleteByIdAsync(request.param("cityId").orElse(null)).get())
                 )
+                .POST(
+                        "/cities/upload-image", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        cityService.uploadImage(
+                                                request.param("cityId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .POST(
+                        "/cities/upload-image/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        cityService.uploadImageAsync(
+                                                request.param("cityId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .PUT(
+                        "/cities/change-image", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        cityService.changeImage(
+                                                request.param("cityId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .PUT(
+                        "/cities/change-image/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        cityService.changeImageAsync(
+                                                request.param("cityId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .DELETE(
+                        "/cities/delete", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(cityService.deleteImage(request.param("cityId").orElse(null)))
+                )
+                .DELETE(
+                        "/cities/delete/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(cityService.deleteImageAsync(request.param("cityId").orElse(null)))
+                )
                 .build();
     }
 }
