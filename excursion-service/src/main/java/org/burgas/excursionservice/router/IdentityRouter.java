@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.function.RouterFunction;
-import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.ServerResponse;
 
 import java.io.IOException;
@@ -21,13 +20,14 @@ import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
+import static org.springframework.web.servlet.function.RouterFunctions.route;
 
 @Configuration
 public class IdentityRouter {
 
     @Bean
     public RouterFunction<ServerResponse> identityRoutes(final IdentityService identityService) {
-        return RouterFunctions.route()
+        return route()
                 .filter(new IdentityFilterFunction())
                 .GET(
                         "/identities", _ -> ServerResponse
@@ -139,6 +139,63 @@ public class IdentityRouter {
                                         request.param("identityId").orElse(null),
                                         request.param("enable").orElse(null)
                                 ))
+                )
+                .POST(
+                        "/identities/upload-image", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        identityService.uploadImage(
+                                                request.param("identityId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .POST(
+                        "/identities/upload-image/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        identityService.uploadImageAsync(
+                                                request.param("identityId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                                .get()
+                                )
+                )
+                .PUT(
+                        "/identities/change-image", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        identityService.changeImage(
+                                                request.param("identityId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .PUT(
+                        "/identities/change-image/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        identityService.changeImageAsync(
+                                                request.param("identityId").orElse(null),
+                                                request.multipartData().asSingleValueMap().get("file")
+                                        )
+                                )
+                )
+                .DELETE(
+                        "/identities/delete-image", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(identityService.deleteImage(request.param("identityId").orElse(null)))
+                )
+                .DELETE(
+                        "/identities/delete-image/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(identityService.deleteImageAsync(request.param("identityId").orElse(null)).get())
                 )
                 .build();
     }

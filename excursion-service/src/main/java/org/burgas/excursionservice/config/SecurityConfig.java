@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +30,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(new UrlBasedCorsConfigurationSource()))
                 .authenticationManager(authenticationManager())
                 .httpBasic(httpBasic -> httpBasic.securityContextRepository(
                         new HttpSessionSecurityContextRepository()
@@ -45,14 +45,19 @@ public class SecurityConfig {
                                         "/countries/by-id", "/countries/by-id/async",
 
                                         "/cities", "/cities/async", "/cities/sse",
-                                        "/cities/by-id", "/cities/by-id/async"
+                                        "/cities/by-id", "/cities/by-id/async",
+
+                                        "/images/by-id", "/images/by-id/async", "/images/by-id/data", "/images/by-id/data/async"
                                 )
                                 .permitAll()
 
                                 .requestMatchers(
                                         "/identities/by-id", "/identities/by-id/async",
                                         "/identities/update", "/identities/update/async",
-                                        "/identities/delete", "/identities/delete/async"
+                                        "/identities/delete", "/identities/delete/async",
+                                        "/identities/upload-image", "/identities/upload-image/async",
+                                        "/identities/change-image", "/identities/change-image/async",
+                                        "/identities/delete-image", "/identities/delete-image/async"
                                 )
                                 .hasAnyAuthority("ADMIN", "USER")
 
@@ -69,7 +74,10 @@ public class SecurityConfig {
                                         "/countries/delete", "/countries/delete/async",
 
                                         "/cities/create-update", "/cities/create-update/async",
-                                        "/cities/delete", "/cities/delete/async"
+                                        "/cities/delete", "/cities/delete/async",
+
+                                        "/images/upload", "/images/upload/async", "/images/change", "/images/change/async",
+                                        "/images/delete", "/images/delete/async"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )

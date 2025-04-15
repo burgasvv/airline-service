@@ -17,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.burgas.excursionservice.log.AuthorityLogs.*;
 import static org.burgas.excursionservice.message.AuthorityMessages.AUTHORITY_DELETED;
 import static org.burgas.excursionservice.message.AuthorityMessages.AUTHORITY_NOT_FOUND;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -38,21 +39,21 @@ public class AuthorityService {
     public List<AuthorityResponse> findAll() {
         return this.authorityRepository.findAll()
                 .stream()
-                .peek(authority -> log.info("Authority was found: {}", authority))
+                .peek(authority -> log.info(AUTHORITY_FOUND_ALL.getLogMessage(), authority))
                 .map(this.authorityMapper::toAuthorityResponse)
-                .peek(authorityResponse -> log.info("Transform to authority response: {}", authorityResponse))
+                .peek(authorityResponse -> log.info(TRANSFORM_TO_AUTHORITY_RESPONSE.getLogMessage(), authorityResponse))
                 .toList();
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     public CompletableFuture<List<AuthorityResponse>> findAllAsync() {
         return supplyAsync(this.authorityRepository::findAll)
                 .thenApplyAsync(
                         authorities -> authorities
                                 .stream()
-                                .peek(authority -> log.info("Find authority async: {}", authority))
+                                .peek(authority -> log.info(AUTHORITY_FOUND_ASYNC.getLogMessage(), authority))
                                 .map(this.authorityMapper::toAuthorityResponse)
-                                .peek(authorityResponse -> log.info("Transform to authority response async: {}", authorityResponse))
+                                .peek(authorityResponse -> log.info(TRANSFORM_TO_AUTHORITY_RESPONSE_ASYNC.getLogMessage(), authorityResponse))
                                 .toList()
                 );
     }
@@ -60,13 +61,13 @@ public class AuthorityService {
     public AuthorityResponse findById(final String authorityId) {
         return this.authorityRepository.findById(Long.valueOf(authorityId))
                 .stream()
-                .peek(authority -> log.info("Authority was found by id: {}", authority))
+                .peek(authority -> log.info(AUTHORITY_FOUND_BY_ID.getLogMessage(), authority))
                 .findFirst()
                 .map(this.authorityMapper::toAuthorityResponse)
                 .orElseGet(AuthorityResponse::new);
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     public CompletableFuture<AuthorityResponse> findByIdAsync(final String authorityId) {
         return supplyAsync(() -> this.authorityRepository.findById(Long.valueOf(authorityId)))
                 .thenApplyAsync(authority -> authority.map(this.authorityMapper::toAuthorityResponse))
@@ -84,7 +85,7 @@ public class AuthorityService {
                 .orElseGet(AuthorityResponse::new);
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     @Transactional(
             isolation = Isolation.SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
@@ -104,14 +105,14 @@ public class AuthorityService {
                 .map(
                         authority -> {
                             this.authorityRepository.deleteById(authority.getId());
-                            log.info("Authority was deleted by id: {}", authority);
+                            log.info(AUTHORITY_DELETED_BY_ID.getLogMessage(), authority);
                             return AUTHORITY_DELETED.getMessage();
                         }
                 )
                 .orElseThrow(() -> new AuthorityNotFoundException(AUTHORITY_NOT_FOUND.getMessage()));
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     @Transactional(
             isolation = Isolation.SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
@@ -123,7 +124,7 @@ public class AuthorityService {
                                 .map(
                                         checkAuthority -> {
                                             this.authorityRepository.deleteById(checkAuthority.getId());
-                                            log.info("Authority was deleted by id async: {}", authority);
+                                            log.info(AUTHORITY_DELETED_BY_ID_ASYNC.getLogMessage(), authority);
                                             return AUTHORITY_DELETED.getMessage();
                                         }
                                 )

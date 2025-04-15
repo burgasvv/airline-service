@@ -28,6 +28,7 @@ public final class Identity implements Serializable {
     private LocalDateTime registeredAt;
     private Boolean enabled;
     private Long authorityId;
+    private Long imageId;
 
     public Matcher validatePhone(String phone) {
         Pattern compile = Pattern.compile("^\\d{10}$");
@@ -105,6 +106,14 @@ public final class Identity implements Serializable {
         this.authorityId = authorityId;
     }
 
+    public Long getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -112,12 +121,13 @@ public final class Identity implements Serializable {
         return Objects.equals(id, identity.id) && Objects.equals(username, identity.username) &&
                Objects.equals(password, identity.password) && Objects.equals(email, identity.email) &&
                Objects.equals(phone, identity.phone) && Objects.equals(registeredAt, identity.registeredAt) &&
-               Objects.equals(enabled, identity.enabled) && Objects.equals(authorityId, identity.authorityId);
+               Objects.equals(enabled, identity.enabled) && Objects.equals(authorityId, identity.authorityId) &&
+               Objects.equals(imageId, identity.imageId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, email, phone, registeredAt, enabled, authorityId);
+        return Objects.hash(id, username, password, email, phone, registeredAt, enabled, authorityId, imageId);
     }
 
     @Override
@@ -131,6 +141,7 @@ public final class Identity implements Serializable {
                ", registeredAt=" + registeredAt +
                ", enabled=" + enabled +
                ", authorityId=" + authorityId +
+               ", imageId=" + imageId +
                '}';
     }
 
@@ -191,6 +202,11 @@ public final class Identity implements Serializable {
 
         public Builder authorityId(Long authorityId) {
             this.identity.authorityId = authorityId;
+            return this;
+        }
+
+        public Builder imageId(Long imageId) {
+            this.identity.imageId = imageId;
             return this;
         }
 

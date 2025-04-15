@@ -39,17 +39,17 @@ public class CityService {
     public List<CityResponse> findAll() {
         return this.cityRepository.findAll()
                 .stream()
-                .peek(city -> log.info(CITY_FOUND_OF_ALL.getMessage(), city))
+                .peek(city -> log.info(CITY_FOUND_OF_ALL.getLogMessage(), city))
                 .map(this.cityMapper::toCityResponse)
                 .toList();
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     public CompletableFuture<List<CityResponse>> findAllAsync() {
         return supplyAsync(this.cityRepository::findAll)
                 .thenApplyAsync(
                         cities -> cities.stream()
-                                .peek(city -> log.info(CITY_FOUND_OF_ALL_ASYNC.getMessage(), city))
+                                .peek(city -> log.info(CITY_FOUND_OF_ALL_ASYNC.getLogMessage(), city))
                                 .map(this.cityMapper::toCityResponse)
                                 .toList()
                 );
@@ -58,18 +58,18 @@ public class CityService {
     public CityResponse findById(final String cityId) {
         return this.cityRepository.findById(Long.valueOf(cityId))
                 .stream()
-                .peek(city -> log.info(CITY_FOUND_BY_ID.getMessage(), city))
+                .peek(city -> log.info(CITY_FOUND_BY_ID.getLogMessage(), city))
                 .map(this.cityMapper::toCityResponse)
                 .findFirst()
                 .orElseGet(CityResponse::new);
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     public CompletableFuture<CityResponse> findByIdAsync(final String cityId) {
         return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId)))
                 .thenApplyAsync(
                         city -> city.stream()
-                                .peek(foundCity -> log.info(CITY_FOUND_BY_ID_ASYNC.getMessage(), foundCity))
+                                .peek(foundCity -> log.info(CITY_FOUND_BY_ID_ASYNC.getLogMessage(), foundCity))
                                 .map(this.cityMapper::toCityResponse)
                                 .findFirst()
                                 .orElseGet(CityResponse::new)
@@ -87,7 +87,7 @@ public class CityService {
                 .orElseGet(CityResponse::new);
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
@@ -106,7 +106,7 @@ public class CityService {
         return this.cityRepository.findById(Long.valueOf(cityId))
                 .map(
                         city -> {
-                            log.info(CITY_FOUND_BEFORE_DELETING.getMessage(), city);
+                            log.info(CITY_FOUND_BEFORE_DELETING.getLogMessage(), city);
                             this.cityRepository.deleteById(city.getId());
                             return CITY_DELETED.getMessage();
                         }
@@ -114,7 +114,7 @@ public class CityService {
                 .orElseThrow(() -> new CityNotFoundException(CITY_NOT_FOUND.getMessage()));
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
@@ -124,7 +124,7 @@ public class CityService {
                 .thenApplyAsync(
                         city -> city.map(
                                 foundCity -> {
-                                    log.info(CITY_FOUND_BEFORE_DELETING_ASYNC.getMessage(), foundCity);
+                                    log.info(CITY_FOUND_BEFORE_DELETING_ASYNC.getLogMessage(), foundCity);
                                     this.cityRepository.deleteById(foundCity.getId());
                                     return CITY_DELETED.getMessage();
                                 }

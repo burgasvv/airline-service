@@ -18,6 +18,7 @@ public final class IdentityResponse implements UserDetails {
     private String registeredAt;
     private Boolean enabled;
     private AuthorityResponse authority;
+    private Long imageId;
 
     public Long getId() {
         return id;
@@ -79,6 +80,14 @@ public final class IdentityResponse implements UserDetails {
         this.authority = authority;
     }
 
+    public Long getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(
@@ -127,6 +136,7 @@ public final class IdentityResponse implements UserDetails {
                ", registeredAt='" + registeredAt + '\'' +
                ", enabled=" + enabled +
                ", authority=" + authority +
+               ", imageId=" + imageId +
                '}';
     }
 
@@ -179,6 +189,11 @@ public final class IdentityResponse implements UserDetails {
 
         public Builder authority(AuthorityResponse authority) {
             this.identityResponse.authority = authority;
+            return this;
+        }
+
+        public Builder imageId(Long imageId) {
+            this.identityResponse.imageId = imageId;
             return this;
         }
 

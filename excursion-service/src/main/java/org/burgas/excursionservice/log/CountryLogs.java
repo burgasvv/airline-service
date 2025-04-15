@@ -8,13 +8,13 @@ public enum CountryLogs {
     COUNTRY_FOUND_BY_ID_ASYNC("Country was found by id async: {}"),
     COUNTRY_FOUND_BEFORE_DELETING("Country was found before deleting: {}");
 
-    private final String message;
+    private final String logMessage;
 
-    CountryLogs(String message) {
-        this.message = message;
+    CountryLogs(String logMessage) {
+        this.logMessage = logMessage;
     }
 
-    public String getMessage() {
-        return message;
+    public String getLogMessage() {
+        return logMessage;
     }
 }

@@ -9,13 +9,13 @@ public enum CityLogs {
     CITY_FOUND_BEFORE_DELETING("City was found before deleting: {}"),
     CITY_FOUND_BEFORE_DELETING_ASYNC("City was found before deleting: {}");
 
-    private final String message;
+    private final String logMessage;
 
-    CityLogs(String message) {
-        this.message = message;
+    CityLogs(String logMessage) {
+        this.logMessage = logMessage;
     }
 
-    public String getMessage() {
-        return message;
+    public String getLogMessage() {
+        return logMessage;
     }
 }

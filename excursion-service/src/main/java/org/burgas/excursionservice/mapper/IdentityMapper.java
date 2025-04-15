@@ -75,6 +75,7 @@ public final class IdentityMapper implements MapperDataHandler {
                                 .map(this.authorityMapper::toAuthorityResponse)
                                 .orElseGet(AuthorityResponse::new)
                 )
+                .imageId(identity.getImageId())
                 .build();
     }
 }

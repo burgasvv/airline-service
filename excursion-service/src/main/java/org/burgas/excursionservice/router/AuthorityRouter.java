@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.function.RouterFunction;
-import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.ServerResponse;
 
 import java.io.IOException;
@@ -19,13 +18,14 @@ import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
+import static org.springframework.web.servlet.function.RouterFunctions.route;
 
 @Configuration
 public class AuthorityRouter {
 
     @Bean
     public RouterFunction<ServerResponse> authorityRoutes(final AuthorityService authorityService) {
-        return RouterFunctions.route()
+        return route()
                 .GET(
                         "/authorities", _ -> ServerResponse
                                 .status(OK)

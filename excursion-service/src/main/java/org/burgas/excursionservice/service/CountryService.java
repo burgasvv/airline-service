@@ -39,17 +39,17 @@ public class CountryService {
     public List<CountryResponse> findAll() {
         return this.countryRepository.findAll()
                 .stream()
-                .peek(country -> log.info(COUNTRY_FOUND_ALL.getMessage(), country))
+                .peek(country -> log.info(COUNTRY_FOUND_ALL.getLogMessage(), country))
                 .map(this.countryMapper::toCountryResponse)
                 .toList();
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     public CompletableFuture<List<CountryResponse>> findAllAsync() {
         return supplyAsync(this.countryRepository::findAll)
                 .thenApplyAsync(
                         countries -> countries.stream()
-                                .peek(country -> log.info(COUNTRY_FOUND_ALL_ASYNC.getMessage(), country))
+                                .peek(country -> log.info(COUNTRY_FOUND_ALL_ASYNC.getLogMessage(), country))
                                 .map(this.countryMapper::toCountryResponse)
                                 .toList()
                 );
@@ -58,18 +58,18 @@ public class CountryService {
     public CountryResponse findById(final String countryId) {
         return this.countryRepository.findById(Long.valueOf(countryId))
                 .stream()
-                .peek(country -> log.info(COUNTRY_FOUND_BY_ID.getMessage(), country))
+                .peek(country -> log.info(COUNTRY_FOUND_BY_ID.getLogMessage(), country))
                 .map(this.countryMapper::toCountryResponse)
                 .findFirst()
                 .orElseGet(CountryResponse::new);
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     public CompletableFuture<CountryResponse> findByIdAsync(final String countryId) {
         return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId)))
                 .thenApplyAsync(
                         country -> country.stream()
-                                .peek(foundCountry -> log.info(COUNTRY_FOUND_BY_ID_ASYNC.getMessage(), foundCountry))
+                                .peek(foundCountry -> log.info(COUNTRY_FOUND_BY_ID_ASYNC.getLogMessage(), foundCountry))
                                 .map(this.countryMapper::toCountryResponse)
                                 .findFirst()
                                 .orElseGet(CountryResponse::new)
@@ -87,7 +87,7 @@ public class CountryService {
                 .orElseGet(CountryResponse::new);
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
@@ -106,7 +106,7 @@ public class CountryService {
         return this.countryRepository.findById(Long.valueOf(countryId))
                 .map(
                         country -> {
-                            log.info(COUNTRY_FOUND_BEFORE_DELETING.getMessage(), country);
+                            log.info(COUNTRY_FOUND_BEFORE_DELETING.getLogMessage(), country);
                             this.countryRepository.deleteById(country.getId());
                             return COUNTRY_DELETED.getMessage();
                         }
@@ -114,7 +114,7 @@ public class CountryService {
                 .orElseThrow(() -> new CountryNotFoundException(COUNTRY_NOT_FOUND.getMessage()));
     }
 
-    @Async
+    @Async(value = "taskExecutor")
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
@@ -124,7 +124,7 @@ public class CountryService {
                 .thenApplyAsync(
                         country -> country.map(
                                 foundCountry -> {
-                                    log.info(COUNTRY_FOUND_BEFORE_DELETING.getMessage(), country);
+                                    log.info(COUNTRY_FOUND_BEFORE_DELETING.getLogMessage(), country);
                                     this.countryRepository.deleteById(foundCountry.getId());
                                     return COUNTRY_DELETED.getMessage();
                                 }
