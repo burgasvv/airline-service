@@ -96,7 +96,10 @@ public class SecurityConfig {
                                         "/sights/delete-image", "/sights/delete-image/async",
 
                                         "/guides/create-update", "/guides/create-update/async",
-                                        "/guides/delete", "/guides/delete/async"
+                                        "/guides/delete", "/guides/delete/async",
+                                        "/guides/upload-image","/guides/upload-image/async",
+                                        "/guides/change-image","/guides/change-image/async",
+                                        "/guides/delete-image","/guides/delete-image/async"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )
