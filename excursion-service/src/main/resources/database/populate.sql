@@ -99,11 +99,11 @@ insert into authority(name) values ('USER');
 
 insert into identity(username, password, email, phone, registered_at, enabled, authority_id)
 values ('admin','$2a$10$KrTGHnyrCFcBfNtT/Ugr..L1JZyYKPhUwBxR457ZnZbdTcYjAMjeO',
-        'admin@gmail.com','9039035465','2024-10-15',true,1);
+        'admin@gmail.com','(903)-903-5465','2024-10-15',true,1);
 
 insert into identity(username, password, email, phone, registered_at, enabled, authority_id)
 values ('user','$2a$10$jS1grVIkmZsTqjYzoZfgyeuQ4nBxaU4zaWZRwDJD2b9oagV//wnni',
-        'user@gmail.com','9139037834','2025-11-25',true,2);
+        'user@gmail.com','(913)-903-7834','2025-11-25',true,2);
 
 insert into country(name, description, population)
 values ('Россия', 'Описание Российской Федерации',143854325);
@@ -243,11 +243,11 @@ values ('Остров Эллис', 'Историческое место, чер�
                         'разных народностей, а в 1892 году на острове открыли государственный иммиграционный центр.', 6);
 
 insert into guide(name, surname, patronymic, phone, about)
-values ('Оксана', 'Параева', 'Сергеевна', '9435678326', 'Информация об Оксане Параевой - всемирном гиде из России');
+values ('Оксана', 'Параева', 'Сергеевна', '(943)-567-8326', 'Информация об Оксане Параевой - всемирном гиде из России');
 insert into guide(name, surname, patronymic, phone, about)
-values ('Синь', 'Юанье', 'Чжу', '5673856723', 'Информация об Синь Юанье - всемирном гиде из Китая');
+values ('Синь', 'Юанье', 'Чжу', '(567)-385-6723', 'Информация об Синь Юанье - всемирном гиде из Китая');
 insert into guide(name, surname, patronymic, phone, about)
-values ('John', 'Parsons', 'Jack', '4517834590', 'Информация об John Parsons - всемирном гиде из США');
+values ('John', 'Parsons', 'Jack', '(451)-783-4590', 'Информация об John Parsons - всемирном гиде из США');
 
 insert into guide_language(guide_id, language_id) values (1,1);
 insert into guide_language(guide_id, language_id) values (1,2);
