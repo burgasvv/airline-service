@@ -15,9 +15,9 @@ import java.util.concurrent.CompletableFuture;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static org.burgas.excursionservice.message.FileMessage.MULTIPART_IS_EMPTY;
-import static org.burgas.excursionservice.message.ImageMessage.IMAGE_DELETED;
-import static org.burgas.excursionservice.message.ImageMessage.IMAGE_NOT_FOUND;
+import static org.burgas.excursionservice.message.FileMessages.MULTIPART_IS_EMPTY;
+import static org.burgas.excursionservice.message.ImageMessages.IMAGE_DELETED;
+import static org.burgas.excursionservice.message.ImageMessages.IMAGE_NOT_FOUND;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
 @Service

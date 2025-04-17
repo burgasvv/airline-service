@@ -1,8 +1,8 @@
 package org.burgas.excursionservice.router;
 
-import org.burgas.excursionservice.dto.CityRequest;
-import org.burgas.excursionservice.dto.CityResponse;
-import org.burgas.excursionservice.service.CityService;
+import org.burgas.excursionservice.dto.GuideRequest;
+import org.burgas.excursionservice.dto.GuideResponse;
+import org.burgas.excursionservice.service.GuideService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -21,26 +21,26 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.web.servlet.function.RouterFunctions.route;
 
 @Configuration
-public class CityRouter {
+public class GuideRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> cityRoutes(final CityService cityService) {
+    public RouterFunction<ServerResponse> guideRoutes(final GuideService guideService) {
         return route()
                 .GET(
-                        "/cities", _ -> ServerResponse
+                        "/guides", _ -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(cityService.findAll())
+                                .body(guideService.findAll())
                 )
                 .GET(
-                        "/cities/sse", _ -> ServerResponse
+                        "/guides/sse", _ -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
-                                            cityService.findAll().forEach(
-                                                    cityResponse -> {
+                                            guideService.findAll().forEach(
+                                                    guideResponse -> {
                                                         try {
                                                             SECONDS.sleep(1);
-                                                            sseBuilder.send(cityResponse);
+                                                            sseBuilder.data(guideResponse);
 
                                                         } catch (InterruptedException | IOException e) {
                                                             throw new RuntimeException(e);
@@ -52,112 +52,112 @@ public class CityRouter {
                                 )
                 )
                 .GET(
-                        "/cities/async", _ -> ServerResponse
+                        "/guides/async", _ -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(cityService.findAllAsync().get())
+                                .body(guideService.findAllAsync().get())
                 )
                 .GET(
-                        "/cities/by-id", request -> ServerResponse
+                        "/guides/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(cityService.findById(request.param("cityId").orElse(null)))
+                                .body(guideService.findById(request.param("guideId").orElse(null)))
                 )
                 .GET(
-                        "/cities/by-id/async", request -> ServerResponse
+                        "/guides/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(cityService.findByIdAsync(request.param("cityId").orElse(null)).get())
+                                .body(guideService.findByIdAsync(request.param("guideId").orElse(null)).get())
                 )
                 .POST(
-                        "/cities/create-update", request -> {
-                            CityResponse cityResponse = cityService.createOrUpdate(request.body(CityRequest.class));
+                        "/guides/create-update", request -> {
+                            GuideResponse guideResponse = guideService.createOrUpdate(request.body(GuideRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/cities/by-id?cityId=" + cityResponse.getId()))
-                                    .body(cityResponse);
+                                    .location(create("/guides/by-id?guideId=" + guideResponse.getId()))
+                                    .body(guideResponse);
                         }
                 )
                 .POST(
-                        "/cities/create-update/async", request -> {
-                            CityResponse cityResponse = cityService.createOrUpdateAsync(request.body(CityRequest.class)).get();
+                        "/guides/create-update/async", request -> {
+                            GuideResponse guideResponse = guideService.createOrUpdateAsync(request.body(GuideRequest.class)).get();
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/cities/by-id/async?cityId=" + cityResponse.getId()))
-                                    .body(cityResponse);
+                                    .location(create("/guides/by-id/async?guideId=" + guideResponse.getId()))
+                                    .body(guideResponse);
                         }
                 )
                 .DELETE(
-                        "/cities/delete", request -> ServerResponse
+                        "/guides/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(cityService.deleteById(request.param("cityId").orElse(null)))
+                                .body(guideService.deleteById(request.param("guideId").orElse(null)))
                 )
                 .DELETE(
-                        "/cities/delete/async", request -> ServerResponse
+                        "/guides/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(cityService.deleteByIdAsync(request.param("cityId").orElse(null)).get())
+                                .body(guideService.deleteByIdAsync(request.param("guideId").orElse(null)).get())
                 )
                 .POST(
-                        "/cities/upload-image", request -> ServerResponse
+                        "/guides/upload-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
-                                        cityService.uploadImage(
-                                                request.param("cityId").orElse(null),
+                                        guideService.uploadImage(
+                                                request.param("guideId").orElse(null),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                 )
                 )
                 .POST(
-                        "/cities/upload-image/async", request -> ServerResponse
+                        "/guides/upload-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
-                                        cityService.uploadImageAsync(
-                                                request.param("cityId").orElse(null),
+                                        guideService.uploadImageAsync(
+                                                request.param("guideId").orElse(null),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                                 .get()
                                 )
                 )
                 .PUT(
-                        "/cities/change-image", request -> ServerResponse
+                        "/guides/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
-                                        cityService.changeImage(
-                                                request.param("cityId").orElse(null),
+                                        guideService.changeImage(
+                                                request.param("guideId").orElse(null),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                 )
                 )
                 .PUT(
-                        "/cities/change-image/async", request -> ServerResponse
+                        "/guides/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
-                                        cityService.changeImageAsync(
-                                                request.param("cityId").orElse(null),
+                                        guideService.changeImageAsync(
+                                                request.param("guideId").orElse(null),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                                 .get()
                                 )
                 )
                 .DELETE(
-                        "/cities/delete", request -> ServerResponse
+                        "/guides/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(cityService.deleteImage(request.param("cityId").orElse(null)))
+                                .body(guideService.deleteImage(request.param("guideId").orElse(null)))
                 )
                 .DELETE(
-                        "/cities/delete/async", request -> ServerResponse
+                        "/guides/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(cityService.deleteImageAsync(request.param("cityId").orElse(null)).get())
+                                .body(guideService.deleteImageAsync(request.param("guideId").orElse(null)).get())
                 )
                 .build();
     }

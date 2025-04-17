@@ -8,10 +8,10 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
@@ -29,16 +29,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
                 .cors(cors -> cors.configurationSource(new UrlBasedCorsConfigurationSource()))
+                .httpBasic(httpBasic -> httpBasic.securityContextRepository(new HttpSessionSecurityContextRepository()))
                 .authenticationManager(authenticationManager())
-                .httpBasic(httpBasic -> httpBasic.securityContextRepository(
-                        new HttpSessionSecurityContextRepository()
-                ))
                 .authorizeHttpRequests(
                         httpRequests -> httpRequests
 
                                 .requestMatchers(
+                                        "/authentication/csrf-token",
+
+                                        "/images/by-id", "/images/by-id/async", "/images/by-id/data", "/images/by-id/data/async",
+
                                         "/identities/create", "/identities/create/async",
 
                                         "/countries","/countries/sse", "/countries/async",
@@ -47,7 +49,9 @@ public class SecurityConfig {
                                         "/cities", "/cities/async", "/cities/sse",
                                         "/cities/by-id", "/cities/by-id/async",
 
-                                        "/images/by-id", "/images/by-id/async", "/images/by-id/data", "/images/by-id/data/async"
+                                        "/sights", "/sights/sse", "/sights/async", "/sights/by-id", "/sights/by-id/async",
+
+                                        "/guides", "/guides/sse", "/guides/async", "/guides/by-id", "/guides/by-id/async"
                                 )
                                 .permitAll()
 
@@ -62,6 +66,9 @@ public class SecurityConfig {
                                 .hasAnyAuthority("ADMIN", "USER")
 
                                 .requestMatchers(
+                                        "/images/upload", "/images/upload/async", "/images/change", "/images/change/async",
+                                        "/images/delete", "/images/delete/async",
+
                                         "/authorities", "/authorities/sse", "/authorities/async",
                                         "/authorities/by-id", "/authorities/by-id/async",
                                         "/authorities/create-update", "/authorities/create-update/async",
@@ -82,8 +89,14 @@ public class SecurityConfig {
                                         "/cities/change-image", "/cities/change-image/async",
                                         "/cities/delete", "/cities/delete/async",
 
-                                        "/images/upload", "/images/upload/async", "/images/change", "/images/change/async",
-                                        "/images/delete", "/images/delete/async"
+                                        "/sights/create-update", "/sights/create-update/async",
+                                        "/sights/delete", "/sights/delete/async",
+                                        "/sights/upload-image", "/sights/upload-image/async",
+                                        "/sights/change-image", "/sights/change-image/async",
+                                        "/sights/delete-image", "/sights/delete-image/async",
+
+                                        "/guides/create-update", "/guides/create-update/async",
+                                        "/guides/delete", "/guides/delete/async"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )

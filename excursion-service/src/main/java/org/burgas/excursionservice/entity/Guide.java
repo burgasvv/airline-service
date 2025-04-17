@@ -5,8 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import org.burgas.excursionservice.exception.PhoneNotMatchesException;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,19 +13,17 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static org.burgas.excursionservice.message.IdentityMessages.PHONE_NOT_MATCHES;
 
 @Entity
-@SuppressWarnings(value = "unused")
-public final class Identity implements Serializable {
+@SuppressWarnings("unused")
+public final class Guide {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    private String username;
-    private String password;
-    private String email;
+    private String name;
+    private String surname;
+    private String patronymic;
     private String phone;
-    private LocalDateTime registeredAt;
-    private Boolean enabled;
-    private Long authorityId;
+    private String about;
     private Long imageId;
 
     public Matcher validatePhone(String phone) {
@@ -43,28 +39,28 @@ public final class Identity implements Serializable {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPatronymic() {
+        return patronymic;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
     }
 
     public String getPhone() {
@@ -88,28 +84,12 @@ public final class Identity implements Serializable {
         }
     }
 
-    public LocalDateTime getRegisteredAt() {
-        return registeredAt;
+    public String getAbout() {
+        return about;
     }
 
-    public void setRegisteredAt(LocalDateTime registeredAt) {
-        this.registeredAt = registeredAt;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public Long getAuthorityId() {
-        return authorityId;
-    }
-
-    public void setAuthorityId(Long authorityId) {
-        this.authorityId = authorityId;
+    public void setAbout(String about) {
+        this.about = about;
     }
 
     public Long getImageId() {
@@ -123,30 +103,26 @@ public final class Identity implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Identity identity = (Identity) o;
-        return Objects.equals(id, identity.id) && Objects.equals(username, identity.username) &&
-               Objects.equals(password, identity.password) && Objects.equals(email, identity.email) &&
-               Objects.equals(phone, identity.phone) && Objects.equals(registeredAt, identity.registeredAt) &&
-               Objects.equals(enabled, identity.enabled) && Objects.equals(authorityId, identity.authorityId) &&
-               Objects.equals(imageId, identity.imageId);
+        Guide guide = (Guide) o;
+        return Objects.equals(id, guide.id) && Objects.equals(name, guide.name) &&
+               Objects.equals(surname, guide.surname) && Objects.equals(patronymic, guide.patronymic) &&
+               Objects.equals(phone, guide.phone) && Objects.equals(about, guide.about) && Objects.equals(imageId, guide.imageId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, email, phone, registeredAt, enabled, authorityId, imageId);
+        return Objects.hash(id, name, surname, patronymic, phone, about, imageId);
     }
 
     @Override
     public String toString() {
-        return "Identity{" +
+        return "Guide{" +
                "id=" + id +
-               ", username='" + username + '\'' +
-               ", password='" + password + '\'' +
-               ", email='" + email + '\'' +
+               ", name='" + name + '\'' +
+               ", surname='" + surname + '\'' +
+               ", patronymic='" + patronymic + '\'' +
                ", phone='" + phone + '\'' +
-               ", registeredAt=" + registeredAt +
-               ", enabled=" + enabled +
-               ", authorityId=" + authorityId +
+               ", about='" + about + '\'' +
                ", imageId=" + imageId +
                '}';
     }
@@ -157,29 +133,29 @@ public final class Identity implements Serializable {
 
     public static final class Builder {
 
-        private final Identity identity;
+        private final Guide guide;
 
         public Builder() {
-            identity = new Identity();
+            guide = new Guide();
         }
 
         public Builder id(Long id) {
-            this.identity.id = id;
+            this.guide.id = id;
             return this;
         }
 
-        public Builder username(String username) {
-            this.identity.username = username;
+        public Builder name(String name) {
+            this.guide.name = name;
             return this;
         }
 
-        public Builder password(String password) {
-            this.identity.password = password;
+        public Builder surname(String surname) {
+            this.guide.surname = surname;
             return this;
         }
 
-        public Builder email(String email) {
-            this.identity.email = email;
+        public Builder patronymic(String patronymic) {
+            this.guide.patronymic = patronymic;
             return this;
         }
 
@@ -190,11 +166,11 @@ public final class Identity implements Serializable {
                     stringBuilder.append(c);
             }
             phone = stringBuilder.toString();
-            Matcher matcher = this.identity.validatePhone(phone);
+            Matcher matcher = this.guide.validatePhone(phone);
             if (matcher.matches()) {
                 String[] arr = phone.split("");
                 phone = "(" + arr[0]+arr[1]+arr[2] + ")-" + arr[3]+arr[4]+arr[5] + "-" + arr[6]+arr[7]+arr[8]+arr[9];
-                this.identity.phone = phone;
+                this.guide.phone = phone;
                 return this;
 
             } else {
@@ -202,28 +178,18 @@ public final class Identity implements Serializable {
             }
         }
 
-        public Builder registeredAt(LocalDateTime registeredAt) {
-            this.identity.registeredAt = registeredAt;
-            return this;
-        }
-
-        public Builder enabled(Boolean enabled) {
-            this.identity.enabled = enabled;
-            return this;
-        }
-
-        public Builder authorityId(Long authorityId) {
-            this.identity.authorityId = authorityId;
+        public Builder about(String about) {
+            this.guide.about = about;
             return this;
         }
 
         public Builder imageId(Long imageId) {
-            this.identity.imageId = imageId;
+            this.guide.imageId = imageId;
             return this;
         }
 
-        public Identity build() {
-            return this.identity;
+        public Guide build() {
+            return this.guide;
         }
     }
 }

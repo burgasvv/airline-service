@@ -1,4 +1,10 @@
 
+### Authentication Requests
+
+###
+GET /authentication/csrf-token
+Host: localhost:9010
+
 ### Authority Requests
 
 ###
@@ -200,3 +206,83 @@ Host: localhost:9010
 ###
 GET /cities/by-id/async?cityId=4
 Host: localhost:9010
+
+### Sight Requests
+
+###
+GET /sights
+Host: localhost:9010
+
+###
+GET /sights/sse
+Host: localhost:9010
+
+###
+GET /sights/async
+Host: localhost:9010
+
+###
+GET /sights/by-id?sightId=1
+Host: localhost:9010
+
+###
+GET /sights/by-id/async?sightId=7
+Host: localhost:9010
+
+### Guide Requests
+
+###
+GET /guides
+Host: localhost:9010
+
+###
+GET /guides/sse
+Host: localhost:9010
+
+###
+GET /guides/async
+Host: localhost:9010
+
+###
+GET /guides/by-id?guideId=1
+Host: localhost:9010
+
+###
+GET /guides/by-id/async?guideId=2
+Host: localhost:9010
+
+###
+POST /guides/create-update
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "Валерия",
+    "surname": "Касаева",
+    "patronymic": "Петровна",
+    "phone": "9135678934",
+    "about": "О Касаевой Валерии Петровне",
+    "languages": [
+        1, 2
+    ]
+}
+
+###
+POST /guides/create-update
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 4,
+    "about": "О Касаевой Валерии Петровне EDITED",
+    "languages": [
+        1, 2, 3
+    ]
+}
+
+###
+DELETE /guides/delete?guideId=4
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin

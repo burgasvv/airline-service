@@ -121,6 +121,7 @@ public class CountryRouter {
                                                 request.param("countryId").orElse(null),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
+                                                .get()
                                 )
                 )
                 .PUT(
@@ -143,6 +144,7 @@ public class CountryRouter {
                                                 request.param("countryId").orElse(null),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
+                                                .get()
                                 )
                 )
                 .DELETE(
@@ -155,7 +157,7 @@ public class CountryRouter {
                         "/countries/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(countryService.deleteImageAsync(request.param("countryId").orElse(null)))
+                                .body(countryService.deleteImageAsync(request.param("countryId").orElse(null)).get())
                 )
                 .build();
     }

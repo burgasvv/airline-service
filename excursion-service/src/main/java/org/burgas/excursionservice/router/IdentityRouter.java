@@ -183,6 +183,7 @@ public class IdentityRouter {
                                                 request.param("identityId").orElse(null),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
+                                                .get()
                                 )
                 )
                 .DELETE(
