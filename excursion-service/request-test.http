@@ -286,3 +286,37 @@ Content-Type: application/json
 DELETE /guides/delete?guideId=4
 Host: localhost:9010
 Authorization: Basic admin@gmail.com admin
+
+### Excursion Requests
+
+###
+GET /excursions
+Host: localhost:9010
+
+###
+GET /excursions/sse
+Host: localhost:9010
+
+###
+GET /excursions/async
+Host: localhost:9010
+
+###
+GET /excursions/by-guide?guideId=1
+Host: localhost:9010
+
+###
+GET /excursions/by-guide/sse?guideId=2
+Host: localhost:9010
+
+###
+GET /excursions/by-guide/async?guideId=3
+Host: localhost:9010
+
+###
+GET /excursions/by-id?excursionId=1
+Host: localhost:9010
+
+###
+GET /excursions/by-id/async?excursionId=3
+Host: localhost:9010

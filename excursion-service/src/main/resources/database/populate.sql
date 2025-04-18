@@ -81,7 +81,8 @@ create table if not exists excursion (
     starts timestamp not null ,
     ends timestamp not null ,
     in_progress boolean ,
-    passed boolean
+    passed boolean ,
+    image_id bigint references image(id) on update set null on delete cascade
 );
 
 create table if not exists excursion_sight (
@@ -255,3 +256,25 @@ insert into guide_language(guide_id, language_id) values (2,1);
 insert into guide_language(guide_id, language_id) values (2,2);
 insert into guide_language(guide_id, language_id) values (2,3);
 insert into guide_language(guide_id, language_id) values (3,2);
+
+insert into excursion(name, description, guide_id, cost, starts, ends, in_progress, passed, image_id)
+values ('Экскурсия по Москве', 'Описание экскурсии по Москве', 1, 25000, '2025-05-02 12:00', '2025-05-02 18:00',
+        false,false, null);
+
+insert into excursion(name, description, guide_id, cost, starts, ends, in_progress, passed, image_id)
+values ('Экскурсия по Пекину', 'Описание экскурсии по Пекину', 2, 35000, '2025-05-04 10:30', '2025-05-04 17:00',
+        false,false, null);
+
+insert into excursion(name, description, guide_id, cost, starts, ends, in_progress, passed, image_id)
+values ('Экскурсия по Вашингтону', 'Описание экскурсии по Вашингтону', 3, 45000, '2025-05-06 11:00', '2025-05-06 19:00',
+        false,false, null);
+
+insert into excursion_sight(excursion_id, sight_id) values (1,1);
+insert into excursion_sight(excursion_id, sight_id) values (1,3);
+
+insert into excursion_sight(excursion_id, sight_id) values (2,7);
+insert into excursion_sight(excursion_id, sight_id) values (2,8);
+
+insert into excursion_sight(excursion_id, sight_id) values (3,13);
+insert into excursion_sight(excursion_id, sight_id) values (3,14);
+insert into excursion_sight(excursion_id, sight_id) values (3,15);

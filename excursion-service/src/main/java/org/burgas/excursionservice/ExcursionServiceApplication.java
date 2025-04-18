@@ -26,9 +26,10 @@ public class ExcursionServiceApplication {
     @Bean
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-        threadPoolTaskExecutor.setCorePoolSize(2);
+        threadPoolTaskExecutor.setVirtualThreads(true);
+        threadPoolTaskExecutor.setCorePoolSize(6);
         threadPoolTaskExecutor.setMaxPoolSize(12);
-        threadPoolTaskExecutor.setQueueCapacity(500);
+        threadPoolTaskExecutor.setQueueCapacity(1200);
         threadPoolTaskExecutor.initialize();
         return threadPoolTaskExecutor;
     }

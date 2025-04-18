@@ -51,7 +51,11 @@ public class SecurityConfig {
 
                                         "/sights", "/sights/sse", "/sights/async", "/sights/by-id", "/sights/by-id/async",
 
-                                        "/guides", "/guides/sse", "/guides/async", "/guides/by-id", "/guides/by-id/async"
+                                        "/guides", "/guides/sse", "/guides/async", "/guides/by-id", "/guides/by-id/async",
+
+                                        "/excursions","/excursions/sse","/excursions/async",
+                                        "/excursions/by-guide","/excursions/by-guide/sse","/excursions/by-guide/async",
+                                        "/excursions/by-id","/excursions/by-id/async"
                                 )
                                 .permitAll()
 
@@ -99,7 +103,13 @@ public class SecurityConfig {
                                         "/guides/delete", "/guides/delete/async",
                                         "/guides/upload-image","/guides/upload-image/async",
                                         "/guides/change-image","/guides/change-image/async",
-                                        "/guides/delete-image","/guides/delete-image/async"
+                                        "/guides/delete-image","/guides/delete-image/async",
+
+                                        "/excursions/create-update","/excursions/create-update/async",
+                                        "/excursions/delete","/excursions/delete/async",
+                                        "/excursions/upload-image","/excursions/upload-image/async",
+                                        "/excursions/change-image","/excursions/change-image/async",
+                                        "/excursions/delete-image","/excursions/delete-image/async"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )
