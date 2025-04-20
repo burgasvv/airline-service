@@ -26,7 +26,10 @@ public class IdentityFilterFunction implements HandlerFilterFunction<ServerRespo
                 request.path().equals("/identities/delete") || request.path().equals("/identities/delete/async") ||
                 request.path().equals("/identities/upload-image") || request.path().equals("/identities/upload-image/async") ||
                 request.path().equals("/identities/change-image") || request.path().equals("/identities/change-image/async") ||
-                request.path().equals("/identities/delete-image") || request.path().equals("/identities/delete-image/async")
+                request.path().equals("/identities/delete-image") || request.path().equals("/identities/delete-image/async") ||
+                request.path().equals("/excursions/by-identity") || request.path().equals("/excursions/by-identity/sse") ||
+                request.path().equals("/excursions/by-identity/async") ||
+                request.path().equals("/excursion/add-by-identity") || request.path().equals("/excursion/add-by-identity/async")
         ) {
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

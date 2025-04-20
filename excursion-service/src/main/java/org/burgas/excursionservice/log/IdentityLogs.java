@@ -4,6 +4,8 @@ public enum IdentityLogs {
 
     IDENTITY_FOUND_OF_ALL("Identity was found in list of all: {}"),
     IDENTITY_FOUND_OF_ALL_ASYNC("Identity was found in list of all async: {}"),
+    IDENTITY_FOUND_OF_ALL_BY_EXCURSION_ID("Identity was found in list of all by excursion id: {}"),
+    IDENTITY_FOUND_OF_ALL_BY_EXCURSION_ID_ASYNC("Identity was found in list of all by excursion id async: {}"),
     IDENTITY_FOUND_BY_ID("Identity was found by id: {}"),
     IDENTITY_FOUND_BY_ID_ASYNC("Identity was found by id async: {}"),
     IDENTITY_SAVED("Identity was saved: {}"),

@@ -1,3 +1,4 @@
 
-drop table if exists excursion_sight, excursion, guide_language, guide,
+drop table if exists
+    excursion_identity, excursion_sight, excursion, guide_language, guide,
     sight, language, city, country, identity, authority, image;

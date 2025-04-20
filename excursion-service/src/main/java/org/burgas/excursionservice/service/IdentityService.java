@@ -67,6 +67,25 @@ public class IdentityService {
                 );
     }
 
+    public List<IdentityResponse> findAllByExcursionId(final String excursionId) {
+        return this.identityRepository.findIdentitiesByExcursionId(Long.valueOf(excursionId))
+                .stream()
+                .peek(identity -> log.info(IDENTITY_FOUND_OF_ALL_BY_EXCURSION_ID.getLogMessage(), identity))
+                .map(this.identityMapper::toIdentityResponse)
+                .toList();
+    }
+
+    @Async(value = "taskExecutor")
+    public CompletableFuture<List<IdentityResponse>> findAllByExcursionIdAsync(final String excursionId) {
+        return supplyAsync(() -> this.identityRepository.findIdentitiesByExcursionId(Long.valueOf(excursionId)))
+                .thenApplyAsync(
+                        identities -> identities.stream()
+                                .peek(identity -> log.info(IDENTITY_FOUND_OF_ALL_BY_EXCURSION_ID_ASYNC.getLogMessage(), identity))
+                                .map(this.identityMapper::toIdentityResponse)
+                                .toList()
+                );
+    }
+
     public IdentityResponse findById(final String identityId) {
         return this.identityRepository.findById(Long.valueOf(identityId))
                 .stream()

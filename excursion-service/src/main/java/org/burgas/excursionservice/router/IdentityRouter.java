@@ -61,6 +61,38 @@ public class IdentityRouter {
                                 .body(identityService.findAllAsync().get())
                 )
                 .GET(
+                        "/identities/by-excursion", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(identityService.findAllByExcursionId(request.param("excursionId").orElse(null)))
+                )
+                .GET(
+                        "/identities/by-excursion/sse", request -> ServerResponse
+                                .sse(
+                                        sseBuilder -> {
+                                            identityService.findAllByExcursionId(request.param("excursionId").orElse(null))
+                                                            .forEach(
+                                                                    identityResponse -> {
+                                                                        try {
+                                                                            SECONDS.sleep(1);
+                                                                            sseBuilder.send(identityResponse);
+
+                                                                        } catch (InterruptedException | IOException e) {
+                                                                            throw new RuntimeException(e);
+                                                                        }
+                                                                    }
+                                                            );
+                                            sseBuilder.complete();
+                                        }
+                                )
+                )
+                .GET(
+                        "/identities/by-excursion/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(identityService.findAllByExcursionIdAsync(request.param("excursionId").orElse(null)).get())
+                )
+                .GET(
                         "/identities/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)

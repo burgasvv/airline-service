@@ -1,28 +1,40 @@
 package org.burgas.excursionservice.service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import org.burgas.excursionservice.dto.ExcursionRequest;
 import org.burgas.excursionservice.dto.ExcursionResponse;
+import org.burgas.excursionservice.entity.ExcursionIdentity;
 import org.burgas.excursionservice.entity.Image;
+import org.burgas.excursionservice.exception.ExcursionAlreadyExistsByIdentityException;
 import org.burgas.excursionservice.exception.ExcursionImageNotFoundException;
 import org.burgas.excursionservice.exception.ExcursionNotFoundException;
+import org.burgas.excursionservice.exception.ExcursionPassedException;
 import org.burgas.excursionservice.mapper.ExcursionMapper;
+import org.burgas.excursionservice.repository.ExcursionIdentityRepository;
 import org.burgas.excursionservice.repository.ExcursionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static java.lang.String.format;
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.burgas.excursionservice.log.ExcursionLogs.*;
 import static org.burgas.excursionservice.message.ExcursionMessages.*;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -35,11 +47,47 @@ public class ExcursionService {
     private final ExcursionRepository excursionRepository;
     private final ExcursionMapper excursionMapper;
     private final ImageService imageService;
+    private final ExcursionIdentityRepository excursionIdentityRepository;
 
-    public ExcursionService(ExcursionRepository excursionRepository, ExcursionMapper excursionMapper, ImageService imageService) {
+    public ExcursionService(
+            ExcursionRepository excursionRepository, ExcursionMapper excursionMapper,
+            ImageService imageService, ExcursionIdentityRepository excursionIdentityRepository
+    ) {
         this.excursionRepository = excursionRepository;
         this.excursionMapper = excursionMapper;
         this.imageService = imageService;
+        this.excursionIdentityRepository = excursionIdentityRepository;
+    }
+
+    @Scheduled(timeUnit = SECONDS, fixedRate = 50)
+    @Transactional(
+            isolation = READ_COMMITTED, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public void checkExcursionSchedule() {
+        this.excursionRepository.findExcursionsByPassed(false).forEach(
+                excursion -> {
+                    LocalDateTime now = LocalDateTime.now();
+                    LocalDateTime starts = excursion.getStarts();
+                    LocalDateTime ends = excursion.getEnds();
+
+                    if (now.isBefore(starts)) {
+                        excursion.setPassed(false);
+                        excursion.setInProgress(false);
+                        this.excursionRepository.save(excursion);
+
+                    } else if (now.isAfter(starts) && now.isBefore(ends)) {
+                        excursion.setPassed(false);
+                        excursion.setInProgress(true);
+                        this.excursionRepository.save(excursion);
+
+                    } else if (now.isAfter(starts) && now.isAfter(ends)) {
+                        excursion.setPassed(true);
+                        excursion.setInProgress(false);
+                        this.excursionRepository.save(excursion);
+                    }
+                }
+        );
     }
 
     public List<ExcursionResponse> findAll() {
@@ -80,6 +128,40 @@ public class ExcursionService {
                 );
     }
 
+    public List<ExcursionResponse> findAllByIdentityId(final String identityId) {
+        return this.excursionRepository.findExcursionsByIdentityId(Long.valueOf(identityId))
+                .stream()
+                .peek(excursion -> log.info(EXCURSION_FOUND_ALL_IDENTITY_ID.getLogMessage(), excursion))
+                .map(this.excursionMapper::toExcursionResponse)
+                .toList();
+    }
+
+    @Async(value = "taskExecutor")
+    public CompletableFuture<List<ExcursionResponse>> findAllByIdentityIdAsync(final String identityId) {
+        return supplyAsync(() -> this.excursionRepository.findExcursionsByIdentityId(Long.valueOf(identityId)))
+                .thenApplyAsync(
+                        excursions -> excursions.stream()
+                                .peek(excursion -> log.info(EXCURSION_FOUND_ALL_IDENTITY_ID_ASYNC.getLogMessage(), excursion))
+                                .map(this.excursionMapper::toExcursionResponse)
+                                .toList()
+                );
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ExcursionResponse> findAllBySession(final HttpServletRequest httpServletRequest) {
+        return ofNullable((List<ExcursionResponse>) httpServletRequest.getSession().getAttribute("session-excursions"))
+                .orElseGet(ArrayList::new);
+    }
+
+    @Async(value = "taskExecutor")
+    @SuppressWarnings("unchecked")
+    public CompletableFuture<List<ExcursionResponse>> findAllBySessionAsync(final HttpServletRequest httpServletRequest) {
+        return supplyAsync(
+                () -> ofNullable((List<ExcursionResponse>) httpServletRequest.getSession().getAttribute("session-excursions"))
+                    .orElseGet(ArrayList::new)
+        );
+    }
+
     public ExcursionResponse findById(final String excursionId) {
         return this.excursionRepository.findById(Long.valueOf(excursionId))
                 .stream()
@@ -98,6 +180,114 @@ public class ExcursionService {
                                 .map(this.excursionMapper::toExcursionResponse)
                                 .findFirst()
                                 .orElseGet(ExcursionResponse::new)
+                );
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String addExcursionByIdentityId(final String excursionId, final String identityId) {
+        return ofNullable(
+                this.excursionIdentityRepository
+                        .existsExcursionIdentityByExcursionIdAndIdentityId(Long.valueOf(excursionId), Long.valueOf(identityId))
+        )
+                .filter(exists -> !exists)
+                .map(
+                        _ -> this.excursionRepository.findById(Long.valueOf(excursionId))
+                                .stream()
+                                .peek(excursion -> log.info(EXCURSION_FOUND_BEFORE_ADDING_BY_IDENTITY.getLogMessage(), excursion))
+                                .filter(excursion -> !excursion.getPassed())
+                                .map(
+                                        excursion -> {
+                                            this.excursionIdentityRepository.save(
+                                                    ExcursionIdentity.builder()
+                                                            .excursionId(excursion.getId())
+                                                            .identityId(Long.valueOf(identityId))
+                                                            .build()
+                                            );
+                                            return EXCURSION_ADDED_BY_IDENTITY.getMessage();
+                                        }
+                                )
+                                .findFirst()
+                                .orElseThrow(() -> new ExcursionNotFoundException(EXCURSION_NOT_FOUND.getMessage()))
+                )
+                .orElseThrow(() -> new ExcursionAlreadyExistsByIdentityException(EXCURSION_ALREADY_EXISTS_BY_IDENTITY.getMessage()));
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> addExcursionByIdentityIdAsync(final String excursionId, final String identityId) {
+        return supplyAsync(() -> this.addExcursionByIdentityId(excursionId, identityId));
+    }
+
+    public String addExcursionToSession(final String excursionId, final HttpServletRequest httpServletRequest) {
+        return this.excursionRepository.findById(Long.valueOf(excursionId))
+                .stream()
+                .peek(excursion -> log.info(EXCURSION_FOUND_BEFORE_ADDING_TO_SESSION.getLogMessage(), excursion))
+                .map(
+                        excursion -> of(excursion)
+                                .filter(checkExcursion -> !checkExcursion.getPassed())
+                                .orElseThrow(() -> new ExcursionPassedException(EXCURSION_PASSED.getMessage()))
+                )
+                .map(this.excursionMapper::toExcursionResponse)
+                .map(
+                        excursionResponse -> {
+                            HttpSession session = httpServletRequest.getSession();
+                            @SuppressWarnings("unchecked")
+                            List<ExcursionResponse> excursionResponses = (List<ExcursionResponse>) session.getAttribute("session-excursions");
+                            if (excursionResponses != null && !excursionResponses.isEmpty()) {
+                                excursionResponses.add(excursionResponse);
+                                session.setAttribute("session-excursions", excursionResponses);
+                            } else {
+                                List<ExcursionResponse> newExcursionResponses = new ArrayList<>();
+                                newExcursionResponses.add(excursionResponse);
+                                session.setAttribute("session-excursions", newExcursionResponses);
+                            }
+                            return EXCURSION_ADDED_TO_SESSION.getMessage();
+                        }
+                )
+                .findFirst()
+                .orElseThrow(() -> new ExcursionNotFoundException(EXCURSION_NOT_FOUND.getMessage()));
+    }
+
+    @Async(value = "taskExecutor")
+    public CompletableFuture<String> addExcursionToSessionAsync(final String excursionId, final HttpServletRequest httpServletRequest) {
+        return supplyAsync(
+                () -> this.excursionRepository.findById(Long.valueOf(excursionId))
+                        .stream()
+                        .peek(logExcursion -> log.info(EXCURSION_FOUND_BEFORE_ADDING_TO_SESSION_ASYNC.getLogMessage(), logExcursion))
+                        .map(
+                                excursion -> of(excursion)
+                                        .filter(checkExcursion -> !checkExcursion.getPassed())
+                                        .orElseThrow(() -> new ExcursionPassedException(EXCURSION_PASSED.getMessage()))
+                        )
+        )
+                .thenApplyAsync(
+                        excursion -> excursion
+                                .map(this.excursionMapper::toExcursionResponse)
+                                .map(
+                                        excursionResponse -> {
+                                            HttpSession session = httpServletRequest.getSession();
+                                            @SuppressWarnings("unchecked")
+                                            List<ExcursionResponse> excursionResponses = (List<ExcursionResponse>)
+                                                    session.getAttribute("session-excursions");
+                                            if (excursionResponses != null && !excursionResponses.isEmpty()) {
+                                                excursionResponses.add(excursionResponse);
+                                                session.setAttribute("session-excursions", excursionResponses);
+                                            } else {
+                                                List<ExcursionResponse> newExcursionResponses = new ArrayList<>();
+                                                newExcursionResponses.add(excursionResponse);
+                                                session.setAttribute("session-excursions", newExcursionResponses);
+                                            }
+                                            return EXCURSION_ADDED_TO_SESSION_ASYNC.getMessage();
+                                        }
+                                )
+                                .findFirst()
+                                .orElseThrow(() -> new ExcursionNotFoundException(EXCURSION_NOT_FOUND.getMessage()))
                 );
     }
 

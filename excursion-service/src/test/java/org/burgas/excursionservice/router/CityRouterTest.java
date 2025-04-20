@@ -14,24 +14,24 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.net.URI;
+
 import static java.lang.System.out;
-import static java.net.URI.create;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.MediaType.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(value = MethodOrderer.MethodName.class)
-public class AuthorityRouterTest {
+public class CityRouterTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @Test
-    @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
-    void handleAAuthoritiesTest() throws Exception {
+    void handleACitiesTest() throws Exception {
         this.mockMvc
-                .perform(MockMvcRequestBuilders.get(create("/authorities")))
+                .perform(MockMvcRequestBuilders.get(URI.create("/cities")))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(APPLICATION_JSON))
                 .andDo(result -> result.getResponse().setCharacterEncoding("UTF-8"))
@@ -42,10 +42,9 @@ public class AuthorityRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
-    void handleBAuthoritiesSseTest() throws Exception {
+    void handleBCitiesSseTest() throws Exception {
         this.mockMvc
-                .perform(MockMvcRequestBuilders.get(create("/authorities/sse")))
+                .perform(MockMvcRequestBuilders.get(URI.create("/cities/sse")))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(TEXT_EVENT_STREAM))
                 .andDo(result -> result.getResponse().setCharacterEncoding("UTF-8"))
@@ -56,10 +55,9 @@ public class AuthorityRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
-    void handleCAuthoritiesAsyncTest() throws Exception {
+    void handleCCitiesAsyncTest() throws Exception {
         this.mockMvc
-                .perform(MockMvcRequestBuilders.get(create("/authorities/async")))
+                .perform(MockMvcRequestBuilders.get(URI.create("/cities/async")))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(APPLICATION_JSON))
                 .andDo(result -> result.getResponse().setCharacterEncoding("UTF-8"))
@@ -70,12 +68,11 @@ public class AuthorityRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
-    void handleDAuthorityByIdTest() throws Exception {
+    void handleDCityByIdTest() throws Exception {
         this.mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get(create("/authorities/by-id"))
-                                .param("authorityId", "1")
+                        MockMvcRequestBuilders.get(URI.create("/cities/by-id"))
+                                .param("cityId", "1")
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(APPLICATION_JSON))
@@ -87,12 +84,11 @@ public class AuthorityRouterTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
-    void handleEAuthorityByIdAsyncTest() throws Exception {
+    void handleECityByIdAsyncTest() throws Exception {
         this.mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get(create("/authorities/by-id/async"))
-                                .param("authorityId", "1")
+                        MockMvcRequestBuilders.get(URI.create("/cities/by-id/async"))
+                                .param("cityId", "4")
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(APPLICATION_JSON))
@@ -108,12 +104,16 @@ public class AuthorityRouterTest {
     void handleFCreateOrUpdateTest() throws Exception {
         @Language("JSON") String content = """
                 {
-                    "name": "MODER"
+                    "name": "Волгоград",
+                    "description": "Описание города Волгоград",
+                    "population": 1025662,
+                    "countryId": 1,
+                    "capital": false
                 }
                 """;
         this.mockMvc
                 .perform(
-                        MockMvcRequestBuilders.post(create("/authorities/create-update"))
+                        MockMvcRequestBuilders.post(URI.create("/cities/create-update"))
                                 .with(SecurityMockMvcRequestPostProcessors.csrf())
                                 .contentType(APPLICATION_JSON)
                                 .content(content)
@@ -129,16 +129,16 @@ public class AuthorityRouterTest {
 
     @Test
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
-    void handleGCreateOrUpdateTest() throws Exception {
+    void handleGCreateOrUpdateAsyncTest() throws Exception {
         @Language("JSON") String content = """
                 {
-                    "id": 3,
-                    "name": "MODERATOR"
+                    "id": 7,
+                    "description": "Описание города Волгоград EDITED"
                 }
                 """;
         this.mockMvc
                 .perform(
-                        MockMvcRequestBuilders.post(create("/authorities/create-update/async"))
+                        MockMvcRequestBuilders.post(URI.create("/cities/create-update/async"))
                                 .with(SecurityMockMvcRequestPostProcessors.csrf())
                                 .contentType(APPLICATION_JSON)
                                 .content(content)
@@ -154,13 +154,12 @@ public class AuthorityRouterTest {
 
     @Test
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
-    void handleHDeleteByIdTest() throws Exception {
+    void handleHDeleteCityTest() throws Exception {
         this.mockMvc
                 .perform(
-                        MockMvcRequestBuilders.delete(create("/authorities/delete"))
+                        MockMvcRequestBuilders.delete(URI.create("/cities/delete"))
                                 .with(SecurityMockMvcRequestPostProcessors.csrf())
-                                .param("authorityId", "3")
-                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .param("cityId", "7")
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(new MediaType(TEXT_PLAIN, UTF_8)))

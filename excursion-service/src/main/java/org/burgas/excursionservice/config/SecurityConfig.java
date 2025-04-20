@@ -43,7 +43,7 @@ public class SecurityConfig {
 
                                         "/identities/create", "/identities/create/async",
 
-                                        "/countries","/countries/sse", "/countries/async",
+                                        "/countries", "/countries/sse", "/countries/async",
                                         "/countries/by-id", "/countries/by-id/async",
 
                                         "/cities", "/cities/async", "/cities/sse",
@@ -53,9 +53,11 @@ public class SecurityConfig {
 
                                         "/guides", "/guides/sse", "/guides/async", "/guides/by-id", "/guides/by-id/async",
 
-                                        "/excursions","/excursions/sse","/excursions/async",
-                                        "/excursions/by-guide","/excursions/by-guide/sse","/excursions/by-guide/async",
-                                        "/excursions/by-id","/excursions/by-id/async"
+                                        "/excursions", "/excursions/sse", "/excursions/async",
+                                        "/excursions/by-guide", "/excursions/by-guide/sse", "/excursions/by-guide/async",
+                                        "/excursions/by-session", "/excursions/by-session/async",
+                                        "/excursions/by-id", "/excursions/by-id/async",
+                                        "/excursions/add-to-session", "/excursions/add-to-session/async"
                                 )
                                 .permitAll()
 
@@ -65,7 +67,10 @@ public class SecurityConfig {
                                         "/identities/delete", "/identities/delete/async",
                                         "/identities/upload-image", "/identities/upload-image/async",
                                         "/identities/change-image", "/identities/change-image/async",
-                                        "/identities/delete-image", "/identities/delete-image/async"
+                                        "/identities/delete-image", "/identities/delete-image/async",
+
+                                        "/excursions/by-identity", "/excursions/by-identity/sse", "/excursions/by-identity/async",
+                                        "/excursions/add-by-identity","/excursions/add-by-identity/async"
                                 )
                                 .hasAnyAuthority("ADMIN", "USER")
 
@@ -79,6 +84,7 @@ public class SecurityConfig {
                                         "/authorities/delete", "/authorities/delete/async",
 
                                         "/identities", "/identities/sse", "/identities/async",
+                                        "/identities/by-excursion", "/identities/by-excursion/sse", "/identities/by-excursion/async",
                                         "/identities/control", "/identities/control/async",
 
                                         "/countries/create-update", "/countries/create-update/async",
@@ -101,15 +107,15 @@ public class SecurityConfig {
 
                                         "/guides/create-update", "/guides/create-update/async",
                                         "/guides/delete", "/guides/delete/async",
-                                        "/guides/upload-image","/guides/upload-image/async",
-                                        "/guides/change-image","/guides/change-image/async",
-                                        "/guides/delete-image","/guides/delete-image/async",
+                                        "/guides/upload-image", "/guides/upload-image/async",
+                                        "/guides/change-image", "/guides/change-image/async",
+                                        "/guides/delete-image", "/guides/delete-image/async",
 
-                                        "/excursions/create-update","/excursions/create-update/async",
-                                        "/excursions/delete","/excursions/delete/async",
-                                        "/excursions/upload-image","/excursions/upload-image/async",
-                                        "/excursions/change-image","/excursions/change-image/async",
-                                        "/excursions/delete-image","/excursions/delete-image/async"
+                                        "/excursions/create-update", "/excursions/create-update/async",
+                                        "/excursions/delete", "/excursions/delete/async",
+                                        "/excursions/upload-image", "/excursions/upload-image/async",
+                                        "/excursions/change-image", "/excursions/change-image/async",
+                                        "/excursions/delete-image", "/excursions/delete-image/async"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )
