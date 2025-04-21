@@ -124,7 +124,7 @@ public class CityRouter {
                                                 .get()
                                 )
                 )
-                .PUT(
+                .POST(
                         "/cities/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
@@ -135,7 +135,7 @@ public class CityRouter {
                                         )
                                 )
                 )
-                .PUT(
+                .POST(
                         "/cities/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
@@ -148,13 +148,13 @@ public class CityRouter {
                                 )
                 )
                 .DELETE(
-                        "/cities/delete", request -> ServerResponse
+                        "/cities/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(cityService.deleteImage(request.param("cityId").orElse(null)))
                 )
                 .DELETE(
-                        "/cities/delete/async", request -> ServerResponse
+                        "/cities/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(cityService.deleteImageAsync(request.param("cityId").orElse(null)).get())

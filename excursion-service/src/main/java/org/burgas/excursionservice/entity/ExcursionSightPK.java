@@ -2,6 +2,8 @@ package org.burgas.excursionservice.entity;
 
 import jakarta.persistence.Embeddable;
 
+import java.util.Objects;
+
 @Embeddable
 @SuppressWarnings("ALL")
 public final class ExcursionSightPK {
@@ -15,6 +17,18 @@ public final class ExcursionSightPK {
 
     public Long getSightId() {
         return sightId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ExcursionSightPK that = (ExcursionSightPK) o;
+        return Objects.equals(excursionId, that.excursionId) && Objects.equals(sightId, that.sightId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(excursionId, sightId);
     }
 
     public static Builder builder() {

@@ -95,6 +95,15 @@ public class IdentityService {
                 .orElseGet(IdentityResponse::new);
     }
 
+    public IdentityResponse findByIdOrElseThrow(final String identityId) {
+        return this.identityRepository.findById(Long.valueOf(identityId))
+                .stream()
+                .peek(identity -> log.info(IDENTITY_FOUND_BY_ID.getLogMessage(), identity))
+                .map(this.identityMapper::toIdentityResponse)
+                .findFirst()
+                .orElseThrow(() -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage()));
+    }
+
     @Async(value = "taskExecutor")
     public CompletableFuture<IdentityResponse> findByIdAsync(final String identityId) {
         return supplyAsync(() -> this.identityRepository.findById(Long.valueOf(identityId)))

@@ -2,6 +2,8 @@ package org.burgas.excursionservice.entity;
 
 import jakarta.persistence.Embeddable;
 
+import java.util.Objects;
+
 @Embeddable
 @SuppressWarnings("ALL")
 public final class ExcursionIdentityPK {
@@ -23,6 +25,18 @@ public final class ExcursionIdentityPK {
 
     public void setIdentityId(Long identityId) {
         this.identityId = identityId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ExcursionIdentityPK that = (ExcursionIdentityPK) o;
+        return Objects.equals(excursionId, that.excursionId) && Objects.equals(identityId, that.identityId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(excursionId, identityId);
     }
 
     public static Builder builder() {

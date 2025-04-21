@@ -2,6 +2,7 @@ package org.burgas.excursionservice.router;
 
 import org.burgas.excursionservice.dto.ExcursionRequest;
 import org.burgas.excursionservice.dto.ExcursionResponse;
+import org.burgas.excursionservice.filter.IdentityFilterFunction;
 import org.burgas.excursionservice.service.ExcursionService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ public class ExcursionRouter {
     @Bean
     public RouterFunction<ServerResponse> excursionRoutes(final ExcursionService excursionService) {
         return route()
+                .filter(new IdentityFilterFunction())
                 .GET(
                         "/excursions", _ -> ServerResponse
                                 .status(OK)

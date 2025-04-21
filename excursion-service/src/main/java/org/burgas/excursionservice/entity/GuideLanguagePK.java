@@ -2,6 +2,8 @@ package org.burgas.excursionservice.entity;
 
 import jakarta.persistence.Embeddable;
 
+import java.util.Objects;
+
 @Embeddable
 @SuppressWarnings("ALL")
 public final class GuideLanguagePK {
@@ -23,6 +25,18 @@ public final class GuideLanguagePK {
 
     public void setLanguageId(Long languageId) {
         this.languageId = languageId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        GuideLanguagePK that = (GuideLanguagePK) o;
+        return Objects.equals(guideId, that.guideId) && Objects.equals(languageId, that.languageId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(guideId, languageId);
     }
 
     public static Builder builder() {

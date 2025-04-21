@@ -2,6 +2,7 @@ package org.burgas.excursionservice.router;
 
 import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,14 @@ import static org.springframework.http.MediaType.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestMethodOrder(value = MethodOrderer.MethodName.class)
+@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 public class AuthorityRouterTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @Test
+    @Order(value = 1)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
     void handleAAuthoritiesTest() throws Exception {
         this.mockMvc
@@ -42,6 +44,7 @@ public class AuthorityRouterTest {
     }
 
     @Test
+    @Order(value = 2)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
     void handleBAuthoritiesSseTest() throws Exception {
         this.mockMvc
@@ -56,6 +59,7 @@ public class AuthorityRouterTest {
     }
 
     @Test
+    @Order(value = 3)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
     void handleCAuthoritiesAsyncTest() throws Exception {
         this.mockMvc
@@ -70,6 +74,7 @@ public class AuthorityRouterTest {
     }
 
     @Test
+    @Order(value = 4)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
     void handleDAuthorityByIdTest() throws Exception {
         this.mockMvc
@@ -87,6 +92,7 @@ public class AuthorityRouterTest {
     }
 
     @Test
+    @Order(value = 5)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
     void handleEAuthorityByIdAsyncTest() throws Exception {
         this.mockMvc
@@ -104,6 +110,7 @@ public class AuthorityRouterTest {
     }
 
     @Test
+    @Order(value = 6)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
     void handleFCreateOrUpdateTest() throws Exception {
         @Language("JSON") String content = """
@@ -128,6 +135,7 @@ public class AuthorityRouterTest {
     }
 
     @Test
+    @Order(value = 7)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
     void handleGCreateOrUpdateTest() throws Exception {
         @Language("JSON") String content = """
@@ -153,6 +161,7 @@ public class AuthorityRouterTest {
     }
 
     @Test
+    @Order(value = 8)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
     void handleHDeleteByIdTest() throws Exception {
         this.mockMvc

@@ -70,7 +70,10 @@ public class SecurityConfig {
                                         "/identities/delete-image", "/identities/delete-image/async",
 
                                         "/excursions/by-identity", "/excursions/by-identity/sse", "/excursions/by-identity/async",
-                                        "/excursions/add-by-identity","/excursions/add-by-identity/async"
+                                        "/excursions/add-by-identity", "/excursions/add-by-identity/async",
+
+                                        "/payments/make-identity-payment", "/payments/make-identity-payment-id",
+                                        "/payments/by-identity", "/payments/by-identity/async"
                                 )
                                 .hasAnyAuthority("ADMIN", "USER")
 
@@ -97,7 +100,7 @@ public class SecurityConfig {
                                         "/cities/delete", "/cities/delete/async",
                                         "/cities/upload-image", "/cities/upload-image/async",
                                         "/cities/change-image", "/cities/change-image/async",
-                                        "/cities/delete", "/cities/delete/async",
+                                        "/cities/delete-image", "/cities/delete-image/async",
 
                                         "/sights/create-update", "/sights/create-update/async",
                                         "/sights/delete", "/sights/delete/async",
@@ -115,7 +118,9 @@ public class SecurityConfig {
                                         "/excursions/delete", "/excursions/delete/async",
                                         "/excursions/upload-image", "/excursions/upload-image/async",
                                         "/excursions/change-image", "/excursions/change-image/async",
-                                        "/excursions/delete-image", "/excursions/delete-image/async"
+                                        "/excursions/delete-image", "/excursions/delete-image/async",
+
+                                        "/payments/by-id", "/payments/by-id/async"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )
