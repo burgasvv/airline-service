@@ -1,11 +1,11 @@
 package org.burgas.ticketservice.mapper;
 
+import org.burgas.ticketservice.dto.IdentityResponse;
 import org.burgas.ticketservice.dto.RequireRequest;
 import org.burgas.ticketservice.dto.RequireResponse;
 import org.burgas.ticketservice.entity.Require;
 import org.burgas.ticketservice.repository.IdentityRepository;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 @Component
 public final class RequireMapper {
@@ -18,44 +18,36 @@ public final class RequireMapper {
         this.identityMapper = identityMapper;
     }
 
-    public Mono<Require> toRequire(final Mono<RequireRequest> requireRequestMono) {
-        return requireRequestMono.flatMap(
-                requireRequest -> Mono.fromCallable(() ->
-                        Require.builder()
-                                .name(requireRequest.getName())
-                                .surname(requireRequest.getSurname())
-                                .patronymic(requireRequest.getPatronymic())
-                                .passport(requireRequest.getPassport())
-                                .adminId(requireRequest.getAdminId())
-                                .userId(requireRequest.getUserId())
-                                .closed(false)
-                                .isNew(true)
-                                .build())
-        );
+    public Require toRequire(final RequireRequest requireRequest) {
+        return Require.builder()
+                .name(requireRequest.getName())
+                .surname(requireRequest.getSurname())
+                .patronymic(requireRequest.getPatronymic())
+                .passport(requireRequest.getPassport())
+                .adminId(requireRequest.getAdminId())
+                .userId(requireRequest.getUserId())
+                .closed(false)
+                .build();
     }
 
-    public Mono<RequireResponse> toRequireResponse(final Mono<Require> requireMono) {
-        return requireMono.flatMap(
-                require -> Mono.zip(
+    public RequireResponse toRequireResponse(final Require require) {
+        return RequireResponse.builder()
+                .id(require.getId())
+                .name(require.getName())
+                .surname(require.getSurname())
+                .patronymic(require.getPatronymic())
+                .passport(require.getPassport())
+                .closed(require.getClosed())
+                .admin(
                         this.identityRepository.findById(require.getAdminId())
-                                .flatMap(identity -> this.identityMapper.toIdentityResponse(Mono.fromCallable(() -> identity))),
-                        this.identityRepository.findById(require.getUserId())
-                                .flatMap(identity -> this.identityMapper.toIdentityResponse(Mono.fromCallable(() -> identity)))
+                                .map(this.identityMapper::toIdentityResponse)
+                                .orElseGet(IdentityResponse::new)
                 )
-                        .flatMap(
-                                objects -> Mono.fromCallable(() ->
-                                        RequireResponse.builder()
-                                                .id(require.getId())
-                                                .name(require.getName())
-                                                .surname(require.getSurname())
-                                                .patronymic(require.getPatronymic())
-                                                .passport(require.getPassport())
-                                                .closed(require.getClosed())
-                                                .admin(objects.getT1())
-                                                .user(objects.getT2())
-                                                .build()
-                                )
-                        )
-        );
+                .user(
+                        this.identityRepository.findById(require.getUserId())
+                                .map(this.identityMapper::toIdentityResponse)
+                                .orElseGet(IdentityResponse::new)
+                )
+                .build();
     }
 }

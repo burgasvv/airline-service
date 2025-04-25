@@ -1,12 +1,13 @@
 package org.burgas.ticketservice.repository;
 
 import org.burgas.ticketservice.entity.Require;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Repository
-public interface RequireRepository extends R2dbcRepository<Require, Long> {
+public interface RequireRepository extends JpaRepository<Require, Long> {
 
-    Flux<Require> findRequiresByClosed(Boolean closed);
+    List<Require> findRequiresByClosed(Boolean closed);
 }

@@ -6,7 +6,6 @@ import org.burgas.ticketservice.entity.Authority;
 import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.AuthorityRepository;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 @Component
 public final class AuthorityMapper implements MapperDataHandler {
@@ -17,43 +16,27 @@ public final class AuthorityMapper implements MapperDataHandler {
         this.authorityRepository = authorityRepository;
     }
 
-    public Mono<Authority> toAuthority(final Mono<AuthorityRequest> authorityRequestMono) {
-        return authorityRequestMono
-                .flatMap(
-                        authorityRequest -> {
-                            Long authorityId = this.getData(authorityRequest.getId(), 0L);
-                            return this.authorityRepository
-                                    .findById(authorityId)
-                                    .flatMap(
-                                            authority -> Mono.fromCallable(
-                                                    () -> Authority.builder()
-                                                            .id(authority.getId())
-                                                            .name(this.getData(authorityRequest.getName(), authority.getName()))
-                                                            .isNew(false)
-                                                            .build()
-                                            )
-                                    )
-                                    .switchIfEmpty(
-                                            Mono.fromCallable(
-                                                    () -> Authority.builder()
-                                                            .name(authorityRequest.getName())
-                                                            .isNew(true)
-                                                            .build()
-                                            )
-                                    );
-                        }
+    public Authority toAuthority(final AuthorityRequest authorityRequest) {
+        Long authorityId = this.getData(authorityRequest.getId(), 0L);
+        return this.authorityRepository
+                .findById(authorityId)
+                .map(
+                        authority -> Authority.builder()
+                                .id(authority.getId())
+                                .name(this.getData(authorityRequest.getName(), authority.getName()))
+                                .build()
+                )
+                .orElseGet(
+                        () -> Authority.builder()
+                                .name(authorityRequest.getName())
+                                .build()
                 );
     }
 
-    public Mono<AuthorityResponse> toAuthorityResponse(final Mono<Authority> authorityMono) {
-        return authorityMono
-                .flatMap(
-                        authority -> Mono.fromCallable(
-                                () -> AuthorityResponse.builder()
-                                        .id(authority.getId())
-                                        .name(authority.getName())
-                                        .build()
-                        )
-                );
+    public AuthorityResponse toAuthorityResponse(final Authority authority) {
+        return AuthorityResponse.builder()
+                .id(authority.getId())
+                .name(authority.getName())
+                .build();
     }
 }

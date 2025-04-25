@@ -1,21 +1,22 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Persistable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 import java.util.Objects;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@Entity
 @SuppressWarnings("unused")
-public final class FilialDepartment implements Persistable<Long> {
+public final class FilialDepartment {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long filialId;
     private Long departmentId;
-
-    @Transient
-    private Boolean isNew;
 
     public Long getId() {
         return id;
@@ -42,25 +43,15 @@ public final class FilialDepartment implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         FilialDepartment that = (FilialDepartment) o;
-        return Objects.equals(id, that.id) && Objects.equals(filialId, that.filialId) &&
-               Objects.equals(departmentId, that.departmentId) && Objects.equals(isNew, that.isNew);
+        return Objects.equals(id, that.id) && Objects.equals(filialId, that.filialId) && Objects.equals(departmentId, that.departmentId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, filialId, departmentId, isNew);
+        return Objects.hash(id, filialId, departmentId);
     }
 
     @Override
@@ -69,7 +60,6 @@ public final class FilialDepartment implements Persistable<Long> {
                "id=" + id +
                ", filialId=" + filialId +
                ", departmentId=" + departmentId +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -97,11 +87,6 @@ public final class FilialDepartment implements Persistable<Long> {
 
         public Builder departmentId(Long departmentId) {
             this.filialDepartment.departmentId = departmentId;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.filialDepartment.isNew = isNew;
             return this;
         }
 

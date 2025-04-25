@@ -124,7 +124,7 @@ public class CountryRouter {
                                                 .get()
                                 )
                 )
-                .PUT(
+                .POST(
                         "/countries/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
@@ -135,7 +135,7 @@ public class CountryRouter {
                                         )
                                 )
                 )
-                .PUT(
+                .POST(
                         "/countries/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))

@@ -45,11 +45,6 @@ Host: localhost:9000
 Authorization: Basic admin@gmail.com admin
 
 ###
-GET /identities/sse
-Host: localhost:9000
-Authorization: Basic admin@gmail.com admin
-
-###
 GET /identities/by-id?identityId=3
 Host: localhost:9000
 Authorization: Basic user@gmail.com user
@@ -347,3 +342,62 @@ Content-Type: application/json
     "positionId": 1,
     "filialDepartmentId": 1
 }
+
+### Flight Requests
+
+###
+GET /flights
+Host: localhost:9000
+
+###
+GET /flights/by-departure-city-arrival-city?departureCityId=1&arrivalCityId=2&departureDate=2025-04-25
+Host: localhost:9000
+
+###
+GET /flights/by-departure-city-by-arrival-city?departureCityId=1&arrivalCityId=2
+Host: localhost:9000
+
+###
+GET /flights/by-departure-city-by-arrival-city-back?flightId=1
+Host: localhost:9000
+
+###
+GET /flights/by-id?flightId=1
+Host: localhost:9000
+
+###
+POST /flights/create-update
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "departureId": 1,
+    "arrivalId": 4,
+    "planeId": 1,
+    "departureAt": "2025-04-25T10:00",
+    "arrivalAt": "2025-04-25T12:30",
+    "inProgress": false,
+    "completed": false
+}
+
+###
+POST /flights/create-update
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "departureId": 4,
+    "arrivalId": 1,
+    "planeId": 2,
+    "departureAt": "2025-05-25T13:00",
+    "arrivalAt": "2025-05-25T15:30",
+    "inProgress": false,
+    "completed": false
+}
+
+###
+POST /flights/add-employee?flightId=1&employeeId=1
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin

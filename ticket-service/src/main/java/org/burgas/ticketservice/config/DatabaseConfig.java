@@ -1,12 +1,13 @@
 package org.burgas.ticketservice.config;
 
-import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.r2dbc.connection.init.CompositeDatabasePopulator;
-import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
-import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
+import org.springframework.jdbc.datasource.init.CompositeDatabasePopulator;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class DatabaseConfig {
@@ -22,10 +23,10 @@ public class DatabaseConfig {
     }
 
     @Bean
-    public ConnectionFactoryInitializer connectionFactoryInitializer(ConnectionFactory connectionFactory) {
-        ConnectionFactoryInitializer connectionFactoryInitializer = new ConnectionFactoryInitializer();
-        connectionFactoryInitializer.setConnectionFactory(connectionFactory);
-        connectionFactoryInitializer.setDatabasePopulator(compositeDatabasePopulator());
-        return connectionFactoryInitializer;
+    public DataSourceInitializer connectionFactoryInitializer(DataSource DataSource) {
+        DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
+        dataSourceInitializer.setDataSource(DataSource);
+        dataSourceInitializer.setDatabasePopulator(compositeDatabasePopulator());
+        return dataSourceInitializer;
     }
 }

@@ -1,22 +1,26 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
 import java.util.Objects;
 
+import static jakarta.persistence.GenerationType.*;
+
+@Entity
 @SuppressWarnings("unused")
-public final class Airport implements Persistable<Long> {
+public final class Airport {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
     private Long addressId;
     private Boolean opened;
-
-    @Transient
-    private Boolean isNew;
 
     public Long getId() {
         return id;
@@ -51,25 +55,16 @@ public final class Airport implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Airport airport = (Airport) o;
-        return Objects.equals(id, airport.id) && Objects.equals(name, airport.name) &&
-               Objects.equals(addressId, airport.addressId) && Objects.equals(opened, airport.opened) && Objects.equals(isNew, airport.isNew);
+        return Objects.equals(id, airport.id) && Objects.equals(name, airport.name) && Objects.equals(addressId, airport.addressId) &&
+               Objects.equals(opened, airport.opened);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, addressId, opened, isNew);
+        return Objects.hash(id, name, addressId, opened);
     }
 
     @Override
@@ -79,7 +74,6 @@ public final class Airport implements Persistable<Long> {
                ", name='" + name + '\'' +
                ", addressId=" + addressId +
                ", opened=" + opened +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -112,11 +106,6 @@ public final class Airport implements Persistable<Long> {
 
         public Builder opened(Boolean opened) {
             this.airport.opened = opened;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.airport.isNew = isNew;
             return this;
         }
 

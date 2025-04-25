@@ -7,8 +7,9 @@ import org.burgas.ticketservice.mapper.RequireMapper;
 import org.burgas.ticketservice.repository.RequireRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -28,29 +29,33 @@ public class RequireService {
         this.kafkaProducer = kafkaProducer;
     }
 
-    public Flux<RequireResponse> findAllByClosed(final String closed) {
+    public List<RequireResponse> findAllByClosed(final String closed) {
         return this.requireRepository.findRequiresByClosed(Boolean.parseBoolean(closed))
-                .flatMap(require -> this.requireMapper.toRequireResponse(Mono.fromCallable(() -> require)));
+                .stream()
+                .map(this.requireMapper::toRequireResponse)
+                .toList();
     }
 
-    public Mono<RequireResponse> findById(final String requireId) {
+    public RequireResponse findById(final String requireId) {
         return this.requireRepository.findById(Long.valueOf(requireId))
-                .flatMap(require -> this.requireMapper.toRequireResponse(Mono.fromCallable(() -> require)));
+                .map(this.requireMapper::toRequireResponse)
+                .orElseGet(RequireResponse::new);
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<RequireResponse> createOrUpdate(final Mono<RequireRequest> requireRequestMono) {
-        return requireRequestMono.flatMap(
-                requireRequest -> this.requireMapper.toRequire(Mono.fromCallable(() -> requireRequest))
-                        .flatMap(this.requireRepository::save)
-                        .flatMap(require -> this.requireMapper.toRequireResponse(Mono.fromCallable(() -> require)))
-                        .flatMap(
-                                requireResponse -> this.kafkaProducer.sendStringRequireMessage(Mono.fromCallable(() -> requireResponse))
-                                        .then(Mono.fromCallable(() -> requireResponse))
-                        )
-        );
+    public RequireResponse createOrUpdate(final RequireRequest requireRequest) {
+        return Optional.of(this.requireMapper.toRequire(requireRequest))
+                .map(this.requireRepository::save)
+                .map(this.requireMapper::toRequireResponse)
+                .map(
+                        requireResponse -> {
+                            this.kafkaProducer.sendStringRequireMessage(requireResponse);
+                            return requireResponse;
+                        }
+                )
+                .orElseThrow();
     }
 }

@@ -4,7 +4,6 @@ import org.burgas.ticketservice.dto.RequireAnswerRequest;
 import org.burgas.ticketservice.dto.RequireAnswerResponse;
 import org.burgas.ticketservice.entity.RequireAnswerToken;
 import org.burgas.ticketservice.exception.RequireAlreadyClosedException;
-import org.burgas.ticketservice.exception.RequireNotFoundException;
 import org.burgas.ticketservice.kafka.KafkaProducer;
 import org.burgas.ticketservice.mapper.RequireAnswerMapper;
 import org.burgas.ticketservice.mapper.RequireAnswerTokenMapper;
@@ -13,13 +12,12 @@ import org.burgas.ticketservice.repository.RequireAnswerTokenRepository;
 import org.burgas.ticketservice.repository.RequireRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.burgas.ticketservice.message.RequireMessage.REQUIRE_CLOSED;
-import static org.burgas.ticketservice.message.RequireMessage.REQUIRE_NOT_FOUND;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -47,72 +45,72 @@ public class RequireAnswerService {
         this.kafkaProducer = kafkaProducer;
     }
 
-    public Flux<RequireAnswerResponse> findByUserId(final String userId) {
+    public List<RequireAnswerResponse> findByUserId(final String userId) {
         return this.requireAnswerRepository.findRequireAnswersByUserId(Long.valueOf(userId))
-                .flatMap(requireAnswer -> this.requireAnswerMapper.toRequireAnswerResponse(Mono.fromCallable(() -> requireAnswer)));
+                .stream()
+                .map(this.requireAnswerMapper::toRequireAnswerResponse)
+                .toList();
     }
 
-    public Flux<RequireAnswerResponse> findByAdminId(final String adminId) {
+    public List<RequireAnswerResponse> findByAdminId(final String adminId) {
         return this.requireAnswerRepository.findRequireAnswersByAdminId(Long.valueOf(adminId))
-                .flatMap(requireAnswer -> this.requireAnswerMapper.toRequireAnswerResponse(Mono.fromCallable(() -> requireAnswer)));
+                .stream()
+                .map(this.requireAnswerMapper::toRequireAnswerResponse)
+                .toList();
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<Object> sendAnswerOrToken(final Mono<RequireAnswerRequest> requireAnswerRequestMono) {
-        return requireAnswerRequestMono.flatMap(
-                requireAnswerRequest -> this.requireRepository.findById(requireAnswerRequest.getRequireId())
-                        .flatMap(
-                                require -> {
-                                    if (!require.getClosed()) {
-                                        require.setClosed(true);
-                                        require.setNew(false);
-                                        return this.requireRepository.save(require);
+    public Object sendAnswerOrToken(final RequireAnswerRequest requireAnswerRequest) {
+        return this.requireRepository.findById(requireAnswerRequest.getRequireId())
+                .map(
+                        require -> {
+                            if (!require.getClosed()) {
+                                require.setClosed(true);
+                                return this.requireRepository.save(require);
 
-                                    } else {
-                                        return Mono.error(new RequireAlreadyClosedException(REQUIRE_CLOSED.getMessage()));
-                                    }
-                                }
-                        )
-                        .switchIfEmpty(
-                                Mono.error(new RequireNotFoundException(REQUIRE_NOT_FOUND.getMessage()))
-                        )
-                        .flatMap(
-                                _ -> {
-                                    if (requireAnswerRequest.getAllowed()) {
-                                        return this.requireAnswerMapper.toRequireAnswer(Mono.fromCallable(() -> requireAnswerRequest))
-                                                .flatMap(this.requireAnswerRepository::save)
-                                                .flatMap(
-                                                        requireAnswer -> this.requireAnswerTokenRepository.save(
-                                                                RequireAnswerToken.builder()
-                                                                        .value(UUID.randomUUID())
-                                                                        .requireAnswerId(requireAnswer.getId())
-                                                                        .isNew(true)
-                                                                        .build()
-                                                        )
+                            } else {
+                                throw new RequireAlreadyClosedException(REQUIRE_CLOSED.getMessage());
+                            }
+                        }
+                )
+                .map(
+                        _ -> {
+                            if (requireAnswerRequest.getAllowed()) {
+                                return Optional.of(this.requireAnswerMapper.toRequireAnswer(requireAnswerRequest))
+                                        .map(this.requireAnswerRepository::save)
+                                        .map(
+                                                requireAnswer -> this.requireAnswerTokenRepository.save(
+                                                        RequireAnswerToken.builder()
+                                                                .value(UUID.randomUUID())
+                                                                .requireAnswerId(requireAnswer.getId())
+                                                                .build()
                                                 )
-                                                .flatMap(requireAnswerToken -> this.requireAnswerTokenMapper
-                                                        .toRequireAnswerTokenResponse(Mono.fromCallable(() -> requireAnswerToken)))
-                                                .flatMap(
-                                                        requireAnswerTokenResponse -> this.kafkaProducer
-                                                                .sendStringRequireAnswerTokenMessage(Mono.fromCallable(() -> requireAnswerTokenResponse))
-                                                                .then(Mono.fromCallable(() -> requireAnswerTokenResponse))
-                                                );
-                                    } else {
-                                        return this.requireAnswerMapper.toRequireAnswer(Mono.fromCallable(() -> requireAnswerRequest))
-                                                .flatMap(this.requireAnswerRepository::save)
-                                                .flatMap(requireAnswer -> this.requireAnswerMapper
-                                                        .toRequireAnswerResponse(Mono.fromCallable(() -> requireAnswer)))
-                                                .flatMap(
-                                                        requireAnswerResponse -> this.kafkaProducer
-                                                                .sendStringRequireAnswerMessage(Mono.fromCallable(() -> requireAnswerResponse))
-                                                                .then(Mono.fromCallable(() -> requireAnswerResponse))
-                                                );
-                                    }
-                                }
-                        )
-        );
+                                        )
+                                        .map(this.requireAnswerTokenMapper::toRequireAnswerTokenResponse)
+                                        .map(
+                                                requireAnswerTokenResponse -> {
+                                                    this.kafkaProducer
+                                                            .sendStringRequireAnswerTokenMessage(requireAnswerTokenResponse);
+                                                    return requireAnswerTokenResponse;
+                                                }
+                                        )
+                                        .orElseThrow();
+                            } else {
+                                return Optional.of(this.requireAnswerMapper.toRequireAnswer(requireAnswerRequest))
+                                        .map(this.requireAnswerRepository::save)
+                                        .map(this.requireAnswerMapper::toRequireAnswerResponse)
+                                        .map(
+                                                requireAnswerResponse -> {
+                                                    this.kafkaProducer.sendStringRequireAnswerMessage(requireAnswerResponse);
+                                                    return requireAnswerResponse;
+                                                }
+                                        )
+                                        .orElseThrow();
+                            }
+                        }
+                );
     }
 }

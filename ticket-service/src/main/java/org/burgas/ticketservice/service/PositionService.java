@@ -7,8 +7,9 @@ import org.burgas.ticketservice.mapper.PositionMapper;
 import org.burgas.ticketservice.repository.PositionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 import static org.burgas.ticketservice.message.PositionMessage.POSITION_DELETED;
@@ -29,40 +30,45 @@ public class PositionService {
         this.positionMapper = positionMapper;
     }
 
-    public Flux<PositionResponse> findAll() {
+    public List<PositionResponse> findAll() {
         return this.positionRepository.findAll()
-                .flatMap(position -> this.positionMapper.toPositionResponse(Mono.fromCallable(() -> position)));
+                .stream()
+                .map(this.positionMapper::toPositionResponse)
+                .toList();
     }
 
-    public Mono<PositionResponse> findById(final String positionId) {
+    public PositionResponse findById(final String positionId) {
         return this.positionRepository.findById(Long.valueOf(positionId))
-                .flatMap(position -> this.positionMapper.toPositionResponse(Mono.fromCallable(() -> position)));
+                .map(this.positionMapper::toPositionResponse)
+                .orElseGet(PositionResponse::new);
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<PositionResponse> createOrUpdate(final Mono<PositionRequest> positionRequestMono) {
-        return positionRequestMono.flatMap(
-                positionRequest -> this.positionMapper.toPosition(Mono.fromCallable(() -> positionRequest))
-                        .flatMap(this.positionRepository::save)
-                        .flatMap(position -> this.positionMapper.toPositionResponse(Mono.fromCallable(() -> position)))
-        );
+    public PositionResponse createOrUpdate(final PositionRequest positionRequest) {
+        return Optional.of(this.positionMapper.toPosition(positionRequest))
+                .map(this.positionRepository::save)
+                .map(this.positionMapper::toPositionResponse)
+                .orElseGet(PositionResponse::new);
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<String> deleteById(final String positionId) {
+    public String deleteById(final String positionId) {
         return this.positionRepository.findById(Long.valueOf(positionId))
-                .flatMap(
-                        position -> this.positionRepository.deleteById(requireNonNull(position.getId()))
-                                .thenReturn(POSITION_DELETED.getMessage())
+                .map(
+                        position -> {
+                            this.positionRepository.deleteById(requireNonNull(position.getId()));
+                            return POSITION_DELETED.getMessage();
+                        }
                 )
-                .switchIfEmpty(
-                        Mono.error(new PositionNotFoundException(POSITION_NOT_FOUND.getMessage()))
+                .orElseThrow(
+                        () -> new PositionNotFoundException(POSITION_NOT_FOUND.getMessage())
                 );
     }
+
 }

@@ -1,5 +1,6 @@
 package org.burgas.ticketservice.mapper;
 
+import org.burgas.ticketservice.dto.AddressResponse;
 import org.burgas.ticketservice.dto.FilialRequest;
 import org.burgas.ticketservice.dto.FilialResponse;
 import org.burgas.ticketservice.entity.Filial;
@@ -7,7 +8,6 @@ import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.AddressRepository;
 import org.burgas.ticketservice.repository.FilialRepository;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 
@@ -24,55 +24,42 @@ public final class FilialMapper implements MapperDataHandler {
         this.addressMapper = addressMapper;
     }
 
-    public Mono<Filial> toFilial(final Mono<FilialRequest> filialRequestMono) {
-        return filialRequestMono.flatMap(
-                filialRequest -> {
-                    Long filialId = this.getData(filialRequest.getId(), 0L);
-                    return this.filialRepository.findById(filialId)
-                            .flatMap(
-                                    filial -> Mono.fromCallable(() ->
-                                            Filial.builder()
-                                                    .id(filial.getId())
-                                                    .name(this.getData(filialRequest.getName(), filial.getName()))
-                                                    .addressId(this.getData(filialRequest.getAddress().getId(), filial.getAddressId()))
-                                                    .opensAt(this.getData(filialRequest.getOpensAt(), filial.getOpensAt()))
-                                                    .closesAt(this.getData(filialRequest.getClosesAt(), filial.getClosesAt()))
-                                                    .opened(this.getData(filialRequest.getOpened(), filial.getOpened()))
-                                                    .isNew(false)
-                                                    .build())
-                            )
-                            .switchIfEmpty(
-                                    Mono.fromCallable(() ->
-                                            Filial.builder()
-                                                    .name(filialRequest.getName())
-                                                    .addressId(filialRequest.getAddress().getId())
-                                                    .opensAt(filialRequest.getOpensAt())
-                                                    .closesAt(filialRequest.getClosesAt())
-                                                    .opened(filialRequest.getOpened())
-                                                    .isNew(true)
-                                                    .build())
-                            );
-                }
-        );
+    public Filial toFilial(final FilialRequest filialRequest) {
+        Long filialId = this.getData(filialRequest.getId(), 0L);
+        return this.filialRepository.findById(filialId)
+                .map(
+                        filial -> Filial.builder()
+                                .id(filial.getId())
+                                .name(this.getData(filialRequest.getName(), filial.getName()))
+                                .addressId(this.getData(filialRequest.getAddress().getId(), filial.getAddressId()))
+                                .opensAt(this.getData(filialRequest.getOpensAt(), filial.getOpensAt()))
+                                .closesAt(this.getData(filialRequest.getClosesAt(), filial.getClosesAt()))
+                                .opened(this.getData(filialRequest.getOpened(), filial.getOpened()))
+                                .build()
+                )
+                .orElseGet(
+                        () -> Filial.builder()
+                                .name(filialRequest.getName())
+                                .addressId(filialRequest.getAddress().getId())
+                                .opensAt(filialRequest.getOpensAt())
+                                .closesAt(filialRequest.getClosesAt())
+                                .opened(filialRequest.getOpened())
+                                .build()
+                );
     }
 
-    public Mono<FilialResponse> toFilialResponse(final Mono<Filial> filialMono) {
-        return filialMono.flatMap(
-                filial -> this.addressRepository.findById(filial.getAddressId())
-                        .flatMap(
-                                address -> this.addressMapper.toAddressResponse(Mono.fromCallable(() -> address))
-                                        .flatMap(
-                                                addressResponse -> Mono.fromCallable(() ->
-                                                        FilialResponse.builder()
-                                                                .id(filial.getId())
-                                                                .name(filial.getName())
-                                                                .address(addressResponse)
-                                                                .opensAt(filial.getOpensAt().format(ofPattern("hh:mm")))
-                                                                .closesAt(filial.getClosesAt().format(ofPattern("hh:mm")))
-                                                                .opened(filial.getOpened())
-                                                                .build())
-                                        )
-                        )
-        );
+    public FilialResponse toFilialResponse(final Filial filial) {
+        return FilialResponse.builder()
+                .id(filial.getId())
+                .name(filial.getName())
+                .address(
+                        this.addressRepository.findById(filial.getAddressId())
+                                .map(this.addressMapper::toAddressResponse)
+                                .orElseGet(AddressResponse::new)
+                )
+                .opensAt(filial.getOpensAt().format(ofPattern("hh:mm")))
+                .closesAt(filial.getClosesAt().format(ofPattern("hh:mm")))
+                .opened(filial.getOpened())
+                .build();
     }
 }

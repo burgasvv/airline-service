@@ -1,18 +1,17 @@
 package org.burgas.ticketservice.router;
 
 import org.burgas.ticketservice.dto.FilialRequest;
-import org.burgas.ticketservice.dto.FilialResponse;
 import org.burgas.ticketservice.service.FilialService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.servlet.function.RouterFunction;
+import org.springframework.web.servlet.function.RouterFunctions;
+import org.springframework.web.servlet.function.ServerResponse;
 
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
+import static org.springframework.web.servlet.function.RequestPredicates.GET;
+import static org.springframework.web.servlet.function.RequestPredicates.POST;
 
 @Configuration
 public class FilialRouter {
@@ -25,31 +24,28 @@ public class FilialRouter {
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(filialService.findAll(), FilialResponse.class)
+                                        .body(filialService.findAll())
                 )
                 .andRoute(
                         GET("/filials/by-country"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(filialService.findByCountryId(request.queryParam("countryId").orElse(null)),
-                                                FilialResponse.class)
+                                        .body(filialService.findByCountryId(request.param("countryId").orElse(null)))
                 )
                 .andRoute(
                         GET("/filials/by-city"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(filialService.findByCityId(request.queryParam("cityId").orElse(null)),
-                                                FilialResponse.class)
+                                        .body(filialService.findByCityId(request.param("cityId").orElse(null)))
                 )
                 .andRoute(
                         POST("/filials/create-update"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(filialService.createOrUpdate(request.bodyToMono(FilialRequest.class)),
-                                                FilialResponse.class)
+                                        .body(filialService.createOrUpdate(request.body(FilialRequest.class)))
                 );
     }
 }

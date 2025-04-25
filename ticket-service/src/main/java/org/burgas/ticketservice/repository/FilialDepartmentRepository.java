@@ -1,14 +1,16 @@
 package org.burgas.ticketservice.repository;
 
 import org.burgas.ticketservice.entity.FilialDepartment;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface FilialDepartmentRepository extends R2dbcRepository<FilialDepartment, Long> {
+public interface FilialDepartmentRepository extends JpaRepository<FilialDepartment, Long> {
 
-    Mono<FilialDepartment> findFilialDepartmentByFilialIdAndDepartmentId(Long filialId, Long departmentId);
+    Optional<FilialDepartment> findFilialDepartmentByFilialIdAndDepartmentId(Long filialId, Long departmentId);
 
-    Mono<Void> deleteFilialDepartmentByFilialIdAndDepartmentId(Long filialId, Long departmentId);
+    void deleteFilialDepartmentByFilialIdAndDepartmentId(Long filialId, Long departmentId);
 }

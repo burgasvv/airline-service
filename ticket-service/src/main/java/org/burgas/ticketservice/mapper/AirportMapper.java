@@ -1,5 +1,6 @@
 package org.burgas.ticketservice.mapper;
 
+import org.burgas.ticketservice.dto.AddressResponse;
 import org.burgas.ticketservice.dto.AirportRequest;
 import org.burgas.ticketservice.dto.AirportResponse;
 import org.burgas.ticketservice.entity.Airport;
@@ -7,7 +8,6 @@ import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.AddressRepository;
 import org.burgas.ticketservice.repository.AirportRepository;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 @Component
 public final class AirportMapper implements MapperDataHandler {
@@ -22,47 +22,36 @@ public final class AirportMapper implements MapperDataHandler {
         this.addressMapper = addressMapper;
     }
 
-    public Mono<Airport> toAirport(final Mono<AirportRequest> airportRequestMono) {
-        return airportRequestMono.flatMap(
-                airportRequest -> {
-                    Long airportId = this.getData(airportRequest.getId(), 0L);
-                    return this.airportRepository.findById(airportId)
-                            .flatMap(
-                                    airport -> Mono.fromCallable(() ->
-                                            Airport.builder()
-                                                    .id(airport.getId())
-                                                    .name(this.getData(airportRequest.getName(), airport.getName()))
-                                                    .addressId(this.getData(airportRequest.getAddress().getId(), airport.getAddressId()))
-                                                    .opened(this.getData(airportRequest.getOpened(), airport.getOpened()))
-                                                    .isNew(false)
-                                                    .build())
-                            )
-                            .switchIfEmpty(
-                                    Mono.fromCallable(() ->
-                                            Airport.builder()
-                                                    .name(airportRequest.getName())
-                                                    .addressId(airportRequest.getAddress().getId())
-                                                    .opened(airportRequest.getOpened())
-                                                    .isNew(true)
-                                                    .build())
-                            );
-                }
-        );
+    public Airport toAirport(final AirportRequest airportRequest) {
+        Long airportId = this.getData(airportRequest.getId(), 0L);
+        return this.airportRepository.findById(airportId)
+                .map(
+                        airport -> Airport.builder()
+                                .id(airport.getId())
+                                .name(this.getData(airportRequest.getName(), airport.getName()))
+                                .addressId(this.getData(airportRequest.getAddress().getId(), airport.getAddressId()))
+                                .opened(this.getData(airportRequest.getOpened(), airport.getOpened()))
+                                .build()
+                )
+                .orElseGet(
+                        () -> Airport.builder()
+                                .name(airportRequest.getName())
+                                .addressId(airportRequest.getAddress().getId())
+                                .opened(airportRequest.getOpened())
+                                .build()
+                );
     }
 
-    public Mono<AirportResponse> toAirportResponse(final Mono<Airport> airportMono) {
-        return airportMono.flatMap(
-                airport -> this.addressRepository.findById(airport.getAddressId())
-                        .flatMap(address -> this.addressMapper.toAddressResponse(Mono.fromCallable(() -> address)))
-                        .flatMap(
-                                addressResponse -> Mono.fromCallable(() ->
-                                        AirportResponse.builder()
-                                                .id(airport.getId())
-                                                .name(airport.getName())
-                                                .address(addressResponse)
-                                                .opened(airport.getOpened())
-                                                .build())
-                        )
-        );
+    public AirportResponse toAirportResponse(final Airport airport) {
+        return AirportResponse.builder()
+                .id(airport.getId())
+                .name(airport.getName())
+                .address(
+                        this.addressRepository.findById(airport.getAddressId())
+                                .map(this.addressMapper::toAddressResponse)
+                                .orElseGet(AddressResponse::new)
+                )
+                .opened(airport.getOpened())
+                .build();
     }
 }

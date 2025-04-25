@@ -1,20 +1,24 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
 import java.util.Objects;
 
+import static jakarta.persistence.GenerationType.*;
+
+@Entity
 @SuppressWarnings("unused")
-public final class Authority implements Persistable<Long> {
+public final class Authority {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
-
-    @Transient
-    private Boolean isNew;
 
     public Long getId() {
         return id;
@@ -33,24 +37,15 @@ public final class Authority implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Authority authority = (Authority) o;
-        return Objects.equals(id, authority.id) && Objects.equals(name, authority.name) && Objects.equals(isNew, authority.isNew);
+        return Objects.equals(id, authority.id) && Objects.equals(name, authority.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, isNew);
+        return Objects.hash(id, name);
     }
 
     @Override
@@ -58,7 +53,6 @@ public final class Authority implements Persistable<Long> {
         return "Authority{" +
                "id=" + id +
                ", name='" + name + '\'' +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -81,11 +75,6 @@ public final class Authority implements Persistable<Long> {
 
         public Builder name(String name) {
             this.authority.name = name;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.authority.isNew = isNew;
             return this;
         }
 

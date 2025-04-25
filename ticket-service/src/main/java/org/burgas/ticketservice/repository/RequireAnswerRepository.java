@@ -1,27 +1,30 @@
 package org.burgas.ticketservice.repository;
 
 import org.burgas.ticketservice.entity.RequireAnswer;
-import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Repository
-public interface RequireAnswerRepository extends R2dbcRepository<RequireAnswer, Long> {
+public interface RequireAnswerRepository extends JpaRepository<RequireAnswer, Long> {
 
     @Query(
+            nativeQuery = true,
             value = """
                     select ra.* from require_answer ra join require r on r.id = ra.require_id
                     where r.user_id = :userId
                     """
     )
-    Flux<RequireAnswer> findRequireAnswersByUserId(Long userId);
+    List<RequireAnswer> findRequireAnswersByUserId(Long userId);
 
     @Query(
+            nativeQuery = true,
             value = """
                     select ra.* from require_answer ra join require r on r.id = ra.require_id
                     where r.admin_id = :adminId
                     """
     )
-    Flux<RequireAnswer> findRequireAnswersByAdminId(Long adminId);
+    List<RequireAnswer> findRequireAnswersByAdminId(Long adminId);
 }

@@ -1,14 +1,15 @@
 package org.burgas.ticketservice.repository;
 
 import org.burgas.ticketservice.entity.Identity;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @Repository
-public interface IdentityRepository extends R2dbcRepository<Identity, Long> {
+public interface IdentityRepository extends JpaRepository<Identity, Long> {
 
-    Mono<Identity> findIdentityByEmail(String email);
+    Optional<Identity> findIdentityByEmail(String email);
 
-    Mono<Identity> findIdentityByUsername(String username);
+    Optional<Identity> findIdentityByUsername(String username);
 }

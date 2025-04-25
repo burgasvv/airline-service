@@ -1,22 +1,23 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Persistable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 import java.util.Objects;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@Entity
 @SuppressWarnings("unused")
-public final class RequireAnswer implements Persistable<Long> {
+public final class RequireAnswer {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Boolean allowed;
     private String explanation;
     private Long requireId;
-
-    @Transient
-    private Boolean isNew;
 
     public Long getId() {
         return id;
@@ -51,25 +52,16 @@ public final class RequireAnswer implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         RequireAnswer that = (RequireAnswer) o;
-        return Objects.equals(id, that.id) && Objects.equals(allowed, that.allowed) &&
-               Objects.equals(explanation, that.explanation) && Objects.equals(requireId, that.requireId) && Objects.equals(isNew, that.isNew);
+        return Objects.equals(id, that.id) && Objects.equals(allowed, that.allowed) && Objects.equals(explanation, that.explanation) &&
+               Objects.equals(requireId, that.requireId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, allowed, explanation, requireId, isNew);
+        return Objects.hash(id, allowed, explanation, requireId);
     }
 
     @Override
@@ -79,7 +71,6 @@ public final class RequireAnswer implements Persistable<Long> {
                ", allowed=" + allowed +
                ", explanation='" + explanation + '\'' +
                ", requireId=" + requireId +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -112,11 +103,6 @@ public final class RequireAnswer implements Persistable<Long> {
 
         public Builder requireId(Long requireId) {
             this.requireAnswer.requireId = requireId;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.requireAnswer.isNew = isNew;
             return this;
         }
 

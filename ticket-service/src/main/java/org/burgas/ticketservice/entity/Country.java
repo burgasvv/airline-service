@@ -1,20 +1,24 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
 import java.util.Objects;
 
+import static jakarta.persistence.GenerationType.*;
+
+@Entity
 @SuppressWarnings("unused")
-public final class Country implements Persistable<Long> {
+public final class Country {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
-
-    @Transient
-    private Boolean isNew;
 
     public Long getId() {
         return id;
@@ -33,24 +37,15 @@ public final class Country implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Country country = (Country) o;
-        return Objects.equals(id, country.id) && Objects.equals(name, country.name) && Objects.equals(isNew, country.isNew);
+        return Objects.equals(id, country.id) && Objects.equals(name, country.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, isNew);
+        return Objects.hash(id, name);
     }
 
     @Override
@@ -58,7 +53,6 @@ public final class Country implements Persistable<Long> {
         return "Country{" +
                "id=" + id +
                ", name='" + name + '\'' +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -81,11 +75,6 @@ public final class Country implements Persistable<Long> {
 
         public Builder name(String name) {
             this.country.name = name;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.country.isNew = isNew;
             return this;
         }
 

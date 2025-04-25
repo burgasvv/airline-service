@@ -1,24 +1,24 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Persistable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 import java.util.Objects;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@Entity
 @SuppressWarnings("unused")
-public final class Position implements Persistable<Long> {
+public final class Position {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
     private String description;
     private Long departmentId;
 
-    @Transient
-    private Boolean isNew;
-
-    @Override
     public Long getId() {
         return id;
     }
@@ -52,37 +52,16 @@ public final class Position implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Position position = (Position) o;
-        return Objects.equals(id, position.id) && Objects.equals(name, position.name) &&
-               Objects.equals(description, position.description) && Objects.equals(departmentId, position.departmentId) &&
-               Objects.equals(isNew, position.isNew);
+        return Objects.equals(id, position.id) && Objects.equals(name, position.name) && Objects.equals(description, position.description) &&
+               Objects.equals(departmentId, position.departmentId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, departmentId, isNew);
-    }
-
-    @Override
-    public String toString() {
-        return "Position{" +
-               "id=" + id +
-               ", name='" + name + '\'' +
-               ", description='" + description + '\'' +
-               ", departmentId=" + departmentId +
-               ", isNew=" + isNew +
-               '}';
+        return Objects.hash(id, name, description, departmentId);
     }
 
     public static Builder builder() {
@@ -114,11 +93,6 @@ public final class Position implements Persistable<Long> {
 
         public Builder departmentId(Long departmentId) {
             this.position.departmentId = departmentId;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.position.isNew = isNew;
             return this;
         }
 

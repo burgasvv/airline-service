@@ -1,23 +1,27 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
 import java.util.Objects;
 
+import static jakarta.persistence.GenerationType.*;
+
+@Entity
 @SuppressWarnings("unused")
-public final class Address implements Persistable<Long> {
+public final class Address {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long cityId;
     private String street;
     private String house;
     private String apartment;
-
-    @Transient
-    private Boolean isNew;
 
     public Long getId() {
         return id;
@@ -60,26 +64,16 @@ public final class Address implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
-        return Objects.equals(id, address.id) && Objects.equals(cityId, address.cityId) &&
-               Objects.equals(street, address.street) && Objects.equals(house, address.house) &&
-               Objects.equals(apartment, address.apartment) && Objects.equals(isNew, address.isNew);
+        return Objects.equals(id, address.id) && Objects.equals(cityId, address.cityId) && Objects.equals(street, address.street) &&
+               Objects.equals(house, address.house) && Objects.equals(apartment, address.apartment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cityId, street, house, apartment, isNew);
+        return Objects.hash(id, cityId, street, house, apartment);
     }
 
     @Override
@@ -90,7 +84,6 @@ public final class Address implements Persistable<Long> {
                ", street='" + street + '\'' +
                ", house='" + house + '\'' +
                ", apartment='" + apartment + '\'' +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -128,11 +121,6 @@ public final class Address implements Persistable<Long> {
 
         public Builder apartment(String apartment) {
             this.address.apartment = apartment;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.address.isNew = isNew;
             return this;
         }
 

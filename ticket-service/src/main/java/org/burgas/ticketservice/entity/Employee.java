@@ -1,7 +1,9 @@
 package org.burgas.ticketservice.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import org.burgas.ticketservice.exception.PassportNotMatchesException;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
@@ -9,12 +11,15 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static org.burgas.ticketservice.message.EmployeeMessage.PASSPORT_NOT_MATCHES;
 
+@Entity
 @SuppressWarnings("unused")
-public final class Employee implements Persistable<Long> {
+public final class Employee {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
     private String surname;
@@ -25,9 +30,6 @@ public final class Employee implements Persistable<Long> {
     private Long addressId;
     private Long positionId;
     private Long filialDepartmentId;
-
-    @Transient
-    private Boolean isNew;
 
     private Matcher validatePassport(String passport) {
         passport = passport.replaceAll("\\s", "");
@@ -124,29 +126,19 @@ public final class Employee implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return Objects.equals(id, employee.id) && Objects.equals(name, employee.name) &&
-               Objects.equals(surname, employee.surname) && Objects.equals(patronymic, employee.patronymic) &&
-               Objects.equals(about, employee.about) && Objects.equals(passport, employee.passport) &&
-               Objects.equals(identityId, employee.identityId) && Objects.equals(addressId, employee.addressId) &&
-               Objects.equals(positionId, employee.positionId) &&
-               Objects.equals(filialDepartmentId, employee.filialDepartmentId) && Objects.equals(isNew, employee.isNew);
+        return Objects.equals(id, employee.id) && Objects.equals(name, employee.name) && Objects.equals(surname, employee.surname) &&
+               Objects.equals(patronymic, employee.patronymic) && Objects.equals(about, employee.about) &&
+               Objects.equals(passport, employee.passport) && Objects.equals(identityId, employee.identityId) &&
+               Objects.equals(addressId, employee.addressId) && Objects.equals(positionId, employee.positionId) &&
+               Objects.equals(filialDepartmentId, employee.filialDepartmentId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, patronymic, about, passport, identityId, addressId, positionId, filialDepartmentId, isNew);
+        return Objects.hash(id, name, surname, patronymic, about, passport, identityId, addressId, positionId, filialDepartmentId);
     }
 
     @Override
@@ -162,7 +154,6 @@ public final class Employee implements Persistable<Long> {
                ", addressId=" + addressId +
                ", positionId=" + positionId +
                ", filialDepartmentId=" + filialDepartmentId +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -234,11 +225,6 @@ public final class Employee implements Persistable<Long> {
 
         public Builder filialDepartmentId(Long filialDepartmentId) {
             this.employee.filialDepartmentId = filialDepartmentId;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.employee.isNew = isNew;
             return this;
         }
 

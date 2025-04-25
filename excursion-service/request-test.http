@@ -364,7 +364,6 @@ Host: localhost:9010
 POST /payments/make-identity-payment?identityId=5
 Host: localhost:9010
 Authorization: Basic admin@gmail.com admin
-X-Csrf-Token: sL56RDKquMHDjnyYmNPd33u_z7572KIGLl9ZF8mpDPP7A9ZD1dwbfAvIiPXuuRj5-f7p7Uvc4oZC4ZsrGWlhI_uYNZHDNeIm
 Content-Type: application/json
 
 {

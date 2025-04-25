@@ -152,7 +152,7 @@ public class CountryService {
                             Image image = this.imageService.uploadImage(part);
                             country.setImageId(image.getId());
                             this.countryRepository.save(country);
-                            return format(IMAGE_UPLOADED.getMessage());
+                            return format(IMAGE_UPLOADED.getMessage(), image.getId());
                         }
                 )
                 .orElseThrow(() -> new CountryNotFoundException(COUNTRY_NOT_FOUND.getMessage()));

@@ -1,15 +1,17 @@
 package org.burgas.ticketservice.repository;
 
 import org.burgas.ticketservice.entity.Airport;
-import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Repository
-public interface AirportRepository extends R2dbcRepository<Airport, Long> {
+public interface AirportRepository extends JpaRepository<Airport, Long> {
 
     @Query(
+            nativeQuery = true,
             value = """
                     select a.* from airport a
                         join address a2 on a2.id = a.address_id
@@ -18,9 +20,10 @@ public interface AirportRepository extends R2dbcRepository<Airport, Long> {
                     where c2.id = :countryId
                     """
     )
-    Flux<Airport> findAirportsByCountryId(Long countryId);
+    List<Airport> findAirportsByCountryId(Long countryId);
 
     @Query(
+            nativeQuery = true,
             value = """
                     select air.* from airport air
                         join address a on a.id = air.address_id
@@ -28,5 +31,5 @@ public interface AirportRepository extends R2dbcRepository<Airport, Long> {
                     where c.id = :cityId
                     """
     )
-    Flux<Airport> findAirportsByCityId(Long cityId);
+    List<Airport> findAirportsByCityId(Long cityId);
 }

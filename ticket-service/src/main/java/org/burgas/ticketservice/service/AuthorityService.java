@@ -7,27 +7,19 @@ import org.burgas.ticketservice.mapper.AuthorityMapper;
 import org.burgas.ticketservice.repository.AuthorityRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.INFO;
+import java.util.List;
+
+import static java.util.Optional.of;
 import static org.burgas.ticketservice.message.AuthorityMessage.AUTHORITY_DELETED;
 import static org.burgas.ticketservice.message.AuthorityMessage.AUTHORITY_NOT_FOUND;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
-import static reactor.core.publisher.SignalType.ON_COMPLETE;
-import static reactor.core.publisher.SignalType.ON_NEXT;
 
 @Service
 @Transactional(readOnly = true, propagation = SUPPORTS)
 public class AuthorityService {
-
-    public static final String FIND_AUTHORITY = "Find authority";
-    public static final String COMPLETE_RESPONSE = "Complete authority response";
-    public static final String AUTHORITY_SAVED = "Authority saved";
 
     private final AuthorityRepository authorityRepository;
     private final AuthorityMapper authorityMapper;
@@ -37,53 +29,43 @@ public class AuthorityService {
         this.authorityMapper = authorityMapper;
     }
 
-    public Flux<AuthorityResponse> findAll() {
+    public List<AuthorityResponse> findAll() {
         return this.authorityRepository.findAll()
-                .log(FIND_AUTHORITY, INFO, ON_NEXT)
-                .flatMap(
-                        authority -> this.authorityMapper.toAuthorityResponse(Mono.fromCallable(() -> authority))
-                )
-                .log(COMPLETE_RESPONSE, FINE, ON_COMPLETE);
+                .stream()
+                .map(this.authorityMapper::toAuthorityResponse)
+                .toList();
     }
 
-    public Mono<AuthorityResponse> findById(final String authorityId) {
+    public AuthorityResponse findById(final String authorityId) {
         return this.authorityRepository.findById(Long.valueOf(authorityId))
-                .log(FIND_AUTHORITY, INFO, ON_NEXT)
-                .flatMap(
-                        authority -> this.authorityMapper.toAuthorityResponse(Mono.fromCallable(() -> authority))
-                )
-                .log(COMPLETE_RESPONSE, FINE, ON_COMPLETE);
+                .map(this.authorityMapper::toAuthorityResponse)
+                .orElseGet(AuthorityResponse::new);
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<Long> createOrUpdate(final Mono<AuthorityRequest> authorityRequestMono) {
-        return authorityRequestMono.flatMap(
-                authorityRequest -> this.authorityMapper.toAuthority(Mono.fromCallable(() -> authorityRequest))
-                        .flatMap(authorityRepository::save)
-                        .log(AUTHORITY_SAVED, INFO, ON_NEXT)
-                        .flatMap(
-                                authority -> this.authorityMapper.toAuthorityResponse(
-                                        Mono.fromCallable(() -> authority)
-                                )
-                        )
-                        .log(COMPLETE_RESPONSE)
-                        .flatMap(authorityResponse -> Mono.fromCallable(authorityResponse::getId))
-        );
+    public Long createOrUpdate(final AuthorityRequest authorityRequest) {
+        return of(this.authorityMapper.toAuthority(authorityRequest))
+                .map(this.authorityRepository::save)
+                .map(this.authorityMapper::toAuthorityResponse)
+                .map(AuthorityResponse::getId)
+                .orElse(null);
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<String> deleteById(final String authorityId) {
+    public String deleteById(final String authorityId) {
         return this.authorityRepository.findById(Long.valueOf(authorityId))
-                .flatMap(
-                        authority -> this.authorityRepository.deleteById(requireNonNull(authority.getId()))
-                                .thenReturn(AUTHORITY_DELETED.getMessage())
+                .map(
+                        authority -> {
+                            this.authorityRepository.deleteById(authority.getId());
+                            return AUTHORITY_DELETED.getMessage();
+                        }
                 )
-                .switchIfEmpty(Mono.error(new AuthorityNotFoundException(AUTHORITY_NOT_FOUND.getMessage())));
+                .orElseThrow(() -> new AuthorityNotFoundException(AUTHORITY_NOT_FOUND.getMessage()));
     }
 }

@@ -5,14 +5,14 @@ import org.burgas.ticketservice.dto.AddressResponse;
 import org.burgas.ticketservice.service.AddressService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.servlet.function.RouterFunction;
+import org.springframework.web.servlet.function.RouterFunctions;
+import org.springframework.web.servlet.function.ServerResponse;
 
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
+import static org.springframework.web.servlet.function.RequestPredicates.GET;
+import static org.springframework.web.servlet.function.RequestPredicates.POST;
 
 @Configuration
 public class AddressRouter {
@@ -24,16 +24,13 @@ public class AddressRouter {
                         GET("/addresses"), _ -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(addressService.findAll(), AddressResponse.class)
+                                .body(addressService.findAll())
                 )
                 .andRoute(
                         POST("/addresses/create-update-secured"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(
-                                        addressService.createOrUpdateSecured(request.bodyToMono(AddressRequest.class)),
-                                        AddressResponse.class
-                                )
+                                .body(addressService.createOrUpdateSecured(request.body(AddressRequest.class)))
                 );
     }
 }

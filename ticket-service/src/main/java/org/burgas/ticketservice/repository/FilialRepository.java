@@ -1,15 +1,17 @@
 package org.burgas.ticketservice.repository;
 
 import org.burgas.ticketservice.entity.Filial;
-import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Repository
-public interface FilialRepository extends R2dbcRepository<Filial, Long> {
+public interface FilialRepository extends JpaRepository<Filial, Long> {
 
     @Query(
+            nativeQuery = true,
             value = """
                     select f.* from filial f
                         join address a on a.id = f.address_id
@@ -18,9 +20,10 @@ public interface FilialRepository extends R2dbcRepository<Filial, Long> {
                     where c2.id = :countryId
                     """
     )
-    Flux<Filial> findFilialsByCountryId(Long countryId);
+    List<Filial> findFilialsByCountryId(Long countryId);
 
     @Query(
+            nativeQuery = true,
             value = """
                     select f.* from filial f
                         join address a on a.id = f.address_id
@@ -28,5 +31,5 @@ public interface FilialRepository extends R2dbcRepository<Filial, Long> {
                     where c.id = :cityId
                     """
     )
-    Flux<Filial> findFilialsByCityId(Long cityId);
+    List<Filial> findFilialsByCityId(Long cityId);
 }

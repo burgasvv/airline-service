@@ -1,7 +1,9 @@
 package org.burgas.ticketservice.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import org.burgas.ticketservice.exception.PassportNotMatchesException;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
@@ -9,12 +11,15 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static org.burgas.ticketservice.message.EmployeeMessage.PASSPORT_NOT_MATCHES;
 
+@Entity
 @SuppressWarnings("unused")
-public final class Require implements Persistable<Long> {
+public final class Require {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
     private String surname;
@@ -23,9 +28,6 @@ public final class Require implements Persistable<Long> {
     private Boolean closed;
     private Long adminId;
     private Long userId;
-
-    @Transient
-    private Boolean isNew;
 
     private Matcher validatePassport(String passport) {
         passport = passport.replaceAll("\\s", "");
@@ -106,27 +108,17 @@ public final class Require implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Require require = (Require) o;
-        return Objects.equals(id, require.id) && Objects.equals(name, require.name) &&
-               Objects.equals(surname, require.surname) && Objects.equals(patronymic, require.patronymic) &&
-               Objects.equals(passport, require.passport) && Objects.equals(closed, require.closed) &&
-               Objects.equals(adminId, require.adminId) && Objects.equals(userId, require.userId) && Objects.equals(isNew, require.isNew);
+        return Objects.equals(id, require.id) && Objects.equals(name, require.name) && Objects.equals(surname, require.surname) &&
+               Objects.equals(patronymic, require.patronymic) && Objects.equals(passport, require.passport) &&
+               Objects.equals(closed, require.closed) && Objects.equals(adminId, require.adminId) && Objects.equals(userId, require.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, patronymic, passport, closed, adminId, userId, isNew);
+        return Objects.hash(id, name, surname, patronymic, passport, closed, adminId, userId);
     }
 
     @Override
@@ -140,7 +132,6 @@ public final class Require implements Persistable<Long> {
                ", closed=" + closed +
                ", adminId=" + adminId +
                ", userId=" + userId +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -202,11 +193,6 @@ public final class Require implements Persistable<Long> {
 
         public Builder userId(Long userId) {
             this.require.userId = userId;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.require.isNew = isNew;
             return this;
         }
 

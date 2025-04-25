@@ -1,5 +1,6 @@
 package org.burgas.ticketservice.service;
 
+import org.burgas.ticketservice.dto.DepartmentResponse;
 import org.burgas.ticketservice.dto.FilialDepartmentRequest;
 import org.burgas.ticketservice.dto.FilialDepartmentResponse;
 import org.burgas.ticketservice.exception.FilialDepartmentNotFoundException;
@@ -7,8 +8,9 @@ import org.burgas.ticketservice.mapper.FilialDepartmentMapper;
 import org.burgas.ticketservice.repository.FilialDepartmentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.burgas.ticketservice.message.FilialDepartmentMessage.FILIAL_DEPARTMENT_DELETED;
 import static org.burgas.ticketservice.message.FilialDepartmentMessage.FILIAL_DEPARTMENT_NOT_FOUND;
@@ -35,62 +37,56 @@ public class FilialDepartmentService {
         this.departmentService = departmentService;
     }
 
-    public Flux<FilialDepartmentResponse> findAll() {
+    public List<FilialDepartmentResponse> findAll() {
         return this.filialDepartmentRepository.findAll()
-                .flatMap(filialDepartment -> this.filialDepartmentMapper
-                        .toFilialDepartmentResponse(Mono.fromCallable(() -> filialDepartment))
-                );
+                .stream()
+                .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                .toList();
     }
 
-    public Mono<FilialDepartmentResponse> findByFilialIdAndDepartmentId(final String filialId, final String departmentId) {
+    public FilialDepartmentResponse findByFilialIdAndDepartmentId(final String filialId, final String departmentId) {
         return this.filialDepartmentRepository.findFilialDepartmentByFilialIdAndDepartmentId(Long.valueOf(filialId), Long.valueOf(departmentId))
-                .flatMap(filialDepartment -> this.filialDepartmentMapper
-                        .toFilialDepartmentResponse(Mono.fromCallable(() -> filialDepartment))
-                );
+                .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                .orElseGet(FilialDepartmentResponse::new);
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<FilialDepartmentResponse> createOrUpdate(final Mono<FilialDepartmentRequest> filialDepartmentRequestMono) {
-        return filialDepartmentRequestMono.flatMap(
-                filialDepartmentRequest -> this.filialService.createOrUpdate(
-                        Mono.fromCallable(filialDepartmentRequest::getFilial))
-                        .flatMap(
-                                filialResponse -> {
-                                    filialDepartmentRequest.getFilial().setId(filialResponse.getId());
-                                    return this.departmentService.createOrUpdate(Mono.fromCallable(filialDepartmentRequest::getDepartment));
-                                }
-                        )
-                        .flatMap(
-                                departmentResponse -> {
-                                    filialDepartmentRequest.getDepartment().setId(departmentResponse.getId());
-                                    return this.filialDepartmentMapper.toFilialDepartment(Mono.fromCallable(() -> filialDepartmentRequest))
-                                            .flatMap(this.filialDepartmentRepository::save)
-                                            .flatMap(filialDepartment -> this.filialDepartmentMapper
-                                                    .toFilialDepartmentResponse(Mono.fromCallable(() -> filialDepartment))
-                                            );
-                                }
-                        )
-        );
+    public FilialDepartmentResponse createOrUpdate(final FilialDepartmentRequest filialDepartmentRequest) {
+        return Optional.of(this.filialService.createOrUpdate(filialDepartmentRequest.getFilial()))
+                .map(
+                        filialResponse -> {
+                            filialDepartmentRequest.getFilial().setId(filialResponse.getId());
+                            DepartmentResponse departmentResponse = this.departmentService.createOrUpdate(filialDepartmentRequest.getDepartment());
+                            filialDepartmentRequest.getDepartment().setId(departmentResponse.getId());
+                            return Optional.of(this.filialDepartmentMapper.toFilialDepartment(filialDepartmentRequest))
+                                    .map(this.filialDepartmentRepository::save)
+                                    .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                                    .orElseGet(FilialDepartmentResponse::new);
+                        }
+                )
+                .orElseThrow();
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<String> deleteFilialDepartment(final String filialId, final String departmentId) {
+    public String deleteFilialDepartment(final String filialId, final String departmentId) {
         return this.filialDepartmentRepository
                 .findFilialDepartmentByFilialIdAndDepartmentId(Long.valueOf(filialId), Long.valueOf(departmentId))
-                .flatMap(
-                        filialDepartment -> this.filialDepartmentRepository.deleteFilialDepartmentByFilialIdAndDepartmentId(
-                                filialDepartment.getFilialId(), filialDepartment.getDepartmentId()
-                        )
-                                .thenReturn(FILIAL_DEPARTMENT_DELETED.getMessage())
+                .map(
+                        filialDepartment -> {
+                            this.filialDepartmentRepository.deleteFilialDepartmentByFilialIdAndDepartmentId(
+                                    filialDepartment.getFilialId(), filialDepartment.getDepartmentId()
+                            );
+                            return FILIAL_DEPARTMENT_DELETED.getMessage();
+                        }
                 )
-                .switchIfEmpty(
-                        Mono.error(new FilialDepartmentNotFoundException(FILIAL_DEPARTMENT_NOT_FOUND.getMessage()))
+                .orElseThrow(
+                        () -> new FilialDepartmentNotFoundException(FILIAL_DEPARTMENT_NOT_FOUND.getMessage())
                 );
     }
 }

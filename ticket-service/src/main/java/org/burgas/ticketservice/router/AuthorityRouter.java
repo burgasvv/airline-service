@@ -1,15 +1,13 @@
 package org.burgas.ticketservice.router;
 
 import org.burgas.ticketservice.dto.AuthorityRequest;
-import org.burgas.ticketservice.dto.AuthorityResponse;
 import org.burgas.ticketservice.service.AuthorityService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.servlet.function.RouterFunction;
+import org.springframework.web.servlet.function.RouterFunctions;
+import org.springframework.web.servlet.function.ServerResponse;
 
 import static java.net.URI.create;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -28,35 +26,28 @@ public class AuthorityRouter {
                         "/authorities", _ -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(authorityService.findAll(), AuthorityResponse.class)
+                                .body(authorityService.findAll())
                 )
                 .GET(
                         "/authorities/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(
-                                        authorityService.findById(request.queryParam("authorityId").orElse(null)),
-                                        AuthorityResponse.class
-                                )
+                                .body(authorityService.findById(request.param("authorityId").orElse(null)))
                 )
                 .POST(
-                        "/authorities/create-update", request ->
-                                authorityService.createOrUpdate(request.bodyToMono(AuthorityRequest.class))
-                                .flatMap(
-                                        authorityId -> ServerResponse
-                                                .status(FOUND)
-                                                .location(create("/authorities/by-id?authorityId=" + authorityId))
-                                                .body(BodyInserters.fromValue(authorityId))
-                                )
+                        "/authorities/create-update", request -> {
+                            Long authorityId = authorityService.createOrUpdate(request.body(AuthorityRequest.class));
+                            return ServerResponse
+                                    .status(FOUND)
+                                    .location(create("/authorities/by-id?authorityId=" + authorityId))
+                                    .body(authorityId);
+                        }
                 )
                 .DELETE(
                         "/authorities/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(
-                                        authorityService.deleteById(request.queryParam("authorityId").orElse(null)),
-                                        String.class
-                                )
+                                .body(authorityService.deleteById(request.param("authorityId").orElse(null)))
                 )
                 .build();
     }

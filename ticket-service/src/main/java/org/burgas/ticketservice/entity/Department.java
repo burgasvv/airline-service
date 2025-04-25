@@ -1,21 +1,25 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
 import java.util.Objects;
 
+import static jakarta.persistence.GenerationType.*;
+
+@Entity
 @SuppressWarnings("unused")
-public final class Department implements Persistable<Long> {
+public final class Department {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
     private String description;
-
-    @Transient
-    private Boolean isNew;
 
     public Long getId() {
         return id;
@@ -42,25 +46,15 @@ public final class Department implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Department that = (Department) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) &&
-               Objects.equals(description, that.description) && Objects.equals(isNew, that.isNew);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, isNew);
+        return Objects.hash(id, name, description);
     }
 
     @Override
@@ -69,7 +63,6 @@ public final class Department implements Persistable<Long> {
                "id=" + id +
                ", name='" + name + '\'' +
                ", description='" + description + '\'' +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -97,11 +90,6 @@ public final class Department implements Persistable<Long> {
 
         public Builder description(String description) {
             this.department.description = description;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.department.isNew = isNew;
             return this;
         }
 

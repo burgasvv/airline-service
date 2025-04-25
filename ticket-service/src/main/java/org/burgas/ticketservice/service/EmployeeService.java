@@ -1,16 +1,19 @@
 package org.burgas.ticketservice.service;
 
+import org.burgas.ticketservice.dto.AddressResponse;
 import org.burgas.ticketservice.dto.EmployeeRequest;
 import org.burgas.ticketservice.dto.EmployeeResponse;
+import org.burgas.ticketservice.entity.Require;
+import org.burgas.ticketservice.entity.RequireAnswer;
 import org.burgas.ticketservice.exception.IdentityWrongTokenException;
 import org.burgas.ticketservice.exception.WrongIdentityException;
 import org.burgas.ticketservice.mapper.EmployeeMapper;
 import org.burgas.ticketservice.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -47,65 +50,59 @@ public class EmployeeService {
         this.requireRepository = requireRepository;
     }
 
-    public Flux<EmployeeResponse> finaAll() {
+    public List<EmployeeResponse> finaAll() {
         return this.employeeRepository.findAll()
-                .flatMap(employee -> this.employeeMapper.toEmployeeResponse(Mono.fromCallable(() -> employee)));
+                .stream()
+                .map(this.employeeMapper::toEmployeeResponse)
+                .toList();
     }
 
-    public Mono<EmployeeResponse> findById(final String employeeId) {
+    public EmployeeResponse findById(final String employeeId) {
         return this.employeeRepository.findById(Long.valueOf(employeeId))
-                .flatMap(employee -> this.employeeMapper.toEmployeeResponse(Mono.fromCallable(() -> employee)));
+                .map(this.employeeMapper::toEmployeeResponse)
+                .orElseGet(EmployeeResponse::new);
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<EmployeeResponse> createEmployee(final Mono<EmployeeRequest> employeeRequestMono, final String token) {
+    public EmployeeResponse createEmployee(final EmployeeRequest employeeRequest, final String token) {
         return this.requireAnswerTokenRepository.findRequireAnswerTokenByValue(UUID.fromString(token))
-                .flatMap(
-                        requireAnswerToken -> this.requireAnswerRepository.findById(requireAnswerToken.getRequireAnswerId())
-                                .flatMap(requireAnswer -> this.requireRepository.findById(requireAnswer.getRequireId()))
-                                .flatMap(
-                                        require -> employeeRequestMono.flatMap(
-                                                employeeRequest -> {
-                                                    if (employeeRequest.getIdentityId().equals(require.getUserId())) {
-                                                        return this.addressService.createOrUpdateSecured(Mono.fromCallable(employeeRequest::getAddress))
-                                                                .flatMap(
-                                                                        addressResponse -> {
-                                                                            employeeRequest.getAddress().setId(addressResponse.getId());
-                                                                            employeeRequest.setName(require.getName());
-                                                                            employeeRequest.setSurname(require.getSurname());
-                                                                            employeeRequest.setPatronymic(require.getPatronymic());
-                                                                            employeeRequest.setPassport(require.getPassport());
-                                                                            return this.identityRepository.findById(employeeRequest.getIdentityId())
-                                                                                    .flatMap(
-                                                                                            identity -> {
-                                                                                                identity.setAuthorityId(2L);
-                                                                                                identity.setNew(false);
-                                                                                                return this.identityRepository.save(identity);
-                                                                                            }
-                                                                                    )
-                                                                                    .flatMap(
-                                                                                            _ -> this.requireAnswerTokenRepository.deleteById(requireNonNull(requireAnswerToken.getId()))
-                                                                                                    .then(
-                                                                                                            this.employeeMapper.toEmployee(Mono.fromCallable(() -> employeeRequest))
-                                                                                                                    .flatMap(this.employeeRepository::save)
-                                                                                                                    .flatMap(employee -> this.employeeMapper.toEmployeeResponse(Mono.fromCallable(() -> employee)))
-                                                                                                    )
-                                                                                    );
-                                                                        }
-                                                                );
-
-                                                    } else {
-                                                        return Mono.error(new WrongIdentityException(IDENTITY_WRONG_ID.getMessage()));
-                                                    }
+                .map(
+                        requireAnswerToken -> {
+                            RequireAnswer requireAnswer = this.requireAnswerRepository.findById(requireAnswerToken.getRequireAnswerId()).orElse(null);
+                            Require require = this.requireRepository.findById(requireNonNull(requireAnswer).getRequireId()).orElse(null);
+                            if (employeeRequest.getIdentityId().equals(requireNonNull(require).getUserId())) {
+                                AddressResponse addressResponse = this.addressService.createOrUpdateSecured(employeeRequest.getAddress());
+                                employeeRequest.getAddress().setId(addressResponse.getId());
+                                employeeRequest.setName(require.getName());
+                                employeeRequest.setSurname(require.getSurname());
+                                employeeRequest.setPatronymic(require.getPatronymic());
+                                employeeRequest.setPassport(require.getPassport());
+                                return this.identityRepository.findById(employeeRequest.getIdentityId())
+                                        .map(
+                                                identity -> {
+                                                    identity.setAuthorityId(2L);
+                                                    return this.identityRepository.save(identity);
                                                 }
                                         )
-                                )
+                                        .map(
+                                                _ -> {
+                                                    this.requireAnswerTokenRepository.deleteById(requireAnswerToken.getId());
+                                                    return Optional.of(this.employeeMapper.toEmployee(employeeRequest))
+                                                            .map(this.employeeRepository::save)
+                                                            .map(this.employeeMapper::toEmployeeResponse)
+                                                            .orElseGet(EmployeeResponse::new);
+                                                }
+                                        )
+                                        .orElseGet(EmployeeResponse::new);
+
+                            } else {
+                                throw new WrongIdentityException(IDENTITY_WRONG_ID.getMessage());
+                            }
+                        }
                 )
-                .switchIfEmpty(
-                        Mono.error(new IdentityWrongTokenException(IDENTITY_WRONG_TOKEN.getMessage()))
-                );
+                .orElseThrow(() -> new IdentityWrongTokenException(IDENTITY_WRONG_TOKEN.getMessage()));
     }
 }

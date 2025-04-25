@@ -1,22 +1,25 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
 import java.util.Objects;
 import java.util.UUID;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@Entity
 @SuppressWarnings("unused")
-public final class RestoreToken implements Persistable<Long> {
+public final class RestoreToken {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private UUID value;
     private Long identityId;
-
-    @Transient
-    private Boolean isNew;
 
     public Long getId() {
         return id;
@@ -43,25 +46,15 @@ public final class RestoreToken implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         RestoreToken that = (RestoreToken) o;
-        return Objects.equals(id, that.id) && Objects.equals(value, that.value) &&
-               Objects.equals(identityId, that.identityId) && Objects.equals(isNew, that.isNew);
+        return Objects.equals(id, that.id) && Objects.equals(value, that.value) && Objects.equals(identityId, that.identityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, value, identityId, isNew);
+        return Objects.hash(id, value, identityId);
     }
 
     @Override
@@ -70,7 +63,6 @@ public final class RestoreToken implements Persistable<Long> {
                "id=" + id +
                ", value=" + value +
                ", identityId=" + identityId +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -98,11 +90,6 @@ public final class RestoreToken implements Persistable<Long> {
 
         public Builder identityId(Long identityId) {
             this.restoreToken.identityId = identityId;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.restoreToken.isNew = isNew;
             return this;
         }
 

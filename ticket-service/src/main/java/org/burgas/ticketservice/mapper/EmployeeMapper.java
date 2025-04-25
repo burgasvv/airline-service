@@ -1,14 +1,10 @@
 package org.burgas.ticketservice.mapper;
 
-import org.burgas.ticketservice.dto.EmployeeRequest;
-import org.burgas.ticketservice.dto.EmployeeResponse;
+import org.burgas.ticketservice.dto.*;
 import org.burgas.ticketservice.entity.Employee;
 import org.burgas.ticketservice.handler.MapperDataHandler;
 import org.burgas.ticketservice.repository.*;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
-
-import static java.util.Objects.requireNonNull;
 
 @Component
 public final class EmployeeMapper implements MapperDataHandler {
@@ -39,75 +35,66 @@ public final class EmployeeMapper implements MapperDataHandler {
         this.filialDepartmentMapper = filialDepartmentMapper;
     }
 
-    public Mono<Employee> toEmployee(final Mono<EmployeeRequest> employeeRequestMono) {
-        return employeeRequestMono.flatMap(
-                employeeRequest -> {
-                    Long employeeId = this.getData(employeeRequest.getId(), 0L);
-                    return this.employeeRepository.findById(employeeId)
-                            .flatMap(
-                                    employee -> Mono.fromCallable(() ->
-                                            Employee.builder()
-                                                    .id(employee.getId())
-                                                    .name(this.getData(employeeRequest.getName(), employee.getName()))
-                                                    .surname(this.getData(employeeRequest.getSurname(), employee.getSurname()))
-                                                    .patronymic(this.getData(employeeRequest.getPatronymic(), employee.getPatronymic()))
-                                                    .about(this.getData(employeeRequest.getAbout(), employee.getAbout()))
-                                                    .passport(this.getData(employeeRequest.getPassport(), employee.getPassport()))
-                                                    .identityId(this.getData(employeeRequest.getIdentityId(), employee.getIdentityId()))
-                                                    .addressId(this.getData(employeeRequest.getAddress().getId(), employee.getAddressId()))
-                                                    .positionId(this.getData(employeeRequest.getPositionId(), employee.getPositionId()))
-                                                    .filialDepartmentId(this.getData(employeeRequest.getFilialDepartmentId(),
-                                                            employee.getFilialDepartmentId()))
-                                                    .isNew(false)
-                                                    .build())
-                            )
-                            .switchIfEmpty(
-                                    Mono.fromCallable(() ->
-                                            Employee.builder()
-                                                    .name(employeeRequest.getName())
-                                                    .surname(employeeRequest.getSurname())
-                                                    .patronymic(employeeRequest.getPatronymic())
-                                                    .about(employeeRequest.getAbout())
-                                                    .passport(employeeRequest.getPassport())
-                                                    .identityId(employeeRequest.getIdentityId())
-                                                    .addressId(employeeRequest.getAddress().getId())
-                                                    .positionId(employeeRequest.getPositionId())
-                                                    .filialDepartmentId(employeeRequest.getFilialDepartmentId())
-                                                    .isNew(true)
-                                                    .build())
-                            );
-                }
-        );
+    public Employee toEmployee(final EmployeeRequest employeeRequest) {
+        Long employeeId = this.getData(employeeRequest.getId(), 0L);
+        return this.employeeRepository.findById(employeeId)
+                .map(
+                        employee -> Employee.builder()
+                                .id(employee.getId())
+                                .name(this.getData(employeeRequest.getName(), employee.getName()))
+                                .surname(this.getData(employeeRequest.getSurname(), employee.getSurname()))
+                                .patronymic(this.getData(employeeRequest.getPatronymic(), employee.getPatronymic()))
+                                .about(this.getData(employeeRequest.getAbout(), employee.getAbout()))
+                                .passport(this.getData(employeeRequest.getPassport(), employee.getPassport()))
+                                .identityId(this.getData(employeeRequest.getIdentityId(), employee.getIdentityId()))
+                                .addressId(this.getData(employeeRequest.getAddress().getId(), employee.getAddressId()))
+                                .positionId(this.getData(employeeRequest.getPositionId(), employee.getPositionId()))
+                                .filialDepartmentId(this.getData(employeeRequest.getFilialDepartmentId(), employee.getFilialDepartmentId()))
+                                .build()
+                )
+                .orElseGet(
+                        () -> Employee.builder()
+                                .name(employeeRequest.getName())
+                                .surname(employeeRequest.getSurname())
+                                .patronymic(employeeRequest.getPatronymic())
+                                .about(employeeRequest.getAbout())
+                                .passport(employeeRequest.getPassport())
+                                .identityId(employeeRequest.getIdentityId())
+                                .addressId(employeeRequest.getAddress().getId())
+                                .positionId(employeeRequest.getPositionId())
+                                .filialDepartmentId(employeeRequest.getFilialDepartmentId())
+                                .build()
+                );
     }
 
-    public Mono<EmployeeResponse> toEmployeeResponse(final Mono<Employee> employeeMono) {
-        return employeeMono.flatMap(
-                employee -> Mono.zip(
-                        this.identityRepository.findById(requireNonNull(employee.getId()))
-                                .flatMap(identity -> this.identityMapper.toIdentityResponse(Mono.fromCallable(() -> identity))),
-                        this.addressRepository.findById(employee.getAddressId())
-                                .flatMap(address -> this.addressMapper.toAddressResponse(Mono.fromCallable(() -> address))),
-                        this.positionRepository.findById(employee.getPositionId())
-                                .flatMap(position -> this.positionMapper.toPositionResponse(Mono.fromCallable(() -> position))),
-                        this.filialDepartmentRepository.findById(employee.getFilialDepartmentId())
-                                .flatMap(filialDepartment -> this.filialDepartmentMapper.toFilialDepartmentResponse(Mono.fromCallable(() -> filialDepartment)))
+    public EmployeeResponse toEmployeeResponse(final Employee employee) {
+        return EmployeeResponse.builder()
+                .id(employee.getId())
+                .name(employee.getName())
+                .surname(employee.getSurname())
+                .patronymic(employee.getPatronymic())
+                .about(employee.getAbout())
+                .passport(employee.getPassport())
+                .identity(
+                        this.identityRepository.findById(employee.getIdentityId())
+                                .map(this.identityMapper::toIdentityResponse)
+                                .orElseGet(IdentityResponse::new)
                 )
-                        .flatMap(
-                                objects ->
-                                        Mono.fromCallable(() ->
-                                                EmployeeResponse.builder()
-                                                        .id(employee.getId())
-                                                        .name(employee.getName())
-                                                        .surname(employee.getSurname())
-                                                        .patronymic(employee.getPatronymic())
-                                                        .about(employee.getAbout())
-                                                        .passport(employee.getPassport())
-                                                        .identity(objects.getT1())
-                                                        .address(objects.getT2())
-                                                        .position(objects.getT3())
-                                                        .filialDepartment(objects.getT4())
-                                                        .build())
-                        )
-        );
+                .address(
+                        this.addressRepository.findById(employee.getAddressId())
+                                .map(this.addressMapper::toAddressResponse)
+                                .orElseGet(AddressResponse::new)
+                )
+                .position(
+                        this.positionRepository.findById(employee.getPositionId())
+                                .map(this.positionMapper::toPositionResponse)
+                                .orElseGet(PositionResponse::new)
+                )
+                .filialDepartment(
+                        this.filialDepartmentRepository.findById(employee.getFilialDepartmentId())
+                                .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                                .orElseGet(FilialDepartmentResponse::new)
+                )
+                .build();
     }
 }

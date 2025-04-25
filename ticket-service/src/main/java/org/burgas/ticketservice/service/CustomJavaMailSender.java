@@ -7,7 +7,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
 import static org.burgas.ticketservice.message.IdentityMessage.IDENTITY_TOKEN_WAS_SEND;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
@@ -34,23 +33,15 @@ public class CustomJavaMailSender {
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<String> sendTokenByEmail(final Long identityId) {
-        return Mono.zip(
-                this.identityRepository.findById(identityId),
-                this.restoreTokenService.createOrUpdateByIdentityId(identityId)
-        )
-                .flatMap(
-                        objects -> {
-                            Identity identity = objects.getT1();
-                            RestoreToken restoreToken = objects.getT2();
-                            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-                            simpleMailMessage.setTo(identity.getEmail());
-                            simpleMailMessage.setFrom("ADMIN");
-                            simpleMailMessage.setSubject("Forgot password? Create the new one");
-                            simpleMailMessage.setText("Use this token to create new password: " + restoreToken.getValue());
-                            this.javaMailSender.send(simpleMailMessage);
-                            return Mono.fromCallable(IDENTITY_TOKEN_WAS_SEND::getMessage);
-                        }
-                );
+    public String sendTokenByEmail(final Long identityId) {
+        Identity identity = this.identityRepository.findById(identityId).orElseThrow();
+        RestoreToken restoreToken = this.restoreTokenService.createOrUpdateByIdentityId(identityId);
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(identity.getEmail());
+        simpleMailMessage.setFrom("ADMIN");
+        simpleMailMessage.setSubject("Forgot password? Create the new one");
+        simpleMailMessage.setText("Use this token to create new password: " + restoreToken.getValue());
+        this.javaMailSender.send(simpleMailMessage);
+        return IDENTITY_TOKEN_WAS_SEND.getMessage();
     }
 }

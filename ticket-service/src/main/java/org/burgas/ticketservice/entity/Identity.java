@@ -1,7 +1,9 @@
 package org.burgas.ticketservice.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import org.burgas.ticketservice.exception.PhoneNotMatchesException;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
@@ -10,12 +12,15 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static org.burgas.ticketservice.message.IdentityMessage.PHONE_NOT_MATCHES;
 
+@Entity
 @SuppressWarnings("unused")
-public final class Identity implements Persistable<Long> {
+public final class Identity {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long authorityId;
     private String username;
@@ -26,10 +31,13 @@ public final class Identity implements Persistable<Long> {
     private Boolean enabled;
     private Long imageId;
 
-    @Transient
-    private Boolean isNew;
-
     public Matcher validatePhone(String phone) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Character aChar : phone.toCharArray()) {
+            if (Character.isDigit(aChar))
+                stringBuilder.append(aChar);
+        }
+        phone = stringBuilder.toString();
         Pattern compile = Pattern.compile("^\\d{10}$");
         return compile.matcher(phone);
     }
@@ -81,6 +89,12 @@ public final class Identity implements Persistable<Long> {
     public void setPhone(String phone) {
         Matcher matcher = this.validatePhone(phone);
         if (matcher.matches()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Character aChar : phone.toCharArray()) {
+                if (Character.isDigit(aChar))
+                    stringBuilder.append(aChar);
+            }
+            phone = stringBuilder.toString();
             String[] arr = phone.split("");
             phone = "(" + arr[0]+arr[1]+arr[2] + ")-" + arr[3]+arr[4]+arr[5] + "-" + arr[6]+arr[7]+arr[8]+arr[9];
             this.phone = phone;
@@ -114,15 +128,6 @@ public final class Identity implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Identity identity = (Identity) o;
@@ -130,12 +135,12 @@ public final class Identity implements Persistable<Long> {
                Objects.equals(username, identity.username) && Objects.equals(password, identity.password) &&
                Objects.equals(email, identity.email) && Objects.equals(phone, identity.phone) &&
                Objects.equals(registeredAt, identity.registeredAt) && Objects.equals(enabled, identity.enabled) &&
-               Objects.equals(imageId, identity.imageId) && Objects.equals(isNew, identity.isNew);
+               Objects.equals(imageId, identity.imageId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, authorityId, username, password, email, phone, registeredAt, enabled, imageId, isNew);
+        return Objects.hash(id, authorityId, username, password, email, phone, registeredAt, enabled, imageId);
     }
 
     @Override
@@ -150,7 +155,6 @@ public final class Identity implements Persistable<Long> {
                ", registeredAt=" + registeredAt +
                ", enabled=" + enabled +
                ", imageId=" + imageId +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -194,6 +198,12 @@ public final class Identity implements Persistable<Long> {
         public Builder phone(String phone) {
             Matcher matcher = this.identity.validatePhone(phone);
             if (matcher.matches()) {
+                StringBuilder stringBuilder = new StringBuilder();
+                for (Character aChar : phone.toCharArray()) {
+                    if (Character.isDigit(aChar))
+                        stringBuilder.append(aChar);
+                }
+                phone = stringBuilder.toString();
                 String[] arr = phone.split("");
                 phone = "(" + arr[0]+arr[1]+arr[2] + ")-" + arr[3]+arr[4]+arr[5] + "-" + arr[6]+arr[7]+arr[8]+arr[9];
                 this.identity.phone = phone;
@@ -215,11 +225,6 @@ public final class Identity implements Persistable<Long> {
 
         public Builder imageId(Long imageId) {
             this.identity.imageId = imageId;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.identity.isNew = isNew;
             return this;
         }
 

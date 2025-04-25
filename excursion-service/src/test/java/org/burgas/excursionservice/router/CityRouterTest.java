@@ -184,7 +184,7 @@ public class CityRouterTest {
     @Test
     @Order(value = 9)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
-    void handleUploadImageTest() {
+    void handleUploadCityImageTest() {
         try (FileInputStream fileInputStream = new FileInputStream("src/main/resources/static/images.jpeg")
         ) {
             MockPart file = new MockPart("file","images.jpeg", fileInputStream.readAllBytes(), IMAGE_JPEG);
@@ -211,7 +211,7 @@ public class CityRouterTest {
     @Test
     @Order(value = 10)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
-    void handleChangeImageTest() {
+    void handleChangeCityImageTest() {
         try (FileInputStream fileInputStream = new FileInputStream("src/main/resources/static/images (1).jpeg")) {
             MockPart file = new MockPart("file", "images (1).jpeg", fileInputStream.readAllBytes(), IMAGE_JPEG);
             this.mockMvc
@@ -237,7 +237,7 @@ public class CityRouterTest {
     @Test
     @Order(value = 11)
     @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
-    void handleDeleteImageTest() throws Exception {
+    void handleDeleteCityImageTest() throws Exception {
         this.mockMvc
                 .perform(
                         MockMvcRequestBuilders.delete(URI.create("/cities/delete-image"))

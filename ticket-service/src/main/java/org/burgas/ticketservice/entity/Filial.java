@@ -1,25 +1,28 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
 import java.time.LocalTime;
 import java.util.Objects;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@Entity
 @SuppressWarnings("unused")
-public final class Filial implements Persistable<Long> {
+public final class Filial {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
     private Long addressId;
     private LocalTime opensAt;
     private LocalTime closesAt;
     private Boolean opened;
-
-    @Transient
-    public Boolean isNew;
 
     public Long getId() {
         return id;
@@ -70,26 +73,16 @@ public final class Filial implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew || id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Filial filial = (Filial) o;
-        return Objects.equals(id, filial.id) && Objects.equals(name, filial.name) &&
-               Objects.equals(addressId, filial.addressId) && Objects.equals(opensAt, filial.opensAt) &&
-               Objects.equals(closesAt, filial.closesAt) && Objects.equals(opened, filial.opened) && Objects.equals(isNew, filial.isNew);
+        return Objects.equals(id, filial.id) && Objects.equals(name, filial.name) && Objects.equals(addressId, filial.addressId) &&
+               Objects.equals(opensAt, filial.opensAt) && Objects.equals(closesAt, filial.closesAt) && Objects.equals(opened, filial.opened);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, addressId, opensAt, closesAt, opened, isNew);
+        return Objects.hash(id, name, addressId, opensAt, closesAt, opened);
     }
 
     @Override
@@ -101,7 +94,6 @@ public final class Filial implements Persistable<Long> {
                ", opensAt=" + opensAt +
                ", closesAt=" + closesAt +
                ", opened=" + opened +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -144,11 +136,6 @@ public final class Filial implements Persistable<Long> {
 
         public Builder opened(Boolean opened) {
             this.filial.opened = opened;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.filial.isNew = isNew;
             return this;
         }
 

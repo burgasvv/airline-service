@@ -10,7 +10,6 @@ import org.burgas.ticketservice.repository.DepartmentRepository;
 import org.burgas.ticketservice.repository.FilialDepartmentRepository;
 import org.burgas.ticketservice.repository.FilialRepository;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 @Component
 public final class FilialDepartmentMapper implements MapperDataHandler {
@@ -32,56 +31,37 @@ public final class FilialDepartmentMapper implements MapperDataHandler {
         this.departmentMapper = departmentMapper;
     }
 
-    public Mono<FilialDepartment> toFilialDepartment(final Mono<FilialDepartmentRequest> filialDepartmentRequestMono) {
-        return filialDepartmentRequestMono.flatMap(
-                filialDepartmentRequest -> {
-                    Long filialDepartmentId = this.getData(filialDepartmentRequest.getId(), 0L);
-                    return this.filialDepartmentRepository.findById(filialDepartmentId)
-                            .flatMap(
-                                    filialDepartment -> Mono.fromCallable(() ->
-                                            FilialDepartment.builder()
-                                                    .id(filialDepartment.getId())
-                                                    .filialId(this.getData(filialDepartmentRequest.getFilial().getId(),
-                                                            filialDepartment.getFilialId())
-                                                    )
-                                                    .departmentId(this.getData(filialDepartmentRequest.getDepartment().getId(),
-                                                            filialDepartment.getDepartmentId())
-                                                    )
-                                                    .isNew(false)
-                                                    .build())
-                            )
-                            .switchIfEmpty(
-                                    Mono.fromCallable(() ->
-                                            FilialDepartment.builder()
-                                                    .filialId(filialDepartmentRequest.getFilial().getId())
-                                                    .departmentId(filialDepartmentRequest.getDepartment().getId())
-                                                    .isNew(true)
-                                                    .build())
-                            );
-                }
-        );
+    public FilialDepartment toFilialDepartment(final FilialDepartmentRequest filialDepartmentRequest) {
+        Long filialDepartmentId = this.getData(filialDepartmentRequest.getId(), 0L);
+        return this.filialDepartmentRepository.findById(filialDepartmentId)
+                .map(
+                        filialDepartment -> FilialDepartment.builder()
+                                .id(filialDepartment.getId())
+                                .filialId(this.getData(filialDepartmentRequest.getFilial().getId(), filialDepartment.getFilialId()))
+                                .departmentId(this.getData(filialDepartmentRequest.getDepartment().getId(), filialDepartment.getDepartmentId()))
+                                .build()
+                )
+                .orElseGet(
+                        () -> FilialDepartment.builder()
+                                .filialId(filialDepartmentRequest.getFilial().getId())
+                                .departmentId(filialDepartmentRequest.getDepartment().getId())
+                                .build()
+                );
     }
 
-    public Mono<FilialDepartmentResponse> toFilialDepartmentResponse(final Mono<FilialDepartment> filialDepartmentMono) {
-        return filialDepartmentMono.flatMap(
-                filialDepartment -> Mono.zip(
+    public FilialDepartmentResponse toFilialDepartmentResponse(final FilialDepartment filialDepartment) {
+        return FilialDepartmentResponse.builder()
+                .id(filialDepartment.getId())
+                .filial(
                         this.filialRepository.findById(filialDepartment.getFilialId())
-                                .flatMap(filial -> this.filialMapper.toFilialResponse(Mono.fromCallable(() -> filial))),
-                        this.departmentRepository.findById(filialDepartment.getDepartmentId())
-                                .flatMap(department -> this.departmentMapper.toDepartmentResponse(Mono.fromCallable(() -> department)))
+                                .map(this.filialMapper::toFilialResponse)
+                                .orElseGet(FilialResponse::new)
                 )
-                        .flatMap(
-                                objects -> {
-                                    FilialResponse filialResponse = objects.getT1();
-                                    DepartmentResponse departmentResponse = objects.getT2();
-                                    return Mono.fromCallable(() ->
-                                            FilialDepartmentResponse.builder()
-                                                    .id(filialDepartment.getId())
-                                                    .filial(filialResponse)
-                                                    .department(departmentResponse)
-                                                    .build());
-                                }
-                        )
-        );
+                .department(
+                        this.departmentRepository.findById(filialDepartment.getDepartmentId())
+                                .map(this.departmentMapper::toDepartmentResponse)
+                                .orElseGet(DepartmentResponse::new)
+                )
+                .build();
     }
 }

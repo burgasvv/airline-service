@@ -7,10 +7,10 @@ import org.burgas.ticketservice.mapper.DepartmentMapper;
 import org.burgas.ticketservice.repository.DepartmentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import static java.util.Objects.requireNonNull;
+import java.util.List;
+import java.util.Optional;
+
 import static org.burgas.ticketservice.message.DepartmentMessage.DEPARTMENT_DELETED;
 import static org.burgas.ticketservice.message.DepartmentMessage.DEPARTMENT_NOT_FOUND;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
@@ -29,40 +29,42 @@ public class DepartmentService {
         this.departmentMapper = departmentMapper;
     }
 
-    public Flux<DepartmentResponse> findAll() {
+    public List<DepartmentResponse> findAll() {
         return this.departmentRepository.findAll()
-                .flatMap(department -> this.departmentMapper.toDepartmentResponse(Mono.fromCallable(() -> department)));
+                .stream()
+                .map(this.departmentMapper::toDepartmentResponse)
+                .toList();
     }
 
-    public Mono<DepartmentResponse> findById(final String departmentId) {
+    public DepartmentResponse findById(final String departmentId) {
         return this.departmentRepository.findById(Long.valueOf(departmentId))
-                .flatMap(department -> this.departmentMapper.toDepartmentResponse(Mono.fromCallable(() -> department)));
+                .map(this.departmentMapper::toDepartmentResponse)
+                .orElseGet(DepartmentResponse::new);
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<DepartmentResponse> createOrUpdate(final Mono<DepartmentRequest> departmentRequestMono) {
-        return departmentRequestMono.flatMap(
-                departmentRequest -> this.departmentMapper.toDepartment(Mono.fromCallable(() -> departmentRequest))
-                        .flatMap(this.departmentRepository::save)
-                        .flatMap(department -> this.departmentMapper.toDepartmentResponse(Mono.fromCallable(() -> department)))
-        );
+    public DepartmentResponse createOrUpdate(final DepartmentRequest departmentRequest) {
+        return Optional.of(this.departmentMapper.toDepartment(departmentRequest))
+                .map(this.departmentRepository::save)
+                .map(this.departmentMapper::toDepartmentResponse)
+                .orElseGet(DepartmentResponse::new);
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<String> deleteById(final String departmentId) {
+    public String deleteById(final String departmentId) {
         return this.departmentRepository.findById(Long.valueOf(departmentId))
-                .flatMap(
-                        department -> this.departmentRepository.deleteById(requireNonNull(department.getId()))
-                                .thenReturn(DEPARTMENT_DELETED.getMessage())
+                .map(
+                        department -> {
+                            this.departmentRepository.deleteById(department.getId());
+                            return DEPARTMENT_DELETED.getMessage();
+                        }
                 )
-                .switchIfEmpty(
-                        Mono.error(new DepartmentNotFoundException(DEPARTMENT_NOT_FOUND.getMessage()))
-                );
+                .orElseThrow(() -> new DepartmentNotFoundException(DEPARTMENT_NOT_FOUND.getMessage()));
     }
 }

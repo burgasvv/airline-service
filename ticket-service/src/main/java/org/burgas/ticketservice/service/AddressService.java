@@ -6,8 +6,9 @@ import org.burgas.ticketservice.mapper.AddressMapper;
 import org.burgas.ticketservice.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -25,20 +26,21 @@ public class AddressService {
         this.addressMapper = addressMapper;
     }
 
-    public Flux<AddressResponse> findAll() {
+    public List<AddressResponse> findAll() {
         return this.addressRepository.findAll()
-                .flatMap(address -> this.addressMapper.toAddressResponse(Mono.fromCallable(() -> address)));
+                .stream()
+                .map(this.addressMapper::toAddressResponse)
+                .toList();
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<AddressResponse> createOrUpdateSecured(final Mono<AddressRequest> addressRequestMono) {
-        return addressRequestMono.flatMap(
-                addressRequest -> this.addressMapper.toAddress(Mono.fromCallable(() -> addressRequest))
-                        .flatMap(this.addressRepository::save)
-                        .flatMap(address -> this.addressMapper.toAddressResponse(Mono.fromCallable(() -> address)))
-        );
+    public AddressResponse createOrUpdateSecured(final AddressRequest addressRequest) {
+        return Optional.of(this.addressMapper.toAddress(addressRequest))
+                .map(this.addressRepository::save)
+                .map(this.addressMapper::toAddressResponse)
+                .orElseGet(AddressResponse::new);
     }
 }

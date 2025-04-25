@@ -1,18 +1,19 @@
 package org.burgas.ticketservice.service;
 
+import org.burgas.ticketservice.dto.IdentityResponse;
 import org.burgas.ticketservice.mapper.IdentityMapper;
 import org.burgas.ticketservice.repository.IdentityRepository;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
 @Service
 @Transactional(readOnly = true, propagation = SUPPORTS)
-public class CustomUserDetailsService implements ReactiveUserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final IdentityRepository identityRepository;
     private final IdentityMapper identityMapper;
@@ -23,8 +24,9 @@ public class CustomUserDetailsService implements ReactiveUserDetailsService {
     }
 
     @Override
-    public Mono<UserDetails> findByUsername(String username) {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.identityRepository.findIdentityByEmail(username)
-                .flatMap(identity -> this.identityMapper.toIdentityResponse(Mono.fromCallable(() -> identity)));
+                .map(this.identityMapper::toIdentityResponse)
+                .orElseGet(IdentityResponse::new);
     }
 }

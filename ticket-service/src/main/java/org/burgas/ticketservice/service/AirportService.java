@@ -8,9 +8,10 @@ import org.burgas.ticketservice.repository.AddressRepository;
 import org.burgas.ticketservice.repository.AirportRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.util.List;
+
+import static java.util.Optional.of;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -34,37 +35,42 @@ public class AirportService {
         this.addressMapper = addressMapper;
     }
 
-    public Flux<AirportResponse> findAll() {
+    public List<AirportResponse> findAll() {
         return this.airportRepository.findAll()
-                .flatMap(airport -> this.airportMapper.toAirportResponse(Mono.fromCallable(() -> airport)));
+                .stream()
+                .map(this.airportMapper::toAirportResponse)
+                .toList();
     }
 
-    public Flux<AirportResponse> findByCountryId(final String countryId) {
+    public List<AirportResponse> findByCountryId(final String countryId) {
         return this.airportRepository.findAirportsByCountryId(Long.valueOf(countryId))
-                .flatMap(airport -> this.airportMapper.toAirportResponse(Mono.fromCallable(() -> airport)));
+                .stream()
+                .map(this.airportMapper::toAirportResponse)
+                .toList();
     }
 
-    public Flux<AirportResponse> findByCityId(final String cityId) {
+    public List<AirportResponse> findByCityId(final String cityId) {
         return this.airportRepository.findAirportsByCityId(Long.valueOf(cityId))
-                .flatMap(airport -> this.airportMapper.toAirportResponse(Mono.fromCallable(() -> airport)));
+                .stream()
+                .map(this.airportMapper::toAirportResponse)
+                .toList();
     }
 
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<AirportResponse> createOrUpdate(final Mono<AirportRequest> airportRequestMono) {
-        return airportRequestMono.flatMap(
-                airportRequest -> this.addressMapper.toAddress(Mono.fromCallable(airportRequest::getAddress))
-                        .flatMap(this.addressRepository::save)
-                        .flatMap(
-                                address -> {
-                                    airportRequest.getAddress().setId(address.getId());
-                                    return this.airportMapper.toAirport(Mono.fromCallable(() -> airportRequest));
-                                }
-                        )
-                        .flatMap(this.airportRepository::save)
-                        .flatMap(airport -> this.airportMapper.toAirportResponse(Mono.fromCallable(() -> airport)))
-        );
+    public AirportResponse createOrUpdate(final AirportRequest airportRequest) {
+        return of(this.addressMapper.toAddress(airportRequest.getAddress()))
+                .map(this.addressRepository::save)
+                .map(
+                        address -> {
+                            airportRequest.getAddress().setId(address.getId());
+                            return this.airportMapper.toAirport(airportRequest);
+                        }
+                )
+                .map(this.airportRepository::save)
+                .map(this.airportMapper::toAirportResponse)
+                .orElseGet(AirportResponse::new);
     }
 }

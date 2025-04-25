@@ -1,21 +1,25 @@
 package org.burgas.ticketservice.entity;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 
 import java.util.Objects;
 
+import static jakarta.persistence.GenerationType.*;
+
+@Entity
 @SuppressWarnings("unused")
-public final class City implements Persistable<Long> {
+public final class City {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
     private Long countryId;
-
-    @Transient
-    private Boolean isNew;
 
     public Long getId() {
         return id;
@@ -42,25 +46,15 @@ public final class City implements Persistable<Long> {
     }
 
     @Override
-    public boolean isNew() {
-        return isNew | id == null;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         City city = (City) o;
-        return Objects.equals(id, city.id) && Objects.equals(name, city.name) &&
-               Objects.equals(countryId, city.countryId) && Objects.equals(isNew, city.isNew);
+        return Objects.equals(id, city.id) && Objects.equals(name, city.name) && Objects.equals(countryId, city.countryId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, countryId, isNew);
+        return Objects.hash(id, name, countryId);
     }
 
     @Override
@@ -69,7 +63,6 @@ public final class City implements Persistable<Long> {
                "id=" + id +
                ", name='" + name + '\'' +
                ", countryId=" + countryId +
-               ", isNew=" + isNew +
                '}';
     }
 
@@ -97,11 +90,6 @@ public final class City implements Persistable<Long> {
 
         public Builder countryId(Long countryId) {
             this.city.countryId = countryId;
-            return this;
-        }
-
-        public Builder isNew(Boolean isNew) {
-            this.city.isNew = isNew;
             return this;
         }
 

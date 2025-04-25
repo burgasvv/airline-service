@@ -4,7 +4,6 @@ import org.burgas.ticketservice.entity.RestoreToken;
 import org.burgas.ticketservice.repository.RestoreTokenRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -26,25 +25,23 @@ public class RestoreTokenService {
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
-    public Mono<RestoreToken> createOrUpdateByIdentityId(final Long identityId) {
+    public RestoreToken createOrUpdateByIdentityId(final Long identityId) {
         return this.restoreTokenRepository
                 .findRestoreTokenByIdentityId(identityId)
-                .flatMap(
+                .map(
                         restoreToken -> this.restoreTokenRepository.save(
                                 RestoreToken.builder()
                                         .id(restoreToken.getId())
                                         .value(UUID.randomUUID())
                                         .identityId(restoreToken.getIdentityId())
-                                        .isNew(false)
                                         .build()
                         )
                 )
-                .switchIfEmpty(
-                        this.restoreTokenRepository.save(
+                .orElseGet(
+                        () -> this.restoreTokenRepository.save(
                                 RestoreToken.builder()
                                         .identityId(identityId)
                                         .value(UUID.randomUUID())
-                                        .isNew(true)
                                         .build()
                         )
                 );
