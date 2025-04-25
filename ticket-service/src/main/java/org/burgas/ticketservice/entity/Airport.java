@@ -2,14 +2,11 @@ package org.burgas.ticketservice.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Persistable;
 
 import java.util.Objects;
 
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @SuppressWarnings("unused")

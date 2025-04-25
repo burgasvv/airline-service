@@ -1,7 +1,6 @@
 package org.burgas.ticketservice.router;
 
 import org.burgas.ticketservice.dto.AddressRequest;
-import org.burgas.ticketservice.dto.AddressResponse;
 import org.burgas.ticketservice.service.AddressService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

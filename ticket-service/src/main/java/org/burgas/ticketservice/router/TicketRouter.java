@@ -22,7 +22,7 @@ public class TicketRouter {
     public RouterFunction<ServerResponse> ticketRoutes(final TicketService ticketService) {
         return route()
                 .GET(
-                        "/tickets", request -> ServerResponse
+                        "/tickets", _ -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(ticketService.findAll())
