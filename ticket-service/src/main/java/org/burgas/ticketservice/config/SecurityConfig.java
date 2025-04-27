@@ -37,7 +37,9 @@ public class SecurityConfig {
                         httpRequest -> httpRequest
 
                                 .requestMatchers(
-                                        "/identities/create", "/images/by-id",
+                                        "/identities/create",
+
+                                        "/images/by-id",
 
                                         "/airports", "/airports/by-country", "/airports/by-city",
 
@@ -51,7 +53,9 @@ public class SecurityConfig {
                                         "/flights/by-departure-city-by-arrival-city", "/flights/by-departure-city-by-arrival-city-back",
                                         "/flights/by-id",
 
-                                        "/tickets", "/tickets/by-id", "/tickets/create-update"
+                                        "/tickets", "/tickets/by-flight", "/tickets/by-id", "/tickets/create-update",
+
+                                        "/flight-seats/by-flight-id"
                                 )
                                 .permitAll()
 
@@ -84,7 +88,6 @@ public class SecurityConfig {
                                 .hasAnyAuthority("USER")
 
                                 .requestMatchers(
-                                        "/images/upload",
 
                                         "/identities", "/identities/enable-disable",
 

@@ -3,17 +3,23 @@ package org.burgas.ticketservice.service;
 import org.burgas.ticketservice.dto.DepartmentResponse;
 import org.burgas.ticketservice.dto.FilialDepartmentRequest;
 import org.burgas.ticketservice.dto.FilialDepartmentResponse;
+import org.burgas.ticketservice.dto.FilialResponse;
+import org.burgas.ticketservice.exception.FilialDepartmentNotCreatedException;
 import org.burgas.ticketservice.exception.FilialDepartmentNotFoundException;
 import org.burgas.ticketservice.mapper.FilialDepartmentMapper;
 import org.burgas.ticketservice.repository.FilialDepartmentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static org.burgas.ticketservice.message.FilialDepartmentMessage.FILIAL_DEPARTMENT_DELETED;
-import static org.burgas.ticketservice.message.FilialDepartmentMessage.FILIAL_DEPARTMENT_NOT_FOUND;
+import static java.util.Optional.of;
+import static org.burgas.ticketservice.log.FilialDepartmentLogs.FILIAL_DEPARTMENT_FOUND_ALL;
+import static org.burgas.ticketservice.log.FilialDepartmentLogs.FILIAL_DEPARTMENT_FOUND_BY_FILIAL_AND_DEPARTMENT_ID;
+import static org.burgas.ticketservice.message.FilialDepartmentMessages.*;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -22,6 +28,7 @@ import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 @Transactional(readOnly = true, propagation = SUPPORTS)
 public class FilialDepartmentService {
 
+    private static final Logger log = LoggerFactory.getLogger(FilialDepartmentService.class);
     private final FilialDepartmentRepository filialDepartmentRepository;
     private final FilialDepartmentMapper filialDepartmentMapper;
     private final FilialService filialService;
@@ -40,13 +47,17 @@ public class FilialDepartmentService {
     public List<FilialDepartmentResponse> findAll() {
         return this.filialDepartmentRepository.findAll()
                 .stream()
+                .peek(filialDepartment -> log.info(FILIAL_DEPARTMENT_FOUND_ALL.getLogMessage(), filialDepartment))
                 .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public FilialDepartmentResponse findByFilialIdAndDepartmentId(final String filialId, final String departmentId) {
         return this.filialDepartmentRepository.findFilialDepartmentByFilialIdAndDepartmentId(Long.valueOf(filialId), Long.valueOf(departmentId))
+                .stream()
+                .peek(filialDepartment -> log.info(FILIAL_DEPARTMENT_FOUND_BY_FILIAL_AND_DEPARTMENT_ID.getLogMessage(), filialDepartment))
                 .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                .findFirst()
                 .orElseGet(FilialDepartmentResponse::new);
     }
 
@@ -55,19 +66,18 @@ public class FilialDepartmentService {
             rollbackFor = Exception.class
     )
     public FilialDepartmentResponse createOrUpdate(final FilialDepartmentRequest filialDepartmentRequest) {
-        return Optional.of(this.filialService.createOrUpdate(filialDepartmentRequest.getFilial()))
-                .map(
-                        filialResponse -> {
-                            filialDepartmentRequest.getFilial().setId(filialResponse.getId());
-                            DepartmentResponse departmentResponse = this.departmentService.createOrUpdate(filialDepartmentRequest.getDepartment());
-                            filialDepartmentRequest.getDepartment().setId(departmentResponse.getId());
-                            return Optional.of(this.filialDepartmentMapper.toFilialDepartment(filialDepartmentRequest))
-                                    .map(this.filialDepartmentRepository::save)
-                                    .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
-                                    .orElseGet(FilialDepartmentResponse::new);
-                        }
-                )
-                .orElseThrow();
+        FilialResponse filialResponse = this.filialService.createOrUpdate(filialDepartmentRequest.getFilial());
+        filialDepartmentRequest.getFilial().setId(filialResponse.getId());
+
+        DepartmentResponse departmentResponse = this.departmentService.createOrUpdate(filialDepartmentRequest.getDepartment());
+        filialDepartmentRequest.getDepartment().setId(departmentResponse.getId());
+
+        return of(this.filialDepartmentMapper.toFilialDepartment(filialDepartmentRequest))
+                .map(this.filialDepartmentRepository::save)
+                .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                .orElseThrow(
+                        () -> new FilialDepartmentNotCreatedException(FILIAL_DEPARTMENT_NOT_CREATED.getMessage())
+                );
     }
 
     @Transactional(

@@ -83,12 +83,12 @@ Host: localhost:9000
 Authorization: Basic burgasvv@mail.ru cg3audio
 
 ###
-PUT /identities/set-password?identityId=4&token=3ccd2d5e-31fd-4584-af24-6f11aff9b529&password=showconnerycg3audio
+PUT /identities/set-password?identityId=4&token=439af913-37d0-4235-a197-da074da6d92a&password=showconnerycg3audio
 Host: localhost:9000
 Authorization: Basic burgasvv@mail.ru cg3audio
 
 ###
-PUT /identities/enable-disable?identityId=3&enabled=false
+PUT /identities/enable-disable?identityId=4&enabled=false
 Host: localhost:9000
 Authorization: Basic admin@gmail.com admin
 
@@ -325,7 +325,7 @@ Host: localhost:9000
 Authorization: Basic user@gmail.com user
 
 ###
-POST /employees/create?token=f475a09b-34a0-42f4-ac04-d0d0b7732e43
+POST /employees/create?token=a7aa617b-0a17-41f1-8bc0-4f778eb969a4
 Host: localhost:9000
 Authorization: Basic user@gmail.com user
 Content-Type: application/json
@@ -350,7 +350,7 @@ GET /flights
 Host: localhost:9000
 
 ###
-GET /flights/by-departure-city-arrival-city?departureCityId=1&arrivalCityId=2&departureDate=2025-04-25
+GET /flights/by-departure-city-by-arrival-city?departureCityId=1&arrivalCityId=2&departureDate=2025-10-25
 Host: localhost:9000
 
 ###
@@ -375,8 +375,10 @@ Content-Type: application/json
     "departureId": 1,
     "arrivalId": 4,
     "planeId": 1,
-    "departureAt": "2025-04-25T10:00",
-    "arrivalAt": "2025-04-25T12:30",
+    "businessPrice": 50000,
+    "economyPrice": 25000,
+    "departureAt": "2025-10-25T10:00",
+    "arrivalAt": "2025-10-25T12:30",
     "inProgress": false,
     "completed": false
 }
@@ -390,14 +392,21 @@ Content-Type: application/json
 {
     "departureId": 4,
     "arrivalId": 1,
-    "planeId": 2,
-    "departureAt": "2025-05-25T13:00",
-    "arrivalAt": "2025-05-25T15:30",
+    "planeId": 3,
+    "businessPrice": 60000,
+    "economyPrice": 30000,
+    "departureAt": "2025-11-25T13:00",
+    "arrivalAt": "2025-11-25T15:30",
     "inProgress": false,
     "completed": false
 }
 
 ###
 POST /flights/add-employee?flightId=1&employeeId=1
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+
+###
+DELETE /flights/remove-employee?flightId=1&employeeId=1
 Host: localhost:9000
 Authorization: Basic admin@gmail.com admin

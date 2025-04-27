@@ -1,13 +1,14 @@
 package org.burgas.ticketservice.message;
 
-public enum DepartmentMessage {
+public enum DepartmentMessages {
 
     DEPARTMENT_NOT_FOUND("Отдела не найден"),
+    DEPARTMENT_NOT_CREATED("Отдел не был создан"),
     DEPARTMENT_DELETED("Отдела успешно удален");
 
     private final String message;
 
-    DepartmentMessage(String message) {
+    DepartmentMessages(String message) {
         this.message = message;
     }
 

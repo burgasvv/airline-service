@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static org.burgas.ticketservice.message.EmployeeMessage.PASSPORT_NOT_MATCHES;
+import static org.burgas.ticketservice.message.EmployeeMessages.PASSPORT_NOT_MATCHES;
 
 @Entity
 @SuppressWarnings("unused")

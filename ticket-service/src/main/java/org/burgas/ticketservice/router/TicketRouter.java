@@ -28,6 +28,12 @@ public class TicketRouter {
                                 .body(ticketService.findAll())
                 )
                 .GET(
+                        "/tickets/by-flight", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(ticketService.findAllByFlightId(request.param("flightId").orElseThrow()))
+                )
+                .GET(
                         "/tickets/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)

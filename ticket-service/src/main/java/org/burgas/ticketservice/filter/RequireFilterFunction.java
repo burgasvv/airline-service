@@ -13,8 +13,8 @@ import org.springframework.web.servlet.function.HandlerFunction;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
 
-import static org.burgas.ticketservice.message.AuthMessage.NOT_AUTHENTICATED;
-import static org.burgas.ticketservice.message.AuthMessage.NOT_AUTHORIZED;
+import static org.burgas.ticketservice.message.AuthMessages.NOT_AUTHENTICATED;
+import static org.burgas.ticketservice.message.AuthMessages.NOT_AUTHORIZED;
 
 @Component
 public class RequireFilterFunction implements HandlerFilterFunction<ServerResponse, ServerResponse> {

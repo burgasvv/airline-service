@@ -4,18 +4,31 @@ import org.burgas.ticketservice.dto.FlightRequest;
 import org.burgas.ticketservice.dto.FlightResponse;
 import org.burgas.ticketservice.entity.Employee;
 import org.burgas.ticketservice.entity.Flight;
+import org.burgas.ticketservice.entity.FlightSeat;
+import org.burgas.ticketservice.entity.Ticket;
+import org.burgas.ticketservice.exception.FlightNotCreatedException;
+import org.burgas.ticketservice.exception.FlightNotFoundException;
+import org.burgas.ticketservice.exception.FlightNotTransformedException;
+import org.burgas.ticketservice.exception.PlaneNotFoundException;
+import org.burgas.ticketservice.log.FlightLogs;
 import org.burgas.ticketservice.mapper.FlightMapper;
 import org.burgas.ticketservice.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.requireNonNull;
-import static org.burgas.ticketservice.message.FlightMessage.EMPLOYEE_ADDED_TO_FLIGHT;
-import static org.burgas.ticketservice.message.FlightMessage.EMPLOYEE_REMOVED_FROM_FLIGHT;
+import static java.util.Optional.of;
+import static org.burgas.ticketservice.log.FlightLogs.FLIGHT_FOUND_ALL;
+import static org.burgas.ticketservice.log.FlightLogs.FLIGHT_FOUND_BY_DEPARTURE_AND_ARRIVAL;
+import static org.burgas.ticketservice.message.FlightMessages.*;
+import static org.burgas.ticketservice.message.PlaneMessages.PLANE_NOT_FOUND;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -24,6 +37,7 @@ import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 @Transactional(readOnly = true, propagation = SUPPORTS)
 public class FlightService {
 
+    private static final Logger log = LoggerFactory.getLogger(FlightService.class);
     private final FlightRepository flightRepository;
     private final FlightMapper flightMapper;
     private final EmployeeRepository employeeRepository;
@@ -46,30 +60,35 @@ public class FlightService {
     public List<FlightResponse> findAll() {
         return this.flightRepository.findAll()
                 .stream()
+                .peek(flight -> log.info(FLIGHT_FOUND_ALL.getLogMessage(), flight))
                 .map(this.flightMapper::toFlightResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
-    public List<FlightResponse> findAllByDepartureCityAndArrivalCityAndDepartureDate(final String departureCityId, final String arrivalCityId, final String departureDate) {
+    public List<FlightResponse> findAllByDepartureCityAndArrivalCityAndDepartureDate(
+            final String departureCityId, final String arrivalCityId, final String departureDate
+    ) {
         return this.flightRepository.findFlightsByDepartureCityAndArrivalCityAndDepartureDate(
-                        Long.parseLong(departureCityId), Long.parseLong(arrivalCityId),
+                Long.parseLong(departureCityId), Long.parseLong(arrivalCityId),
                         departureDate != null && !departureDate.isBlank() ? LocalDate.parse(departureDate) : null)
                 .stream()
+                .peek(flight -> log.info(FLIGHT_FOUND_BY_DEPARTURE_AND_ARRIVAL.getLogMessage(), flight))
                 .map(this.flightMapper::toFlightResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<FlightResponse> findAllByDepartureCityAndArrivalCity(final String departureCityId, final String arrivalCityId) {
         return this.flightRepository.findFlightsByDepartureCityIdAndArrivalCityId(Long.parseLong(departureCityId), Long.parseLong(arrivalCityId))
                 .stream()
+                .peek(flight -> log.info(FLIGHT_FOUND_BY_DEPARTURE_AND_ARRIVAL.getLogMessage(),flight))
                 .map(this.flightMapper::toFlightResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<FlightResponse> findAllByDepartureCityAndArrivalCityBack(final String flightId) {
         return this.flightRepository.findById(Long.parseLong(flightId))
                 .map(
-                        flight -> Optional.of(this.flightMapper.toFlightResponse(flight))
+                        flight -> of(this.flightMapper.toFlightResponse(flight))
                                 .map(
                                         flightResponse -> this.flightRepository.findFlightsByDepartureCityIdAndArrivalCityIdBack(
                                                 flightResponse.getArrival().getAddress().getCity().getId(),
@@ -78,16 +97,23 @@ public class FlightService {
                                         )
                                                 .stream()
                                                 .map(this.flightMapper::toFlightResponse)
-                                                .toList()
+                                                .collect(Collectors.toList())
                                 )
-                                .orElseThrow()
+                                .orElseThrow(
+                                        () -> new FlightNotTransformedException(FLIGHT_NOT_TRANSFORMED.getMessage())
+                                )
                 )
-                .orElseThrow();
+                .orElseThrow(
+                        () -> new FlightNotFoundException(FLIGHT_NOT_FOUND.getMessage())
+                );
     }
 
     public FlightResponse findById(final String flightId) {
         return this.flightRepository.findById(Long.parseLong(flightId))
+                .stream()
+                .peek(flight -> log.info(FlightLogs.FLIGHT_FOUND_BY_ID.getLogMessage(), flight))
                 .map(this.flightMapper::toFlightResponse)
+                .findFirst()
                 .orElseGet(FlightResponse::new);
     }
 
@@ -96,10 +122,68 @@ public class FlightService {
             rollbackFor = Exception.class
     )
     public FlightResponse createOrUpdate(final FlightRequest flightRequest) {
-        return Optional.of(this.flightMapper.toFlight(flightRequest))
+        FlightResponse flightResponse = of(this.flightMapper.toFlight(flightRequest))
                 .map(this.flightRepository::save)
                 .map(this.flightMapper::toFlightResponse)
-                .orElseGet(FlightResponse::new);
+                .orElseThrow(
+                        () -> new FlightNotCreatedException(FLIGHT_NOT_CREATED.getMessage())
+                );
+
+        return this.planeRepository.findById(flightResponse.getPlane().getId())
+                .map(
+                        plane -> {
+                            IntStream.rangeClosed(1, Math.toIntExact(plane.getBusinessClass()))
+                                    .forEach(
+                                            value -> this.flightSeatRepository.save(
+                                                    FlightSeat.builder()
+                                                            .number((long) value)
+                                                            .flightId(flightResponse.getId())
+                                                            .cabinTypeId(1L)
+                                                            .purchased(false)
+                                                            .closed(false)
+                                                            .build()
+                                            )
+                                    );
+
+                            IntStream.rangeClosed(
+                                            Math.toIntExact(plane.getBusinessClass() + 1),
+                                            Math.toIntExact(plane.getBusinessClass() + plane.getEconomyClass())
+                                    )
+                                    .forEach(
+                                            value -> this.flightSeatRepository.save(
+                                                    FlightSeat.builder()
+                                                            .number((long) value)
+                                                            .flightId(flightResponse.getId())
+                                                            .cabinTypeId(2L)
+                                                            .purchased(false)
+                                                            .closed(false)
+                                                            .build()
+                                            )
+                                    );
+
+                            this.ticketRepository.save(
+                                    Ticket.builder()
+                                            .flightId(flightResponse.getId())
+                                            .amount(plane.getBusinessClass())
+                                            .price(flightRequest.getBusinessPrice())
+                                            .cabinTypeId(1L)
+                                            .build()
+                            );
+                            this.ticketRepository.save(
+                                    Ticket.builder()
+                                            .flightId(flightResponse.getId())
+                                            .amount(plane.getEconomyClass())
+                                            .price(flightRequest.getEconomyPrice())
+                                            .cabinTypeId(2L)
+                                            .build()
+                            );
+
+                            return flightResponse;
+                        }
+                )
+                .orElseThrow(
+                        () -> new PlaneNotFoundException(PLANE_NOT_FOUND.getMessage())
+                );
     }
 
     @Transactional(

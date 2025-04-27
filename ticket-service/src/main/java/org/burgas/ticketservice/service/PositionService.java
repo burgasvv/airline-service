@@ -2,18 +2,22 @@ package org.burgas.ticketservice.service;
 
 import org.burgas.ticketservice.dto.PositionRequest;
 import org.burgas.ticketservice.dto.PositionResponse;
+import org.burgas.ticketservice.exception.PositionNotCreatedException;
 import org.burgas.ticketservice.exception.PositionNotFoundException;
 import org.burgas.ticketservice.mapper.PositionMapper;
 import org.burgas.ticketservice.repository.PositionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
-import static org.burgas.ticketservice.message.PositionMessage.POSITION_DELETED;
-import static org.burgas.ticketservice.message.PositionMessage.POSITION_NOT_FOUND;
+import static java.util.Optional.of;
+import static org.burgas.ticketservice.log.PositionLogs.*;
+import static org.burgas.ticketservice.message.PositionMessages.*;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -22,6 +26,7 @@ import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 @Transactional(readOnly = true, propagation = SUPPORTS)
 public class PositionService {
 
+    private static final Logger log = LoggerFactory.getLogger(PositionService.class);
     private final PositionRepository positionRepository;
     private final PositionMapper positionMapper;
 
@@ -33,13 +38,17 @@ public class PositionService {
     public List<PositionResponse> findAll() {
         return this.positionRepository.findAll()
                 .stream()
+                .peek(position -> log.info(POSITION_FOUND_ALL.getLogMessage(), position))
                 .map(this.positionMapper::toPositionResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public PositionResponse findById(final String positionId) {
         return this.positionRepository.findById(Long.valueOf(positionId))
+                .stream()
+                .peek(position -> log.info(POSITION_FOUND_BY_ID.getLogMessage(), position))
                 .map(this.positionMapper::toPositionResponse)
+                .findFirst()
                 .orElseGet(PositionResponse::new);
     }
 
@@ -48,10 +57,12 @@ public class PositionService {
             rollbackFor = Exception.class
     )
     public PositionResponse createOrUpdate(final PositionRequest positionRequest) {
-        return Optional.of(this.positionMapper.toPosition(positionRequest))
+        return of(this.positionMapper.toPosition(positionRequest))
                 .map(this.positionRepository::save)
                 .map(this.positionMapper::toPositionResponse)
-                .orElseGet(PositionResponse::new);
+                .orElseThrow(
+                        () -> new PositionNotCreatedException(POSITION_NOT_CREATED.getMessage())
+                );
     }
 
     @Transactional(
@@ -60,12 +71,16 @@ public class PositionService {
     )
     public String deleteById(final String positionId) {
         return this.positionRepository.findById(Long.valueOf(positionId))
+                .stream()
+                .peek(position -> log.info(POSITION_FOUND_BEFORE_DELETE.getLogMessage(), position))
                 .map(
                         position -> {
                             this.positionRepository.deleteById(requireNonNull(position.getId()));
+                            log.info(POSITION_DELETED_LOG.getLogMessage(), position);
                             return POSITION_DELETED.getMessage();
                         }
                 )
+                .findFirst()
                 .orElseThrow(
                         () -> new PositionNotFoundException(POSITION_NOT_FOUND.getMessage())
                 );

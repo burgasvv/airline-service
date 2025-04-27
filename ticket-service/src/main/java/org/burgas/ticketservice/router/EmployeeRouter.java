@@ -9,8 +9,6 @@ import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.ServerResponse;
 
-import static java.net.URI.create;
-import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -39,9 +37,8 @@ public class EmployeeRouter {
                                     request.body(EmployeeRequest.class), request.param("token").orElse(null)
                             );
                             return ServerResponse
-                                    .status(FOUND)
+                                    .status(OK)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/employees/by-id?employeeId=" + employeeResponse.getId()))
                                     .body(employeeResponse);
                         }
                 )

@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.burgas.ticketservice.message.IdentityMessage.IDENTITY_TOKEN_WAS_SEND;
+import static org.burgas.ticketservice.message.IdentityMessages.IDENTITY_TOKEN_WAS_SEND;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;

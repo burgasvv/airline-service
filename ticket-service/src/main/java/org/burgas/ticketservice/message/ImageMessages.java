@@ -1,6 +1,6 @@
 package org.burgas.ticketservice.message;
 
-public enum ImageMessage {
+public enum ImageMessages {
 
     WRONG_FILE_FORMAT("Неверный формат файла загрузки"),
     FILE_IS_EMPTY("Загружаемый файл пуст"),
@@ -11,7 +11,7 @@ public enum ImageMessage {
 
     private final String message;
 
-    ImageMessage(String message) {
+    ImageMessages(String message) {
         this.message = message;
     }
 

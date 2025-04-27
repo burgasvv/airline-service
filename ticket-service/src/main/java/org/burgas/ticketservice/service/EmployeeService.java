@@ -5,20 +5,25 @@ import org.burgas.ticketservice.dto.EmployeeRequest;
 import org.burgas.ticketservice.dto.EmployeeResponse;
 import org.burgas.ticketservice.entity.Require;
 import org.burgas.ticketservice.entity.RequireAnswer;
+import org.burgas.ticketservice.exception.EmployeeNotCreatedException;
+import org.burgas.ticketservice.exception.IdentityNotFoundException;
 import org.burgas.ticketservice.exception.IdentityWrongTokenException;
 import org.burgas.ticketservice.exception.WrongIdentityException;
 import org.burgas.ticketservice.mapper.EmployeeMapper;
 import org.burgas.ticketservice.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
-import static org.burgas.ticketservice.message.IdentityMessage.IDENTITY_WRONG_ID;
-import static org.burgas.ticketservice.message.IdentityMessage.IDENTITY_WRONG_TOKEN;
+import static java.util.Optional.of;
+import static org.burgas.ticketservice.log.EmployeeLogs.EMPLOYEE_FOUND_BY_ID;
+import static org.burgas.ticketservice.message.EmployeeMessages.EMPLOYEE_NOT_CREATED;
+import static org.burgas.ticketservice.message.IdentityMessages.*;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -26,6 +31,8 @@ import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 @Service
 @Transactional(readOnly = true, propagation = SUPPORTS)
 public class EmployeeService {
+
+    private static final Logger log = LoggerFactory.getLogger(EmployeeService.class);
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
@@ -53,13 +60,17 @@ public class EmployeeService {
     public List<EmployeeResponse> finaAll() {
         return this.employeeRepository.findAll()
                 .stream()
+                .peek(employee -> log.info(EMPLOYEE_FOUND_BY_ID.getLogMessage(), employee))
                 .map(this.employeeMapper::toEmployeeResponse)
                 .toList();
     }
 
     public EmployeeResponse findById(final String employeeId) {
         return this.employeeRepository.findById(Long.valueOf(employeeId))
+                .stream()
+                .peek(employee -> log.info(EMPLOYEE_FOUND_BY_ID.getLogMessage(), employee))
                 .map(this.employeeMapper::toEmployeeResponse)
+                .findFirst()
                 .orElseGet(EmployeeResponse::new);
     }
 
@@ -71,15 +82,20 @@ public class EmployeeService {
         return this.requireAnswerTokenRepository.findRequireAnswerTokenByValue(UUID.fromString(token))
                 .map(
                         requireAnswerToken -> {
-                            RequireAnswer requireAnswer = this.requireAnswerRepository.findById(requireAnswerToken.getRequireAnswerId()).orElse(null);
-                            Require require = this.requireRepository.findById(requireNonNull(requireAnswer).getRequireId()).orElse(null);
+                            RequireAnswer requireAnswer = this.requireAnswerRepository
+                                    .findById(requireAnswerToken.getRequireAnswerId()).orElse(null);
+                            Require require = this.requireRepository
+                                    .findById(requireNonNull(requireAnswer).getRequireId()).orElse(null);
+
                             if (employeeRequest.getIdentityId().equals(requireNonNull(require).getUserId())) {
+
                                 AddressResponse addressResponse = this.addressService.createOrUpdateSecured(employeeRequest.getAddress());
                                 employeeRequest.getAddress().setId(addressResponse.getId());
                                 employeeRequest.setName(require.getName());
                                 employeeRequest.setSurname(require.getSurname());
                                 employeeRequest.setPatronymic(require.getPatronymic());
                                 employeeRequest.setPassport(require.getPassport());
+
                                 return this.identityRepository.findById(employeeRequest.getIdentityId())
                                         .map(
                                                 identity -> {
@@ -90,19 +106,25 @@ public class EmployeeService {
                                         .map(
                                                 _ -> {
                                                     this.requireAnswerTokenRepository.deleteById(requireAnswerToken.getId());
-                                                    return Optional.of(this.employeeMapper.toEmployee(employeeRequest))
+                                                    return of(this.employeeMapper.toEmployee(employeeRequest))
                                                             .map(this.employeeRepository::save)
                                                             .map(this.employeeMapper::toEmployeeResponse)
-                                                            .orElseGet(EmployeeResponse::new);
+                                                            .orElseThrow(
+                                                                    () -> new EmployeeNotCreatedException(EMPLOYEE_NOT_CREATED.getMessage())
+                                                            );
                                                 }
                                         )
-                                        .orElseGet(EmployeeResponse::new);
+                                        .orElseThrow(
+                                                () -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage())
+                                        );
 
                             } else {
                                 throw new WrongIdentityException(IDENTITY_WRONG_ID.getMessage());
                             }
                         }
                 )
-                .orElseThrow(() -> new IdentityWrongTokenException(IDENTITY_WRONG_TOKEN.getMessage()));
+                .orElseThrow(
+                        () -> new IdentityWrongTokenException(IDENTITY_WRONG_TOKEN.getMessage())
+                );
     }
 }

@@ -1,13 +1,13 @@
 package org.burgas.ticketservice.message;
 
-public enum AuthMessage {
+public enum AuthMessages {
 
     NOT_AUTHENTICATED("Пользователь не аутентифицирован"),
     NOT_AUTHORIZED("Пользователь не авторизован");
 
     private final String message;
 
-    AuthMessage(String message) {
+    AuthMessages(String message) {
         this.message = message;
     }
 

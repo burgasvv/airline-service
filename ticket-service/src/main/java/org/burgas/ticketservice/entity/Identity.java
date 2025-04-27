@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static org.burgas.ticketservice.message.IdentityMessage.PHONE_NOT_MATCHES;
+import static org.burgas.ticketservice.message.IdentityMessages.PHONE_NOT_MATCHES;
 
 @Entity
 @SuppressWarnings("unused")

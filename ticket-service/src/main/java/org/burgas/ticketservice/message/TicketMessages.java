@@ -1,12 +1,12 @@
 package org.burgas.ticketservice.message;
 
-public enum RestoreTokenMessage {
+public enum TicketMessages {
 
-    WRONG_RESTORE_TOKEN("Неверный токен идентификации пароля");
+    TICKET_NOT_CREATED("Ticket was not created: {}");
 
     private final String message;
 
-    RestoreTokenMessage(String message) {
+    TicketMessages(String message) {
         this.message = message;
     }
 

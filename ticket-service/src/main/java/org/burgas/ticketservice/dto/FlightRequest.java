@@ -10,6 +10,8 @@ public final class FlightRequest {
     private Long departureId;
     private Long arrivalId;
     private Long planeId;
+    private Long businessPrice;
+    private Long economyPrice;
     private LocalDateTime departureAt;
     private LocalDateTime arrivalAt;
     private Boolean inProgress;
@@ -45,6 +47,22 @@ public final class FlightRequest {
 
     public void setPlaneId(Long planeId) {
         this.planeId = planeId;
+    }
+
+    public Long getBusinessPrice() {
+        return businessPrice;
+    }
+
+    public void setBusinessPrice(Long businessPrice) {
+        this.businessPrice = businessPrice;
+    }
+
+    public Long getEconomyPrice() {
+        return economyPrice;
+    }
+
+    public void setEconomyPrice(Long economyPrice) {
+        this.economyPrice = economyPrice;
     }
 
     public LocalDateTime getDepartureAt() {
@@ -85,12 +103,13 @@ public final class FlightRequest {
         FlightRequest that = (FlightRequest) o;
         return Objects.equals(id, that.id) && Objects.equals(departureId, that.departureId) &&
                Objects.equals(arrivalId, that.arrivalId) && Objects.equals(planeId, that.planeId) &&
+               Objects.equals(businessPrice, that.businessPrice) && Objects.equals(economyPrice, that.economyPrice) &&
                Objects.equals(departureAt, that.departureAt) && Objects.equals(arrivalAt, that.arrivalAt) &&
                Objects.equals(inProgress, that.inProgress) && Objects.equals(completed, that.completed);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, departureId, arrivalId, planeId, departureAt, arrivalAt, inProgress, completed);
+        return Objects.hash(id, departureId, arrivalId, planeId, businessPrice, economyPrice, departureAt, arrivalAt, inProgress, completed);
     }
 }

@@ -4,20 +4,27 @@ import org.burgas.ticketservice.dto.RequireAnswerRequest;
 import org.burgas.ticketservice.dto.RequireAnswerResponse;
 import org.burgas.ticketservice.entity.RequireAnswerToken;
 import org.burgas.ticketservice.exception.RequireAlreadyClosedException;
+import org.burgas.ticketservice.exception.RequireAnswerNotTransformedException;
 import org.burgas.ticketservice.kafka.KafkaProducer;
 import org.burgas.ticketservice.mapper.RequireAnswerMapper;
 import org.burgas.ticketservice.mapper.RequireAnswerTokenMapper;
 import org.burgas.ticketservice.repository.RequireAnswerRepository;
 import org.burgas.ticketservice.repository.RequireAnswerTokenRepository;
 import org.burgas.ticketservice.repository.RequireRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import static org.burgas.ticketservice.message.RequireMessage.REQUIRE_CLOSED;
+import static java.util.Optional.of;
+import static org.burgas.ticketservice.log.RequireAnswerLogs.REQUIRE_ANSWER_FOUND_ALL_BY_ADMIN_ID;
+import static org.burgas.ticketservice.log.RequireAnswerLogs.REQUIRE_ANSWER_FOUND_ALL_BY_USER_ID;
+import static org.burgas.ticketservice.message.RequireAnswerMessages.REQUIRE_ANSWER_NOT_TRANSFORMED;
+import static org.burgas.ticketservice.message.RequireMessages.REQUIRE_CLOSED;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -25,6 +32,8 @@ import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 @Service
 @Transactional(readOnly = true, propagation = SUPPORTS)
 public class RequireAnswerService {
+
+    private static final Logger log = LoggerFactory.getLogger(RequireAnswerService.class);
 
     private final RequireRepository requireRepository;
     private final RequireAnswerRepository requireAnswerRepository;
@@ -48,15 +57,17 @@ public class RequireAnswerService {
     public List<RequireAnswerResponse> findByUserId(final String userId) {
         return this.requireAnswerRepository.findRequireAnswersByUserId(Long.valueOf(userId))
                 .stream()
+                .peek(requireAnswer -> log.info(REQUIRE_ANSWER_FOUND_ALL_BY_USER_ID.getLogMessage(), requireAnswer))
                 .map(this.requireAnswerMapper::toRequireAnswerResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<RequireAnswerResponse> findByAdminId(final String adminId) {
         return this.requireAnswerRepository.findRequireAnswersByAdminId(Long.valueOf(adminId))
                 .stream()
+                .peek(requireAnswer -> log.info(REQUIRE_ANSWER_FOUND_ALL_BY_ADMIN_ID.getLogMessage(), requireAnswer))
                 .map(this.requireAnswerMapper::toRequireAnswerResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Transactional(
@@ -79,7 +90,7 @@ public class RequireAnswerService {
                 .map(
                         _ -> {
                             if (requireAnswerRequest.getAllowed()) {
-                                return Optional.of(this.requireAnswerMapper.toRequireAnswer(requireAnswerRequest))
+                                return of(this.requireAnswerMapper.toRequireAnswer(requireAnswerRequest))
                                         .map(this.requireAnswerRepository::save)
                                         .map(
                                                 requireAnswer -> this.requireAnswerTokenRepository.save(
@@ -92,14 +103,15 @@ public class RequireAnswerService {
                                         .map(this.requireAnswerTokenMapper::toRequireAnswerTokenResponse)
                                         .map(
                                                 requireAnswerTokenResponse -> {
-                                                    this.kafkaProducer
-                                                            .sendStringRequireAnswerTokenMessage(requireAnswerTokenResponse);
+                                                    this.kafkaProducer.sendStringRequireAnswerTokenMessage(requireAnswerTokenResponse);
                                                     return requireAnswerTokenResponse;
                                                 }
                                         )
-                                        .orElseThrow();
+                                        .orElseThrow(
+                                                () -> new RequireAnswerNotTransformedException(REQUIRE_ANSWER_NOT_TRANSFORMED.getLogMessages())
+                                        );
                             } else {
-                                return Optional.of(this.requireAnswerMapper.toRequireAnswer(requireAnswerRequest))
+                                return of(this.requireAnswerMapper.toRequireAnswer(requireAnswerRequest))
                                         .map(this.requireAnswerRepository::save)
                                         .map(this.requireAnswerMapper::toRequireAnswerResponse)
                                         .map(
@@ -108,7 +120,9 @@ public class RequireAnswerService {
                                                     return requireAnswerResponse;
                                                 }
                                         )
-                                        .orElseThrow();
+                                        .orElseThrow(
+                                                () -> new RequireAnswerNotTransformedException(REQUIRE_ANSWER_NOT_TRANSFORMED.getLogMessages())
+                                        );
                             }
                         }
                 );
