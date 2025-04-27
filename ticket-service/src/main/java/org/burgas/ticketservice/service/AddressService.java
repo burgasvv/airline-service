@@ -4,7 +4,6 @@ import org.burgas.ticketservice.dto.AddressRequest;
 import org.burgas.ticketservice.dto.AddressResponse;
 import org.burgas.ticketservice.exception.AddressNotCreatedException;
 import org.burgas.ticketservice.mapper.AddressMapper;
-import org.burgas.ticketservice.message.AddressMessages;
 import org.burgas.ticketservice.repository.AddressRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static java.util.Optional.*;
-import static org.burgas.ticketservice.log.AddressLogs.*;
-import static org.burgas.ticketservice.message.AddressMessages.*;
+import static java.util.Optional.of;
+import static org.burgas.ticketservice.log.AddressLogs.ADDRESS_FOUND_ALL;
+import static org.burgas.ticketservice.message.AddressMessages.ADDRESS_NOT_CREATED;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
