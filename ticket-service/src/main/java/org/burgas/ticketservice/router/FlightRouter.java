@@ -99,6 +99,18 @@ public class FlightRouter {
                                         )
                                 )
                 )
+                .PUT(
+                        "/flights/start-flight", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(flightService.startFlight(request.param("flightId").orElseThrow()))
+                )
+                .PUT(
+                        "/flights/complete-flight", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(flightService.completeFlight(request.param("flightId").orElseThrow()))
+                )
                 .build();
     }
 }

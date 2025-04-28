@@ -39,6 +39,7 @@ public class TicketMapper implements MapperDataHandler {
                                 .cabinTypeId(this.getData(ticketRequest.getCabinTypeId(), ticket.getCabinTypeId()))
                                 .amount(this.getData(ticketRequest.getAmount(), ticket.getAmount()))
                                 .price(this.getData(ticketRequest.getPrice(), ticket.getAmount()))
+                                .closed(this.getData(ticketRequest.getClosed(), ticket.getClosed()))
                                 .build()
                 )
                 .orElseGet(
@@ -47,6 +48,7 @@ public class TicketMapper implements MapperDataHandler {
                                 .cabinTypeId(ticketRequest.getCabinTypeId())
                                 .price(ticketRequest.getPrice())
                                 .amount(ticketRequest.getAmount())
+                                .closed(ticketRequest.getClosed())
                                 .build()
                 );
     }
@@ -65,6 +67,7 @@ public class TicketMapper implements MapperDataHandler {
                 )
                 .amount(ticket.getAmount())
                 .price(ticket.getPrice())
+                .closed(ticket.getClosed())
                 .build();
     }
 }

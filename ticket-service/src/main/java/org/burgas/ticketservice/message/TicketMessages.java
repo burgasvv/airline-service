@@ -2,7 +2,8 @@ package org.burgas.ticketservice.message;
 
 public enum TicketMessages {
 
-    TICKET_NOT_CREATED("Ticket was not created: {}");
+    TICKET_NOT_FOUND("Билет не был найден в базе"),
+    TICKET_NOT_CREATED("Билет не был создан");
 
     private final String message;
 

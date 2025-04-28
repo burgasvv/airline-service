@@ -26,7 +26,8 @@ public class IdentityFilterFunction implements HandlerFilterFunction<ServerRespo
                 request.path().equals("/identities/by-id") || request.path().equals("/identities/update") ||
                 request.path().equals("/identities/change-password") || request.path().equals("/identities/set-password") ||
                 request.path().equals("/identities/upload-image") || request.path().equals("/identities/change-image") ||
-                request.path().equals("/identities/delete-image")
+                request.path().equals("/identities/delete-image") ||
+                request.path().equals("/ordered-tickets/by-identity") || request.path().equals("/ordered-tickets/order-ticket-identity")
         ) {
             SecurityContext securityContext = SecurityContextHolder.getContext();
             String identityIdParam = request.param("identityId").orElse(null);

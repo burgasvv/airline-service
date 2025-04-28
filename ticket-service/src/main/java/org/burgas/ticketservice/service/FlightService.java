@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
 import static org.burgas.ticketservice.log.FlightLogs.FLIGHT_FOUND_ALL;
@@ -167,6 +168,7 @@ public class FlightService {
                                             .amount(plane.getBusinessClass())
                                             .price(flightRequest.getBusinessPrice())
                                             .cabinTypeId(1L)
+                                            .closed(false)
                                             .build()
                             );
                             this.ticketRepository.save(
@@ -175,6 +177,7 @@ public class FlightService {
                                             .amount(plane.getEconomyClass())
                                             .price(flightRequest.getEconomyPrice())
                                             .cabinTypeId(2L)
+                                            .closed(false)
                                             .build()
                             );
 
@@ -204,5 +207,56 @@ public class FlightService {
     public String removeEmployeeFromFlight(final String flightId, final String employeeId) {
         this.flightRepository.deleteFromFlightEmployee(Long.parseLong(flightId), Long.parseLong(employeeId));
         return EMPLOYEE_REMOVED_FROM_FLIGHT.getMessage();
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String startFlight(final String flightId) {
+        return this.flightRepository.findById(Long.parseLong(flightId))
+                .map(
+                        flight -> {
+                            flight.setInProgress(true);
+                            Flight saved = this.flightRepository.save(flight);
+                            this.ticketRepository.findTicketsByFlightId(saved.getId())
+                                    .forEach(
+                                            ticket -> {
+                                                ticket.setClosed(true);
+                                                this.ticketRepository.save(ticket);
+                                            }
+                                    );
+                            this.flightSeatRepository.findFlightSeatsByFlightId(saved.getId())
+                                    .forEach(
+                                            flightSeat -> {
+                                                flightSeat.setClosed(true);
+                                                this.flightSeatRepository.save(flightSeat);
+                                            }
+                                    );
+                            return format(FLIGHT_STARTS.getMessage(), saved.getId());
+                        }
+                )
+                .orElseThrow(
+                        () -> new FlightNotFoundException(FLIGHT_NOT_FOUND.getMessage())
+                );
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String completeFlight(final String flightId) {
+        return this.flightRepository.findById(Long.parseLong(flightId))
+                .map(
+                        flight -> {
+                            flight.setInProgress(false);
+                            flight.setCompleted(true);
+                            Flight saved = this.flightRepository.save(flight);
+                            return format(FLIGHT_COMPLETE.getMessage(), saved.getId());
+                        }
+                )
+                .orElseThrow(
+                        () -> new FlightNotFoundException(FLIGHT_NOT_FOUND.getMessage())
+                );
     }
 }

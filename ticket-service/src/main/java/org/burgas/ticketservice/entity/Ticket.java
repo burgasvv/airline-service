@@ -19,6 +19,7 @@ public final class Ticket {
     private Long cabinTypeId;
     private Long price;
     private Long amount;
+    private Boolean closed;
 
     public Long getId() {
         return id;
@@ -60,17 +61,26 @@ public final class Ticket {
         this.amount = amount;
     }
 
+    public Boolean getClosed() {
+        return closed;
+    }
+
+    public void setClosed(Boolean closed) {
+        this.closed = closed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Ticket ticket = (Ticket) o;
         return Objects.equals(id, ticket.id) && Objects.equals(flightId, ticket.flightId) &&
-               Objects.equals(cabinTypeId, ticket.cabinTypeId) && Objects.equals(price, ticket.price) && Objects.equals(amount, ticket.amount);
+               Objects.equals(cabinTypeId, ticket.cabinTypeId) && Objects.equals(price, ticket.price) &&
+               Objects.equals(amount, ticket.amount) && Objects.equals(closed, ticket.closed);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, flightId, cabinTypeId, price, amount);
+        return Objects.hash(id, flightId, cabinTypeId, price, amount, closed);
     }
 
     @Override
@@ -81,6 +91,7 @@ public final class Ticket {
                ", cabinTypeId=" + cabinTypeId +
                ", price=" + price +
                ", amount=" + amount +
+               ", closed=" + closed +
                '}';
     }
 
@@ -118,6 +129,11 @@ public final class Ticket {
 
         public Builder amount(Long amount) {
             this.ticket.amount = amount;
+            return this;
+        }
+
+        public Builder closed(Boolean closed) {
+            this.ticket.closed = closed;
             return this;
         }
 

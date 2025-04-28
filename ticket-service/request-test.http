@@ -410,3 +410,46 @@ Authorization: Basic admin@gmail.com admin
 DELETE /flights/remove-employee?flightId=1&employeeId=1
 Host: localhost:9000
 Authorization: Basic admin@gmail.com admin
+
+###
+PUT /flights/start-flight?flightId=1
+Host: localhost:9000
+Authorization: Basic employee@gmail.com employee
+
+###
+PUT /flights/complete-flight?flightId=1
+Host: localhost:9000
+Authorization: Basic employee@gmail.com employee
+
+### Ordered-Ticket Requests
+
+###
+GET /ordered-tickets/in-session
+Host: localhost:9000
+
+###
+POST /ordered-tickets/order-ticket-identity?identityId=3
+Host: localhost:9000
+Authorization: Basic user@gmail.com user
+Content-Type: application/json
+
+{
+    "ticketId": 1,
+    "flightSeatId": 56
+}
+
+###
+DELETE /ordered-tickets/cancel-ordered-ticket?orderedTicketId=1
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /ordered-tickets/order-ticket-session
+Host: localhost:9000
+Authorization: Basic user@gmail.com user
+Content-Type: application/json
+
+{
+    "ticketId": 1,
+    "flightSeatId": 31
+}

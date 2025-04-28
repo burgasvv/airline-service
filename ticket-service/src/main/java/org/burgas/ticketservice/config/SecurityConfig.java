@@ -18,6 +18,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final String ADMIN = "ADMIN";
+    private static final String EMPLOYEE = "EMPLOYEE";
+    private static final String USER = "USER";
+
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -55,7 +59,9 @@ public class SecurityConfig {
 
                                         "/tickets", "/tickets/by-flight", "/tickets/by-id", "/tickets/create-update",
 
-                                        "/flight-seats/by-flight-id"
+                                        "/flight-seats/by-flight-id",
+
+                                        "/ordered-tickets/in-session", "/ordered-tickets/order-ticket-session"
                                 )
                                 .permitAll()
 
@@ -64,19 +70,25 @@ public class SecurityConfig {
                                         "/identities/change-password", "/identities/set-password",
                                         "/identities/upload-image", "/identities/change-image", "/identities/delete-image",
 
-                                        "/positions", "/positions/by-id"
+                                        "/positions", "/positions/by-id",
+
+                                        "/ordered-tickets/by-identity", "/ordered-tickets/order-ticket-identity"
                                 )
-                                .hasAnyAuthority("ADMIN", "EMPLOYEE", "USER")
+                                .hasAnyAuthority(ADMIN, EMPLOYEE, USER)
 
                                 .requestMatchers(
-                                        "/departments", "/departments/by-id", "/employees"
+                                        "/departments", "/departments/by-id", "/employees",
+
+                                        "/ordered-tickets"
                                 )
-                                .hasAnyAuthority("ADMIN", "EMPLOYEE")
+                                .hasAnyAuthority(ADMIN, EMPLOYEE)
 
                                 .requestMatchers(
-                                        "/employees/by-id"
+                                        "/employees/by-id",
+
+                                        "/flights/start-flight", "/flights/complete-flight"
                                 )
-                                .hasAnyAuthority("EMPLOYEE")
+                                .hasAnyAuthority(EMPLOYEE)
 
                                 .requestMatchers(
                                         "/requires/create-update",
@@ -85,10 +97,9 @@ public class SecurityConfig {
 
                                         "/employees/create"
                                 )
-                                .hasAnyAuthority("USER")
+                                .hasAnyAuthority(USER)
 
                                 .requestMatchers(
-
                                         "/identities", "/identities/enable-disable",
 
                                         "/authorities", "/authorities/by-id", "/authorities/create-update", "/authorities/delete",
@@ -109,9 +120,11 @@ public class SecurityConfig {
 
                                         "/require-answers/by-admin", "/require-answers/send-answer-or-token",
 
-                                        "/flights/create-update",  "/flights/add-employee", "/flights/remove-employee"
+                                        "/flights/create-update",  "/flights/add-employee", "/flights/remove-employee",
+
+                                        "/ordered-tickets/cancel-ordered-ticket"
                                 )
-                                .hasAnyAuthority("ADMIN")
+                                .hasAnyAuthority(ADMIN)
                 )
                 .build();
     }
