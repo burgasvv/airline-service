@@ -51,7 +51,8 @@ public class SecurityConfig {
 
                                         "/filials", "/filials/by-country", "/filials/by-city",
 
-                                        "/departments", "/departments/by-id",
+                                        "/departments", "/departments/async",
+                                        "/departments/by-id", "/departments/by-id/async",
 
                                         "/filial-departments", "/filial-departments/by-filial-department",
 
@@ -79,14 +80,14 @@ public class SecurityConfig {
                                 .hasAnyAuthority(ADMIN, EMPLOYEE, USER)
 
                                 .requestMatchers(
-                                        "/departments", "/departments/by-id", "/employees",
+                                        "/employees", "/employees/async",
 
                                         "/ordered-tickets"
                                 )
                                 .hasAnyAuthority(ADMIN, EMPLOYEE)
 
                                 .requestMatchers(
-                                        "/employees/by-id",
+                                        "/employees/by-id", "/employees/by-id/async",
 
                                         "/flights/start-flight", "/flights/complete-flight"
                                 )
@@ -97,7 +98,7 @@ public class SecurityConfig {
 
                                         "/require-answers/by-user",
 
-                                        "/employees/create"
+                                        "/employees/create", "/employees/create/async"
                                 )
                                 .hasAnyAuthority(USER)
 
@@ -114,9 +115,13 @@ public class SecurityConfig {
 
                                         "/airports/create-update",
 
-                                        "/filials/create-update", "/airports/create-update/async",
+                                        "/departments/create-update", "/departments/create-update/async",
+                                        "/departments/delete", "/departments/delete/async",
 
-                                        "/departments/create-update", "/departments/delete",
+                                        "/employees/update", "/employees/update/async",
+                                        "/employees/delete", "/employees/delete/async",
+
+                                        "/filials/create-update", "/airports/create-update/async",
 
                                         "/filial-departments/create-update", "/filial-departments/delete",
 

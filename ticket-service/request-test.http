@@ -312,8 +312,8 @@ Authorization: Basic admin@gmail.com admin
 Content-Type: application/json
 
 {
-    "allowed": true,
-    "explanation": "Вам разрешено стать сотрудником компании",
+    "allowed": false,
+    "explanation": "Вам не разрешено стать сотрудником компании",
     "requireId": 1
 }
 

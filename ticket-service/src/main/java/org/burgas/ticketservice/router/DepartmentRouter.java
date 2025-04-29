@@ -10,6 +10,8 @@ import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.ServerResponse;
 
+import java.net.URI;
+
 import static java.net.URI.create;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpStatus.FOUND;
@@ -32,11 +34,26 @@ public class DepartmentRouter {
                                         .body(departmentService.findAll())
                 )
                 .andRoute(
+                        GET("/departments/async"), _ -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(departmentService.findAllAsync())
+                )
+                .andRoute(
                         GET("/departments/by-id"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(departmentService.findById(request.param("departmentId").orElse(null)))
+                                        .body(departmentService.findById(request.param("departmentId").orElseThrow()))
+                )
+                .andRoute(
+                        GET("/departments/by-id/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        departmentService.findByIdAsync(request.param("departmentId")
+                                                .orElseThrow()).get()
+                                )
                 )
                 .andRoute(
                         POST("/departments/create-update"), request -> {
@@ -49,11 +66,30 @@ public class DepartmentRouter {
                         }
                 )
                 .andRoute(
+                        POST("/departments/create-update/async"), request -> {
+                            DepartmentResponse departmentResponse = departmentService.createOrUpdateAsync(request.body(DepartmentRequest.class)).get();
+                            return ServerResponse
+                                    .status(FOUND)
+                                    .contentType(APPLICATION_JSON)
+                                    .location(URI.create("/departments/by-id/async?departmentId=" + departmentResponse.getId()))
+                                    .body(departmentResponse);
+                        }
+                )
+                .andRoute(
                         DELETE("/departments/delete"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                        .body(departmentService.deleteById(request.param("departmentId").orElse(null)))
+                                        .body(departmentService.deleteById(request.param("departmentId").orElseThrow()))
+                )
+                .andRoute(
+                        DELETE("/departments/delete/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        departmentService.deleteByIdAsync(request.param("departmentId")
+                                                .orElseThrow()).get()
+                                )
                 );
     }
 }

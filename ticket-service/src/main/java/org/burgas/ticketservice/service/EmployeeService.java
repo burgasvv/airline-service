@@ -5,25 +5,27 @@ import org.burgas.ticketservice.dto.EmployeeRequest;
 import org.burgas.ticketservice.dto.EmployeeResponse;
 import org.burgas.ticketservice.entity.Require;
 import org.burgas.ticketservice.entity.RequireAnswer;
-import org.burgas.ticketservice.exception.EmployeeNotCreatedException;
-import org.burgas.ticketservice.exception.IdentityNotFoundException;
-import org.burgas.ticketservice.exception.IdentityWrongTokenException;
-import org.burgas.ticketservice.exception.WrongIdentityException;
+import org.burgas.ticketservice.exception.*;
+import org.burgas.ticketservice.log.EmployeeLogs;
 import org.burgas.ticketservice.mapper.EmployeeMapper;
 import org.burgas.ticketservice.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.ticketservice.log.EmployeeLogs.EMPLOYEE_FOUND_BY_ID;
-import static org.burgas.ticketservice.message.EmployeeMessages.EMPLOYEE_NOT_CREATED;
+import static org.burgas.ticketservice.log.EmployeeLogs.EMPLOYEE_FOUND_BY_ID_ASYNC;
+import static org.burgas.ticketservice.message.EmployeeMessages.*;
 import static org.burgas.ticketservice.message.IdentityMessages.*;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -66,6 +68,17 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    @Async(value = "taskExecutor")
+    public CompletableFuture<List<EmployeeResponse>> findAllAsync() {
+        return supplyAsync(this.employeeRepository::findAll)
+                .thenApplyAsync(
+                        employees -> employees.stream()
+                                .peek(employee -> log.info(EmployeeLogs.EMPLOYEE_FOUND_ALL_ASYNC.getLogMessage(), employee))
+                                .map(this.employeeMapper::toEmployeeResponse)
+                                .collect(Collectors.toList())
+                );
+    }
+
     public EmployeeResponse findById(final String employeeId) {
         return this.employeeRepository.findById(Long.valueOf(employeeId))
                 .stream()
@@ -73,6 +86,18 @@ public class EmployeeService {
                 .map(this.employeeMapper::toEmployeeResponse)
                 .findFirst()
                 .orElseGet(EmployeeResponse::new);
+    }
+
+    @Async(value = "taskExecutor")
+    public CompletableFuture<EmployeeResponse> findByIdAsync(final String employeeId) {
+        return supplyAsync(() -> this.employeeRepository.findById(Long.parseLong(employeeId)))
+                .thenApplyAsync(
+                        employee -> employee.stream()
+                                .peek(foundEmployee -> log.info(EMPLOYEE_FOUND_BY_ID_ASYNC.getLogMessage(), foundEmployee))
+                                .map(this.employeeMapper::toEmployeeResponse)
+                                .findFirst()
+                                .orElseGet(EmployeeResponse::new)
+                );
     }
 
     @Transactional(
@@ -126,6 +151,77 @@ public class EmployeeService {
                 )
                 .orElseThrow(
                         () -> new IdentityWrongTokenException(IDENTITY_WRONG_TOKEN.getMessage())
+                );
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<EmployeeResponse> createEmployeeAsync(final EmployeeRequest employeeRequest, final String token) {
+        return supplyAsync(() -> this.createEmployee(employeeRequest, token));
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public EmployeeResponse updateEmployee(final EmployeeRequest employeeRequest) {
+        return of(this.employeeMapper.toEmployee(employeeRequest))
+                .map(this.employeeRepository::save)
+                .map(this.employeeMapper::toEmployeeResponse)
+                .orElseThrow(
+                        () -> new EmployeeNotCreatedException(EMPLOYEE_NOT_CREATED.getMessage())
+                );
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<EmployeeResponse> updateEmployeeAsync(final EmployeeRequest employeeRequest) {
+        return supplyAsync(() -> this.employeeMapper.toEmployee(employeeRequest))
+                .thenApplyAsync(this.employeeRepository::save)
+                .thenApplyAsync(this.employeeMapper::toEmployeeResponse);
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String deleteById(final String employeeId) {
+        return this.employeeRepository.findById(Long.parseLong(employeeId))
+                .map(
+                        employee -> {
+                            this.employeeRepository.deleteById(employee.getId());
+                            return EMPLOYEE_DELETED.getMessage();
+                        }
+                )
+                .orElseThrow(() -> new EmployeeNotFoundException(EMPLOYEE_NOT_FOUND.getMessage()));
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> deleteByIdAsync(final String employeeId) {
+        return supplyAsync(() -> this.employeeRepository.findById(Long.parseLong(employeeId)))
+                .thenApplyAsync(
+                        employee -> employee.stream()
+                                .peek(foundEmployee -> log.info(EmployeeLogs.EMPLOYEE_FOUND_BEFORE_DELETE.getLogMessage(), foundEmployee))
+                                .map(
+                                        foundEmployee -> {
+                                            this.employeeRepository.deleteById(foundEmployee.getId());
+                                            return EMPLOYEE_DELETED_ASYNC.getMessage();
+                                        }
+                                )
+                                .findFirst()
+                                .orElseThrow(
+                                        () -> new EmployeeNotFoundException(EMPLOYEE_NOT_FOUND.getMessage())
+                                )
                 );
     }
 }

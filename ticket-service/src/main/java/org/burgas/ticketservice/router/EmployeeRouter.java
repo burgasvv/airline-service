@@ -26,10 +26,25 @@ public class EmployeeRouter {
                                 .body(employeeService.finaAll())
                 )
                 .GET(
+                        "/employees/async", _ -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(employeeService.findAllAsync())
+                )
+                .GET(
                         "/employees/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(employeeService.findById(request.param("employeeId").orElse(null)))
+                )
+                .GET(
+                        "/employees/by-id/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        employeeService.findByIdAsync(request.param("employeeId")
+                                                .orElseThrow()).get()
+                                )
                 )
                 .POST(
                         "/employees/create", request -> {
@@ -41,6 +56,45 @@ public class EmployeeRouter {
                                     .contentType(APPLICATION_JSON)
                                     .body(employeeResponse);
                         }
+                )
+                .POST(
+                        "/employees/create/async", request -> {
+                            EmployeeResponse employeeResponse = employeeService.createEmployeeAsync(
+                                            request.body(EmployeeRequest.class), request.param("token").orElse(null)
+                                    )
+                                    .get();
+                            return ServerResponse
+                                    .status(OK)
+                                    .contentType(APPLICATION_JSON)
+                                    .body(employeeResponse);
+                        }
+                )
+                .PUT(
+                        "/employees/update", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(employeeService.updateEmployee(request.body(EmployeeRequest.class)))
+                )
+                .PUT(
+                        "/employees/update/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(employeeService.updateEmployeeAsync(request.body(EmployeeRequest.class)).get())
+                )
+                .DELETE(
+                        "/employees/delete", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(employeeService.deleteById(request.param("employeeId").orElseThrow()))
+                )
+                .DELETE(
+                        "/employees/delete/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        employeeService.deleteByIdAsync(request.param("employeeId")
+                                                .orElseThrow()).get()
+                                )
                 )
                 .build();
     }
