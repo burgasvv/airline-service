@@ -32,16 +32,33 @@ public class FilialDepartmentRouter {
                                         .body(filialDepartmentService.findAll())
                 )
                 .andRoute(
+                        GET("/filial-departments/async"), _ -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(filialDepartmentService.findAllAsync())
+                )
+                .andRoute(
                         GET("/filial-departments/by-filial-department"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(
                                                 filialDepartmentService.findByFilialIdAndDepartmentId(
-                                                        request.param("filialId").orElse(null),
-                                                        request.param("departmentId").orElse(null)
+                                                        request.param("filialId").orElseThrow(),
+                                                        request.param("departmentId").orElseThrow()
                                                 )
                                         )
+                )
+                .andRoute(
+                        GET("/filial-departments/by-filial-department/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        filialDepartmentService.findByFilialIdAndDepartmentIdAsync(
+                                                request.param("filialId").orElseThrow(),
+                                                request.param("departmentId").orElseThrow()
+                                        )
+                                )
                 )
                 .andRoute(
                         POST("/filial-departments/create-update"), request -> {
@@ -59,14 +76,39 @@ public class FilialDepartmentRouter {
                         }
                 )
                 .andRoute(
+                        POST("/filial-departments/create-update/async"), request -> {
+                            FilialDepartmentResponse filialDepartmentResponse = filialDepartmentService
+                                    .createOrUpdateAsync(request.body(FilialDepartmentRequest.class)).get();
+                            return ServerResponse
+                                    .status(FOUND)
+                                    .contentType(APPLICATION_JSON)
+                                    .location(create(
+                                            "/filial-departments/by-filial-department/async?filialId=" + filialDepartmentResponse.getFilial().getId() +
+                                            "&departmentId=" + filialDepartmentResponse.getDepartment().getId()
+                                    ))
+                                    .body(filialDepartmentResponse);
+                        }
+                )
+                .andRoute(
                         DELETE("/filial-departments/delete"),request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                         .body(filialDepartmentService.deleteFilialDepartment(
-                                                request.param("filialId").orElse(null),
-                                                request.param("departmentId").orElse(null))
+                                                request.param("filialId").orElseThrow(),
+                                                request.param("departmentId").orElseThrow())
                                         )
+                )
+                .andRoute(
+                        DELETE("/filial-departments/delete/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        filialDepartmentService.deleteFilialDepartmentAsync(
+                                                request.param("filialId").orElseThrow(),
+                                                request.param("departmentId").orElseThrow()
+                                        )
+                                )
                 );
     }
 }

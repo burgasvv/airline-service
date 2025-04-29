@@ -54,7 +54,8 @@ public class SecurityConfig {
                                         "/departments", "/departments/async",
                                         "/departments/by-id", "/departments/by-id/async",
 
-                                        "/filial-departments", "/filial-departments/by-filial-department",
+                                        "/filial-departments", "/filial-departments/async",
+                                        "/filial-departments/by-filial-department", "/filial-departments/by-filial-department/async",
 
                                         "/flights", "/flights/by-departure-city-arrival-city-by-departure-date",
                                         "/flights/by-departure-city-by-arrival-city", "/flights/by-departure-city-by-arrival-city-back",
@@ -123,7 +124,8 @@ public class SecurityConfig {
 
                                         "/filials/create-update", "/airports/create-update/async",
 
-                                        "/filial-departments/create-update", "/filial-departments/delete",
+                                        "/filial-departments/create-update", "/filial-departments/create-update/async",
+                                        "/filial-departments/delete", "/filial-departments/delete/async",
 
                                         "/positions/create-update", "/positions/delete",
 
