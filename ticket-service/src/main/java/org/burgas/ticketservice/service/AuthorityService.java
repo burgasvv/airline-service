@@ -8,12 +8,16 @@ import org.burgas.ticketservice.mapper.AuthorityMapper;
 import org.burgas.ticketservice.repository.AuthorityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static java.util.Optional.of;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.ticketservice.log.AuthorityLogs.*;
 import static org.burgas.ticketservice.message.AuthorityMessages.*;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
@@ -38,7 +42,18 @@ public class AuthorityService {
                 .stream()
                 .peek(authority -> log.info(AUTHORITY_FOUND_ALL.getLogMessage(), authority))
                 .map(this.authorityMapper::toAuthorityResponse)
-                .toList();
+                .collect(Collectors.toList());
+    }
+
+    @Async(value = "taskExecutor")
+    public CompletableFuture<List<AuthorityResponse>> findAllAsync() {
+        return supplyAsync(this.authorityRepository::findAll)
+                .thenApplyAsync(
+                        authorities -> authorities.stream()
+                                .peek(authority -> log.info(AUTHORITY_FOUND_ALL_ASYNC.getLogMessage(), authority))
+                                .map(this.authorityMapper::toAuthorityResponse)
+                                .collect(Collectors.toList())
+                );
     }
 
     public AuthorityResponse findById(final String authorityId) {
@@ -48,6 +63,18 @@ public class AuthorityService {
                 .map(this.authorityMapper::toAuthorityResponse)
                 .findFirst()
                 .orElseGet(AuthorityResponse::new);
+    }
+
+    @Async(value = "taskExecutor")
+    public CompletableFuture<AuthorityResponse> findByIdAsync(final String authorityId) {
+        return supplyAsync(() -> this.authorityRepository.findById(Long.parseLong(authorityId)))
+                .thenApplyAsync(
+                        authority -> authority.stream()
+                                .peek(foundAuthority -> log.info(AUTHORITY_FOUND_BY_ID.getLogMessage(), foundAuthority))
+                                .map(this.authorityMapper::toAuthorityResponse)
+                                .findFirst()
+                                .orElseThrow(() -> new AuthorityNotFoundException(AUTHORITY_NOT_FOUND_ASYNC.getMessage()))
+                );
     }
 
     @Transactional(
@@ -60,6 +87,18 @@ public class AuthorityService {
                 .map(this.authorityMapper::toAuthorityResponse)
                 .map(AuthorityResponse::getId)
                 .orElseThrow(() -> new AuthorityNotCreatedException(AUTHORITY_NOT_CREATED.getMessage()));
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<Long> createOrUpdateAsync(final AuthorityRequest authorityRequest) {
+        return supplyAsync(() -> this.authorityMapper.toAuthority(authorityRequest))
+                .thenApplyAsync(this.authorityRepository::save)
+                .thenApplyAsync(this.authorityMapper::toAuthorityResponse)
+                .thenApplyAsync(AuthorityResponse::getId);
     }
 
     @Transactional(
@@ -76,5 +115,28 @@ public class AuthorityService {
                         }
                 )
                 .orElseThrow(() -> new AuthorityNotFoundException(AUTHORITY_NOT_FOUND.getMessage()));
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> deleteByIdAsync(final String authorityId) {
+        return supplyAsync(() -> this.authorityRepository.findById(Long.parseLong(authorityId)))
+                .thenApplyAsync(
+                        authority -> authority.stream()
+                                .peek(foundAuthority -> log.info(AUTHORITY_FOUND_BEFORE_DELETE.getLogMessage(), foundAuthority))
+                                .map(
+                                        foundAuthority -> {
+                                            this.authorityRepository.deleteById(foundAuthority.getId());
+                                            return AUTHORITY_DELETED.getMessage();
+                                        }
+                                )
+                                .findFirst()
+                                .orElseThrow(
+                                        () -> new AuthorityNotFoundException(AUTHORITY_NOT_FOUND.getMessage())
+                                )
+                );
     }
 }

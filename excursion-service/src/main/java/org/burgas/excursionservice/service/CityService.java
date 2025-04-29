@@ -5,6 +5,7 @@ import org.burgas.excursionservice.dto.CityRequest;
 import org.burgas.excursionservice.dto.CityResponse;
 import org.burgas.excursionservice.entity.Image;
 import org.burgas.excursionservice.exception.CityImageNotFoundException;
+import org.burgas.excursionservice.exception.CityNotCreatedException;
 import org.burgas.excursionservice.exception.CityNotFoundException;
 import org.burgas.excursionservice.mapper.CityMapper;
 import org.burgas.excursionservice.repository.CityRepository;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Optional.of;
@@ -48,7 +50,7 @@ public class CityService {
                 .stream()
                 .peek(city -> log.info(CITY_FOUND_OF_ALL.getLogMessage(), city))
                 .map(this.cityMapper::toCityResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Async(value = "taskExecutor")
@@ -58,7 +60,7 @@ public class CityService {
                         cities -> cities.stream()
                                 .peek(city -> log.info(CITY_FOUND_OF_ALL_ASYNC.getLogMessage(), city))
                                 .map(this.cityMapper::toCityResponse)
-                                .toList()
+                                .collect(Collectors.toList())
                 );
     }
 
@@ -91,7 +93,9 @@ public class CityService {
         return ofNullable(this.cityMapper.toCity(cityRequest))
                 .map(this.cityRepository::save)
                 .map(this.cityMapper::toCityResponse)
-                .orElseGet(CityResponse::new);
+                .orElseThrow(
+                        () -> new CityNotCreatedException(CITY_NOT_CREATED.getMessage())
+                );
     }
 
     @Async(value = "taskExecutor")

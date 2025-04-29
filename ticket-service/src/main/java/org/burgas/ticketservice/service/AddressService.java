@@ -7,13 +7,18 @@ import org.burgas.ticketservice.mapper.AddressMapper;
 import org.burgas.ticketservice.repository.AddressRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static java.util.Optional.of;
+import static java.util.concurrent.CompletableFuture.*;
 import static org.burgas.ticketservice.log.AddressLogs.ADDRESS_FOUND_ALL;
+import static org.burgas.ticketservice.log.AddressLogs.ADDRESS_FOUND_ALL_ASYNC;
 import static org.burgas.ticketservice.message.AddressMessages.ADDRESS_NOT_CREATED;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -38,7 +43,18 @@ public class AddressService {
                 .stream()
                 .peek(address -> log.info(ADDRESS_FOUND_ALL.getLogMessage(), address))
                 .map(this.addressMapper::toAddressResponse)
-                .toList();
+                .collect(Collectors.toList());
+    }
+
+    @Async(value = "taskExecutor")
+    public CompletableFuture<List<AddressResponse>> findAllAsync() {
+        return supplyAsync(this.addressRepository::findAll)
+                .thenApplyAsync(
+                        addresses -> addresses.stream()
+                                .peek(address -> log.info(ADDRESS_FOUND_ALL_ASYNC.getLogMessage(), address))
+                                .map(this.addressMapper::toAddressResponse)
+                                .collect(Collectors.toList())
+                );
     }
 
     @Transactional(
@@ -50,5 +66,16 @@ public class AddressService {
                 .map(this.addressRepository::save)
                 .map(this.addressMapper::toAddressResponse)
                 .orElseThrow(() -> new AddressNotCreatedException(ADDRESS_NOT_CREATED.getMessage()));
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<AddressResponse> createOrUpdateSecuresAsync(final AddressRequest addressRequest) {
+        return supplyAsync(() -> this.addressMapper.toAddress(addressRequest))
+                .thenApplyAsync(this.addressRepository::save)
+                .thenApplyAsync(this.addressMapper::toAddressResponse);
     }
 }

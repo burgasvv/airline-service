@@ -2,6 +2,7 @@ package org.burgas.excursionservice.message;
 
 public enum CityMessages {
 
+    CITY_NOT_CREATED("Запись города не была создана"),
     CITY_DELETED("Город был успешно удален"),
     CITY_NOT_FOUND("Указанный вами город не найден"),
     IMAGE_UPLOADED("Фотография города с идентификатором %s успешно загружена"),

@@ -29,10 +29,25 @@ public class AuthorityRouter {
                                 .body(authorityService.findAll())
                 )
                 .GET(
+                        "/authorities/async", _ -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(authorityService.findAllAsync())
+                )
+                .GET(
                         "/authorities/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(authorityService.findById(request.param("authorityId").orElse(null)))
+                                .body(authorityService.findById(request.param("authorityId").orElseThrow()))
+                )
+                .GET(
+                        "/authorities/by-id/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        authorityService.findByIdAsync(request.param("authorityId")
+                                                .orElseThrow()).get()
+                                )
                 )
                 .POST(
                         "/authorities/create-update", request -> {
@@ -43,11 +58,29 @@ public class AuthorityRouter {
                                     .body(authorityId);
                         }
                 )
+                .POST(
+                        "/authorities/create-update/async", request -> {
+                            Long authorityId = authorityService.createOrUpdateAsync(request.body(AuthorityRequest.class)).get();
+                            return ServerResponse
+                                    .status(FOUND)
+                                    .location(create("/authorities/by-id/async?authorityId=" + authorityId))
+                                    .body(authorityId);
+                        }
+                )
                 .DELETE(
                         "/authorities/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(authorityService.deleteById(request.param("authorityId").orElse(null)))
+                                .body(authorityService.deleteById(request.param("authorityId").orElseThrow()))
+                )
+                .DELETE(
+                        "/authorities/delete/async", request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        authorityService.deleteByIdAsync(request.param("authorityId")
+                                                .orElseThrow()).get()
+                                )
                 )
                 .build();
     }

@@ -26,10 +26,22 @@ public class AddressRouter {
                                 .body(addressService.findAll())
                 )
                 .andRoute(
+                        GET("/addresses/async"), _ -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(addressService.findAllAsync().get())
+                )
+                .andRoute(
                         POST("/addresses/create-update-secured"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(addressService.createOrUpdateSecured(request.body(AddressRequest.class)))
+                )
+                .andRoute(
+                        POST("/addresses/create-update-secured/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(addressService.createOrUpdateSecuresAsync(request.body(AddressRequest.class)))
                 );
     }
 }

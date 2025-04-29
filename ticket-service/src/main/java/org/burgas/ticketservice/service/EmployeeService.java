@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
@@ -62,7 +63,7 @@ public class EmployeeService {
                 .stream()
                 .peek(employee -> log.info(EMPLOYEE_FOUND_BY_ID.getLogMessage(), employee))
                 .map(this.employeeMapper::toEmployeeResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public EmployeeResponse findById(final String employeeId) {

@@ -27,18 +27,42 @@ public class AirportRouter {
                                         .body(airportService.findAll())
                 )
                 .andRoute(
+                        GET("/airports/async"), _ -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(airportService.findAllAsync().get())
+                )
+                .andRoute(
                         GET("/airports/by-country"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(airportService.findByCountryId(request.param("countryId").orElse(null)))
+                                        .body(airportService.findByCountryId(request.param("countryId").orElseThrow()))
+                )
+                .andRoute(
+                        GET("/airports/by-country/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        airportService.findByCountryIdAsync(request.param("countryId")
+                                                .orElseThrow()).get()
+                                )
                 )
                 .andRoute(
                         GET("/airports/by-city"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
-                                        .body(airportService.findByCityId(request.param("cityId").orElse(null)))
+                                        .body(airportService.findByCityId(request.param("cityId").orElseThrow()))
+                )
+                .andRoute(
+                        GET("/airports/by-city/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        airportService.findByCityIdAsync(request.param("cityId")
+                                                .orElseThrow()).get()
+                                )
                 )
                 .andRoute(
                         POST("/airports/create-update"), request ->
@@ -46,6 +70,12 @@ public class AirportRouter {
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(airportService.createOrUpdate(request.body(AirportRequest.class)))
+                )
+                .andRoute(
+                        POST("/airports/create-update/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(airportService.createOrUpdateAsync(request.body(AirportRequest.class)).get())
                 );
     }
 }

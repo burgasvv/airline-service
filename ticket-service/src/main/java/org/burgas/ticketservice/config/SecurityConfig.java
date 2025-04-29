@@ -45,7 +45,9 @@ public class SecurityConfig {
 
                                         "/images/by-id",
 
-                                        "/airports", "/airports/by-country", "/airports/by-city",
+                                        "/airports", "/airports/async",
+                                        "/airports/by-country", "/airports/by-country/async",
+                                        "/airports/by-city", "/airports/by-city/async",
 
                                         "/filials", "/filials/by-country", "/filials/by-city",
 
@@ -102,13 +104,17 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/identities", "/identities/enable-disable",
 
-                                        "/authorities", "/authorities/by-id", "/authorities/create-update", "/authorities/delete",
+                                        "/authorities", "/authorities/async",
+                                        "/authorities/by-id", "/authorities/by-id/async",
+                                        "/authorities/create-update", "/authorities/create-update/async",
+                                        "/authorities/delete", "/authorities/delete/async",
 
-                                        "/addresses", "/addresses/create-update-secured",
+                                        "/addresses", "/addresses/async",
+                                        "/addresses/create-update-secured", "/addresses/create-update-secured/async",
 
                                         "/airports/create-update",
 
-                                        "/filials/create-update",
+                                        "/filials/create-update", "/airports/create-update/async",
 
                                         "/departments/create-update", "/departments/delete",
 
@@ -120,7 +126,7 @@ public class SecurityConfig {
 
                                         "/require-answers/by-admin", "/require-answers/send-answer-or-token",
 
-                                        "/flights/create-update",  "/flights/add-employee", "/flights/remove-employee",
+                                        "/flights/create-update", "/flights/add-employee", "/flights/remove-employee",
 
                                         "/ordered-tickets/cancel-ordered-ticket"
                                 )

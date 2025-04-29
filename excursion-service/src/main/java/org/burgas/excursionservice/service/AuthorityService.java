@@ -2,6 +2,7 @@ package org.burgas.excursionservice.service;
 
 import org.burgas.excursionservice.dto.AuthorityRequest;
 import org.burgas.excursionservice.dto.AuthorityResponse;
+import org.burgas.excursionservice.exception.AuthorityNotCreatedException;
 import org.burgas.excursionservice.exception.AuthorityNotFoundException;
 import org.burgas.excursionservice.mapper.AuthorityMapper;
 import org.burgas.excursionservice.repository.AuthorityRepository;
@@ -14,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.excursionservice.log.AuthorityLogs.*;
-import static org.burgas.excursionservice.message.AuthorityMessages.AUTHORITY_DELETED;
-import static org.burgas.excursionservice.message.AuthorityMessages.AUTHORITY_NOT_FOUND;
+import static org.burgas.excursionservice.message.AuthorityMessages.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -42,7 +43,7 @@ public class AuthorityService {
                 .peek(authority -> log.info(AUTHORITY_FOUND_ALL.getLogMessage(), authority))
                 .map(this.authorityMapper::toAuthorityResponse)
                 .peek(authorityResponse -> log.info(TRANSFORM_TO_AUTHORITY_RESPONSE.getLogMessage(), authorityResponse))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Async(value = "taskExecutor")
@@ -54,7 +55,7 @@ public class AuthorityService {
                                 .peek(authority -> log.info(AUTHORITY_FOUND_ASYNC.getLogMessage(), authority))
                                 .map(this.authorityMapper::toAuthorityResponse)
                                 .peek(authorityResponse -> log.info(TRANSFORM_TO_AUTHORITY_RESPONSE_ASYNC.getLogMessage(), authorityResponse))
-                                .toList()
+                                .collect(Collectors.toList())
                 );
     }
 
@@ -82,7 +83,9 @@ public class AuthorityService {
         return ofNullable(this.authorityMapper.toAuthority(authorityRequest))
                 .map(this.authorityRepository::save)
                 .map(this.authorityMapper::toAuthorityResponse)
-                .orElseGet(AuthorityResponse::new);
+                .orElseThrow(
+                        () -> new AuthorityNotCreatedException(AUTHORITY_NOT_CREATED.getMessage())
+                );
     }
 
     @Async(value = "taskExecutor")

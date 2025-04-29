@@ -2,7 +2,8 @@ package org.burgas.ticketservice.log;
 
 public enum AddressLogs {
 
-    ADDRESS_FOUND_ALL("Address was found in list of all: {}");
+    ADDRESS_FOUND_ALL("Address was found in list of all: {}"),
+    ADDRESS_FOUND_ALL_ASYNC("Address was found in list of all async: {}");
 
     private final String logMessage;
 
