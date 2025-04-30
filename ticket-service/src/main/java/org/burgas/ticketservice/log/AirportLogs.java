@@ -2,6 +2,7 @@ package org.burgas.ticketservice.log;
 
 public enum AirportLogs {
 
+    AIRPORT_FOUND_BEFORE_DELETE("Airport was found before delete: {}"),
     AIRPORT_FOUND_ALL("Airport was found in list of all: {}"),
     AIRPORT_FOUND_ALL_ASYNC("Airport was found in list of all async: {}"),
     AIRPORT_FOUND_BY_COUNTRY_ID("Airport was found in list by country id: {}"),

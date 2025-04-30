@@ -40,6 +40,18 @@ public class DepartmentRouter {
                                 .body(departmentService.findAllAsync())
                 )
                 .andRoute(
+                        GET("/departments/pages/{page}"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        departmentService.findAllPages(
+                                                Integer.valueOf(request.pathVariable("page")),
+                                                Integer.valueOf(request.param("size").orElseThrow())
+                                        )
+                                                .getContent()
+                                )
+                )
+                .andRoute(
                         GET("/departments/by-id"), request ->
                                 ServerResponse
                                         .status(OK)

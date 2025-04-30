@@ -1,3 +1,9 @@
+### Authentication Requests
+
+###
+GET /authentication/csrf-token
+Host: localhost:9000
+
 
 ### Authority Requests
 
@@ -95,6 +101,11 @@ Authorization: Basic admin@gmail.com admin
 ### Address Requests
 
 ###
+GET /addresses/pages/1?size=5
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
+
+###
 POST /addresses/create-update-secured
 Host: localhost:9000
 Authorization: Basic admin@gmail.com admin
@@ -122,6 +133,10 @@ Content-Type: application/json
 }
 
 ### Airport Requests
+
+###
+GET /airports/pages/1?size=3
+Host: localhost:9000
 
 ###
 POST /airports/create-update
@@ -178,6 +193,10 @@ Content-Type: application/json
 
 ###
 GET /departments
+Host: localhost:9000
+
+###
+GET /departments/pages/1?size=3
 Host: localhost:9000
 
 ###
@@ -318,6 +337,11 @@ Content-Type: application/json
 }
 
 ### Employee Requests
+
+###
+GET /employees/pages/1?size=5
+Host: localhost:9000
+Authorization: Basic admin@gmail.com admin
 
 ###
 GET /employees/by-id?employeeId=1

@@ -4,14 +4,16 @@ import org.burgas.ticketservice.dto.AirportRequest;
 import org.burgas.ticketservice.service.AirportService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.ServerResponse;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.servlet.function.RequestPredicates.GET;
-import static org.springframework.web.servlet.function.RequestPredicates.POST;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
+import static org.springframework.web.servlet.function.RequestPredicates.*;
 
 @Configuration
 public class AirportRouter {
@@ -31,6 +33,18 @@ public class AirportRouter {
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(airportService.findAllAsync().get())
+                )
+                .andRoute(
+                        GET("/airports/pages/{page}"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        airportService.findAllPages(
+                                                Integer.valueOf(request.pathVariable("page")),
+                                                Integer.valueOf(request.param("size").orElseThrow())
+                                        )
+                                                .getContent()
+                                )
                 )
                 .andRoute(
                         GET("/airports/by-country"), request ->
@@ -76,6 +90,18 @@ public class AirportRouter {
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(airportService.createOrUpdateAsync(request.body(AirportRequest.class)).get())
+                )
+                .andRoute(
+                        DELETE("/airports/delete"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(airportService.deleteById(request.param("airportId").orElseThrow()))
+                )
+                .andRoute(
+                        DELETE("/airports/delete/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(airportService.deleteByIdAsync(request.param("airportId").orElseThrow()).get())
                 );
     }
 }

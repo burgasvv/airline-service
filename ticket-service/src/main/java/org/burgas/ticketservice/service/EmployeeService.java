@@ -11,6 +11,9 @@ import org.burgas.ticketservice.mapper.EmployeeMapper;
 import org.burgas.ticketservice.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,6 +80,13 @@ public class EmployeeService {
                                 .map(this.employeeMapper::toEmployeeResponse)
                                 .collect(Collectors.toList())
                 );
+    }
+
+    public Page<EmployeeResponse> findAllPages(final Integer page, final Integer size) {
+        return this.employeeRepository.findAll(
+                        PageRequest.of(page - 1, size, Sort.Direction.ASC, "name", "surname", "patronymic")
+                )
+                .map(this.employeeMapper::toEmployeeResponse);
     }
 
     public EmployeeResponse findById(final String employeeId) {

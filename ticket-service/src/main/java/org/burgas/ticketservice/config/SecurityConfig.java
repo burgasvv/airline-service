@@ -8,10 +8,10 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
@@ -30,10 +30,11 @@ public class SecurityConfig {
         this.customUserDetailsService = customUserDetailsService;
     }
 
+
     @Bean
     public SecurityFilterChain securityWebFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
                 .cors(cors -> cors.configurationSource(new UrlBasedCorsConfigurationSource()))
                 .httpBasic(httpBasic -> httpBasic.securityContextRepository(new HttpSessionSecurityContextRepository()))
                 .authenticationManager(authenticationManager())
@@ -41,17 +42,21 @@ public class SecurityConfig {
                         httpRequest -> httpRequest
 
                                 .requestMatchers(
+                                        "/authentication/csrf-token",
+
                                         "/identities/create",
 
                                         "/images/by-id",
 
-                                        "/airports", "/airports/async",
+                                        "/airports", "/airports/async", "/airports/pages/{page}",
                                         "/airports/by-country", "/airports/by-country/async",
                                         "/airports/by-city", "/airports/by-city/async",
 
-                                        "/filials", "/filials/by-country", "/filials/by-city",
+                                        "/filials", "/filials/async",
+                                        "/filials/by-country", "/filials/by-country/async",
+                                        "/filials/by-city", "/filials/by-city/async",
 
-                                        "/departments", "/departments/async",
+                                        "/departments", "/departments/async", "/departments/pages/{page}",
                                         "/departments/by-id", "/departments/by-id/async",
 
                                         "/filial-departments", "/filial-departments/async",
@@ -81,7 +86,7 @@ public class SecurityConfig {
                                 .hasAnyAuthority(ADMIN, EMPLOYEE, USER)
 
                                 .requestMatchers(
-                                        "/employees", "/employees/async",
+                                        "/employees", "/employees/async", "/employees/pages/{page}",
 
                                         "/ordered-tickets"
                                 )
@@ -111,8 +116,9 @@ public class SecurityConfig {
                                         "/authorities/create-update", "/authorities/create-update/async",
                                         "/authorities/delete", "/authorities/delete/async",
 
-                                        "/addresses", "/addresses/async",
+                                        "/addresses", "/addresses/async", "/addresses/pages/{page}",
                                         "/addresses/create-update-secured", "/addresses/create-update-secured/async",
+                                        "/addresses/delete", "/addresses/delete/async",
 
                                         "/airports/create-update",
 
@@ -122,7 +128,10 @@ public class SecurityConfig {
                                         "/employees/update", "/employees/update/async",
                                         "/employees/delete", "/employees/delete/async",
 
-                                        "/filials/create-update", "/airports/create-update/async",
+                                        "/filials/create-update", "/filials/create-update/async",
+                                        "/filials/delete", "/filials/delete/async",
+
+                                        "/airports/create-update/async",
 
                                         "/filial-departments/create-update", "/filial-departments/create-update/async",
                                         "/filial-departments/delete", "/filial-departments/delete/async",

@@ -3,10 +3,15 @@ package org.burgas.ticketservice.service;
 import org.burgas.ticketservice.dto.AddressRequest;
 import org.burgas.ticketservice.dto.AddressResponse;
 import org.burgas.ticketservice.exception.AddressNotCreatedException;
+import org.burgas.ticketservice.exception.AddressNotFoundException;
+import org.burgas.ticketservice.log.AddressLogs;
 import org.burgas.ticketservice.mapper.AddressMapper;
 import org.burgas.ticketservice.repository.AddressRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +24,7 @@ import static java.util.Optional.of;
 import static java.util.concurrent.CompletableFuture.*;
 import static org.burgas.ticketservice.log.AddressLogs.ADDRESS_FOUND_ALL;
 import static org.burgas.ticketservice.log.AddressLogs.ADDRESS_FOUND_ALL_ASYNC;
-import static org.burgas.ticketservice.message.AddressMessages.ADDRESS_NOT_CREATED;
+import static org.burgas.ticketservice.message.AddressMessages.*;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -57,6 +62,12 @@ public class AddressService {
                 );
     }
 
+    public Page<AddressResponse> findAllPages(final Integer page, final Integer size) {
+        return this.addressRepository
+                .findAll(PageRequest.of(page - 1, size).withSort(Sort.Direction.ASC, "id"))
+                .map(this.addressMapper::toAddressResponse);
+    }
+
     @Transactional(
             isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
@@ -77,5 +88,45 @@ public class AddressService {
         return supplyAsync(() -> this.addressMapper.toAddress(addressRequest))
                 .thenApplyAsync(this.addressRepository::save)
                 .thenApplyAsync(this.addressMapper::toAddressResponse);
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String deleteById(final String addressId) {
+        return this.addressRepository.findById(Long.parseLong(addressId))
+                .map(
+                        address -> {
+                            this.addressRepository.deleteById(address.getId());
+                            return ADDRESS_DELETED.getMessage();
+                        }
+                )
+                .orElseThrow(
+                        () -> new AddressNotFoundException(ADDRESS_NOT_FOUND.getMessage())
+                );
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> deleteByIdAsync(final String addressId) {
+        return supplyAsync(() -> this.addressRepository.findById(Long.parseLong(addressId)))
+                .thenApplyAsync(
+                        address -> address.stream()
+                                .peek(foundAddress -> log.info(AddressLogs.ADDRESS_FOUND_BEFORE_DELETE.getLogMessage(), foundAddress))
+                                .map(
+                                        foundAddress -> {
+                                            this.addressRepository.deleteById(foundAddress.getId());
+                                            return ADDRESS_DELETED.getMessage();
+                                        }
+                                )
+                                .findFirst()
+                                .orElseThrow(
+                                        () -> new AddressNotFoundException(ADDRESS_NOT_FOUND.getMessage())
+                                )
+                );
     }
 }

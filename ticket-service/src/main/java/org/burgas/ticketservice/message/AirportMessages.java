@@ -2,6 +2,8 @@ package org.burgas.ticketservice.message;
 
 public enum AirportMessages {
 
+    AIRPORT_NOT_FOUND("Аэропорт не найден"),
+    AIRPORT_DELETED("Аэропорт успешно удален"),
     AIRPORT_NOT_CREATED("Аэропорт не был создан");
 
     private final String message;

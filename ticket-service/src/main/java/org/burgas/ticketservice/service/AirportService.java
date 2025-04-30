@@ -3,12 +3,16 @@ package org.burgas.ticketservice.service;
 import org.burgas.ticketservice.dto.AirportRequest;
 import org.burgas.ticketservice.dto.AirportResponse;
 import org.burgas.ticketservice.exception.AirportNotCreatedException;
+import org.burgas.ticketservice.exception.AirportNotFoundException;
 import org.burgas.ticketservice.mapper.AddressMapper;
 import org.burgas.ticketservice.mapper.AirportMapper;
 import org.burgas.ticketservice.repository.AddressRepository;
 import org.burgas.ticketservice.repository.AirportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +24,7 @@ import java.util.stream.Collectors;
 import static java.util.Optional.of;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.ticketservice.log.AirportLogs.*;
-import static org.burgas.ticketservice.message.AirportMessages.AIRPORT_NOT_CREATED;
+import static org.burgas.ticketservice.message.AirportMessages.*;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -63,6 +67,11 @@ public class AirportService {
                                 .map(this.airportMapper::toAirportResponse)
                                 .collect(Collectors.toList())
                 );
+    }
+
+    public Page<AirportResponse> findAllPages(final Integer page, final Integer size) {
+        return this.airportRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "name"))
+                .map(this.airportMapper::toAirportResponse);
     }
 
     public List<AirportResponse> findByCountryId(final String countryId) {
@@ -137,5 +146,36 @@ public class AirportService {
                 )
                 .thenApplyAsync(this.airportRepository::save)
                 .thenApplyAsync(this.airportMapper::toAirportResponse);
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String deleteById(final String airportId) {
+        return this.airportRepository.findById(Long.parseLong(airportId))
+                .map(
+                        airport -> {
+                            this.airportRepository.deleteById(airport.getId());
+                            return AIRPORT_DELETED.getMessage();
+                        }
+                )
+                .orElseThrow(() -> new AirportNotFoundException(AIRPORT_NOT_FOUND.getMessage()));
+    }
+
+    public CompletableFuture<String> deleteByIdAsync(final String airportId) {
+        return supplyAsync(() -> this.airportRepository.findById(Long.parseLong(airportId)))
+                .thenApplyAsync(
+                        airport -> airport.stream()
+                                .peek(foundAirport -> log.info(AIRPORT_FOUND_BEFORE_DELETE.getLogMessage(), foundAirport))
+                                .map(
+                                        foundAirport -> {
+                                            this.airportRepository.deleteById(foundAirport.getId());
+                                            return AIRPORT_DELETED.getMessage();
+                                        }
+                                )
+                                .findFirst()
+                                .orElseThrow(() -> new AirportNotFoundException(AIRPORT_NOT_FOUND.getMessage()))
+                );
     }
 }

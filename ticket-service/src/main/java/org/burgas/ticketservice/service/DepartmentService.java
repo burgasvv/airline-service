@@ -9,6 +9,9 @@ import org.burgas.ticketservice.mapper.DepartmentMapper;
 import org.burgas.ticketservice.repository.DepartmentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +59,11 @@ public class DepartmentService {
                                 .map(this.departmentMapper::toDepartmentResponse)
                                 .collect(Collectors.toList())
                 );
+    }
+
+    public Page<DepartmentResponse> findAllPages(final Integer page, final Integer size) {
+        return this.departmentRepository.findAll(PageRequest.of(page - 1, size).withSort(Sort.Direction.ASC, "name"))
+                .map(this.departmentMapper::toDepartmentResponse);
     }
 
     public DepartmentResponse findById(final String departmentId) {

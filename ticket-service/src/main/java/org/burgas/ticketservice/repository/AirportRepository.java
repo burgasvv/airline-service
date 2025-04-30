@@ -1,6 +1,9 @@
 package org.burgas.ticketservice.repository;
 
 import org.burgas.ticketservice.entity.Airport;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -32,4 +35,6 @@ public interface AirportRepository extends JpaRepository<Airport, Long> {
                     """
     )
     List<Airport> findAirportsByCityId(Long cityId);
+
+    @NotNull Page<Airport> findAll(@NotNull Pageable pageable);
 }
