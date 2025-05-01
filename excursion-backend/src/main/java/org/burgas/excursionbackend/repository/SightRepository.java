@@ -1,6 +1,9 @@
 package org.burgas.excursionbackend.repository;
 
 import org.burgas.excursionbackend.entity.Sight;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,4 +21,8 @@ public interface SightRepository extends JpaRepository<Sight, Long> {
                     """
     )
     List<Sight> findSightsByExcursionId(Long excursionId);
+
+    @Override
+    @NotNull
+    Page<Sight> findAll(@NotNull Pageable pageable);
 }

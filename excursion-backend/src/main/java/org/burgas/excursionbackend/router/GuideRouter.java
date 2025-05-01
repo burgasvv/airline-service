@@ -58,6 +58,18 @@ public class GuideRouter {
                                 .body(guideService.findAllAsync().get())
                 )
                 .GET(
+                        "/guides/pages/{page}", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        guideService.findAllPages(
+                                                Integer.valueOf(request.pathVariable("page")),
+                                                Integer.valueOf(request.param("page").orElseThrow())
+                                        )
+                                                .getContent()
+                                )
+                )
+                .GET(
                         "/guides/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)

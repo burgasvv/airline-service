@@ -58,16 +58,28 @@ public class CityRouter {
                                 .body(cityService.findAllAsync().get())
                 )
                 .GET(
+                        "/cities/pages/{page}", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        cityService.findAllPages(
+                                                Integer.valueOf(request.pathVariable("page")),
+                                                Integer.valueOf(request.param("size").orElseThrow())
+                                        )
+                                                .getContent()
+                                )
+                )
+                .GET(
                         "/cities/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(cityService.findById(request.param("cityId").orElse(null)))
+                                .body(cityService.findById(request.param("cityId").orElseThrow()))
                 )
                 .GET(
                         "/cities/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(cityService.findByIdAsync(request.param("cityId").orElse(null)).get())
+                                .body(cityService.findByIdAsync(request.param("cityId").orElseThrow()).get())
                 )
                 .POST(
                         "/cities/create-update", request -> {
@@ -93,13 +105,13 @@ public class CityRouter {
                         "/cities/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(cityService.deleteById(request.param("cityId").orElse(null)))
+                                .body(cityService.deleteById(request.param("cityId").orElseThrow()))
                 )
                 .DELETE(
                         "/cities/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(cityService.deleteByIdAsync(request.param("cityId").orElse(null)).get())
+                                .body(cityService.deleteByIdAsync(request.param("cityId").orElseThrow()).get())
                 )
                 .POST(
                         "/cities/upload-image", request -> ServerResponse
@@ -107,7 +119,7 @@ public class CityRouter {
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         cityService.uploadImage(
-                                                request.param("cityId").orElse(null),
+                                                request.param("cityId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                 )
@@ -118,7 +130,7 @@ public class CityRouter {
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         cityService.uploadImageAsync(
-                                                request.param("cityId").orElse(null),
+                                                request.param("cityId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                                 .get()
@@ -130,7 +142,7 @@ public class CityRouter {
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         cityService.changeImage(
-                                                request.param("cityId").orElse(null),
+                                                request.param("cityId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                 )
@@ -141,7 +153,7 @@ public class CityRouter {
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         cityService.changeImageAsync(
-                                                request.param("cityId").orElse(null),
+                                                request.param("cityId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                                 .get()
@@ -151,13 +163,13 @@ public class CityRouter {
                         "/cities/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(cityService.deleteImage(request.param("cityId").orElse(null)))
+                                .body(cityService.deleteImage(request.param("cityId").orElseThrow()))
                 )
                 .DELETE(
                         "/cities/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(cityService.deleteImageAsync(request.param("cityId").orElse(null)).get())
+                                .body(cityService.deleteImageAsync(request.param("cityId").orElseThrow()).get())
                 )
                 .build();
     }

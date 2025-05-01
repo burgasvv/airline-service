@@ -61,6 +61,18 @@ public class IdentityRouter {
                                 .body(identityService.findAllAsync().get())
                 )
                 .GET(
+                        "/identities/pages/{page}", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        identityService.findAllPages(
+                                                Integer.valueOf(request.pathVariable("page")),
+                                                Integer.valueOf(request.param("size").orElseThrow())
+                                        )
+                                                .getContent()
+                                )
+                )
+                .GET(
                         "/identities/by-excursion", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)

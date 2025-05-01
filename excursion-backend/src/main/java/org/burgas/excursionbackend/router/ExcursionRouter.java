@@ -60,16 +60,28 @@ public class ExcursionRouter {
                                 .body(excursionService.findAllAsync().get())
                 )
                 .GET(
+                        "/excursions/pages/{page}", request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        excursionService.findAllPages(
+                                                Integer.valueOf(request.pathVariable("page")),
+                                                Integer.valueOf(request.param("size").orElseThrow())
+                                        )
+                                                .getContent()
+                                )
+                )
+                .GET(
                         "/excursions/by-guide", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(excursionService.findAllByGuideId(request.param("guideId").orElse(null)))
+                                .body(excursionService.findAllByGuideId(request.param("guideId").orElseThrow()))
                 )
                 .GET(
                         "/excursions/by-guide/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
-                                            excursionService.findAllByGuideId(request.param("guideId").orElse(null))
+                                            excursionService.findAllByGuideId(request.param("guideId").orElseThrow())
                                                             .forEach(
                                                                     excursionResponse -> {
                                                                         try {
@@ -89,19 +101,19 @@ public class ExcursionRouter {
                         "/excursions/by-guide/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(excursionService.findAllByGuideIdAsync(request.param("guideId").orElse(null)).get())
+                                .body(excursionService.findAllByGuideIdAsync(request.param("guideId").orElseThrow()).get())
                 )
                 .GET(
                         "/excursions/by-identity", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(excursionService.findAllByIdentityId(request.param("identityId").orElse(null)))
+                                .body(excursionService.findAllByIdentityId(request.param("identityId").orElseThrow()))
                 )
                 .GET(
                         "/excursions/by-identity/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
-                                            excursionService.findAllByIdentityId(request.param("identityId").orElse(null))
+                                            excursionService.findAllByIdentityId(request.param("identityId").orElseThrow())
                                                             .forEach(
                                                                     excursionResponse -> {
                                                                         try {
@@ -121,7 +133,7 @@ public class ExcursionRouter {
                         "/excursions/by-identity/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(excursionService.findAllByIdentityIdAsync(request.param("identityId").orElse(null)).get())
+                                .body(excursionService.findAllByIdentityIdAsync(request.param("identityId").orElseThrow()).get())
                 )
                 .GET(
                         "/excursions/by-session", request -> ServerResponse
@@ -139,21 +151,21 @@ public class ExcursionRouter {
                         "/excursions/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(excursionService.findById(request.param("excursionId").orElse(null)))
+                                .body(excursionService.findById(request.param("excursionId").orElseThrow()))
                 )
                 .GET(
                         "/excursions/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(excursionService.findByIdAsync(request.param("excursionId").orElse(null)).get())
+                                .body(excursionService.findByIdAsync(request.param("excursionId").orElseThrow()).get())
                 )
                 .POST(
                         "/excursions/add-by-identity", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.addExcursionByIdentityId(
-                                        request.param("excursionId").orElse(null),
-                                        request.param("identityId").orElse(null)
+                                        request.param("excursionId").orElseThrow(),
+                                        request.param("identityId").orElseThrow()
                                 ))
                 )
                 .POST(
@@ -161,8 +173,8 @@ public class ExcursionRouter {
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.addExcursionByIdentityIdAsync(
-                                        request.param("excursionId").orElse(null),
-                                        request.param("identityId").orElse(null)
+                                        request.param("excursionId").orElseThrow(),
+                                        request.param("identityId").orElseThrow()
                                 ))
                 )
                 .POST(
@@ -170,7 +182,7 @@ public class ExcursionRouter {
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.addExcursionToSession(
-                                        request.param("excursionId").orElse(null),
+                                        request.param("excursionId").orElseThrow(),
                                         request.servletRequest()
                                 ))
                 )
@@ -179,7 +191,7 @@ public class ExcursionRouter {
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.addExcursionToSessionAsync(
-                                        request.param("excursionId").orElse(null),
+                                        request.param("excursionId").orElseThrow(),
                                         request.servletRequest()
                                 ))
                 )
@@ -207,13 +219,13 @@ public class ExcursionRouter {
                         "/excursions/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(excursionService.deleteById(request.param("excursionId").orElse(null)))
+                                .body(excursionService.deleteById(request.param("excursionId").orElseThrow()))
                 )
                 .DELETE(
                         "/excursions/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(excursionService.deleteByIdAsync(request.param("excursionId").orElse(null)).get())
+                                .body(excursionService.deleteByIdAsync(request.param("excursionId").orElseThrow()).get())
                 )
                 .POST(
                         "/excursions/upload-image", request -> ServerResponse
@@ -221,7 +233,7 @@ public class ExcursionRouter {
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         excursionService.uploadImage(
-                                                request.param("excursionId").orElse(null),
+                                                request.param("excursionId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                 )

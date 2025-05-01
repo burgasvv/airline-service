@@ -43,17 +43,19 @@ public class SecurityConfig {
 
                                         "/identities/create", "/identities/create/async",
 
-                                        "/countries", "/countries/sse", "/countries/async",
+                                        "/countries", "/countries/sse", "/countries/async", "/countries/pages/{page}",
                                         "/countries/by-id", "/countries/by-id/async",
 
-                                        "/cities", "/cities/async", "/cities/sse",
+                                        "/cities", "/cities/async", "/cities/sse", "/cities/pages/{page}",
                                         "/cities/by-id", "/cities/by-id/async",
 
-                                        "/sights", "/sights/sse", "/sights/async", "/sights/by-id", "/sights/by-id/async",
+                                        "/sights", "/sights/sse", "/sights/async", "/sights/pages/{page}",
+                                        "/sights/by-id", "/sights/by-id/async",
 
-                                        "/guides", "/guides/sse", "/guides/async", "/guides/by-id", "/guides/by-id/async",
+                                        "/guides", "/guides/sse", "/guides/async", "/guides/pages/{page}",
+                                        "/guides/by-id", "/guides/by-id/async",
 
-                                        "/excursions", "/excursions/sse", "/excursions/async",
+                                        "/excursions", "/excursions/sse", "/excursions/async", "/excursions/pages/{page}",
                                         "/excursions/by-guide", "/excursions/by-guide/sse", "/excursions/by-guide/async",
                                         "/excursions/by-session", "/excursions/by-session/async",
                                         "/excursions/by-id", "/excursions/by-id/async",
@@ -86,7 +88,7 @@ public class SecurityConfig {
                                         "/authorities/create-update", "/authorities/create-update/async",
                                         "/authorities/delete", "/authorities/delete/async",
 
-                                        "/identities", "/identities/sse", "/identities/async",
+                                        "/identities", "/identities/sse", "/identities/async", "/identities/pages/{page}",
                                         "/identities/by-excursion", "/identities/by-excursion/sse", "/identities/by-excursion/async",
                                         "/identities/control", "/identities/control/async",
 

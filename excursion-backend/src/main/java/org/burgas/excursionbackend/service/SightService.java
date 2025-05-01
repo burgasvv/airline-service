@@ -11,6 +11,9 @@ import org.burgas.excursionbackend.mapper.SightMapper;
 import org.burgas.excursionbackend.repository.SightRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +65,11 @@ public class SightService {
                                 .map(this.sightMapper::toSightResponse)
                                 .collect(Collectors.toSet())
                 );
+    }
+
+    public Page<SightResponse> findAllPages(final Integer page, final Integer size) {
+        return this.sightRepository.findAll(PageRequest.of(page - 1, size).withSort(Sort.Direction.ASC, "name"))
+                .map(this.sightMapper::toSightResponse);
     }
 
     public SightResponse findById(final String sightId) {

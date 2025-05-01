@@ -16,6 +16,9 @@ import org.burgas.excursionbackend.repository.ExcursionIdentityRepository;
 import org.burgas.excursionbackend.repository.ExcursionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -107,6 +110,11 @@ public class ExcursionService {
                                 .map(this.excursionMapper::toExcursionResponse)
                                 .toList()
                 );
+    }
+
+    public Page<ExcursionResponse> findAllPages(final Integer page, final Integer size) {
+        return this.excursionRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "name"))
+                .map(this.excursionMapper::toExcursionResponse);
     }
 
     public List<ExcursionResponse> findAllByGuideId(final String guideId) {

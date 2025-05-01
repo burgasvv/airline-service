@@ -10,6 +10,9 @@ import org.burgas.excursionbackend.mapper.GuideMapper;
 import org.burgas.excursionbackend.repository.GuideRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +63,12 @@ public class GuideService {
                                 .map(this.guideMapper::toGuideResponse)
                                 .toList()
                 );
+    }
+
+    public Page<GuideResponse> findAllPages(final Integer page, final Integer size) {
+        return this.guideRepository.findAll(PageRequest.of(page - 1, size)
+                        .withSort(Sort.Direction.ASC, "name", "surname", "patronymic"))
+                .map(this.guideMapper::toGuideResponse);
     }
 
     public GuideResponse findById(final String guideId) {

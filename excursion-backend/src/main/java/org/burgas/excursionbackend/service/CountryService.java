@@ -10,6 +10,9 @@ import org.burgas.excursionbackend.mapper.CountryMapper;
 import org.burgas.excursionbackend.repository.CountryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +64,11 @@ public class CountryService {
                                 .map(this.countryMapper::toCountryResponse)
                                 .toList()
                 );
+    }
+
+    public Page<CountryResponse> findAllPages(final Integer page, final Integer size) {
+        return this.countryRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "name"))
+                .map(this.countryMapper::toCountryResponse);
     }
 
     public CountryResponse findById(final String countryId) {

@@ -11,6 +11,9 @@ import org.burgas.excursionbackend.mapper.CityMapper;
 import org.burgas.excursionbackend.repository.CityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +65,11 @@ public class CityService {
                                 .map(this.cityMapper::toCityResponse)
                                 .collect(Collectors.toList())
                 );
+    }
+
+    public Page<CityResponse> findAllPages(final Integer page, final Integer size) {
+        return this.cityRepository.findAll(PageRequest.of(page - 1, size).withSort(Sort.Direction.ASC, "name"))
+                .map(this.cityMapper::toCityResponse);
     }
 
     public CityResponse findById(final String cityId) {

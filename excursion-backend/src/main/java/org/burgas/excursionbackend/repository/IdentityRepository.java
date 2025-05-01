@@ -1,6 +1,9 @@
 package org.burgas.excursionbackend.repository;
 
 import org.burgas.excursionbackend.entity.Identity;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,4 +24,8 @@ public interface IdentityRepository extends JpaRepository<Identity, Long> {
                     """
     )
     List<Identity> findIdentitiesByExcursionId(Long excursionId);
+
+    @Override
+    @NotNull
+    Page<Identity> findAll(@NotNull Pageable pageable);
 }
