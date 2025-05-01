@@ -7,6 +7,8 @@
         <option value="$PROJECT_DIR$/database-server/pom.xml" />
         <option value="$PROJECT_DIR$/ticket-service/pom.xml" />
         <option value="$PROJECT_DIR$/excursion-service/pom.xml" />
+        <option value="$PROJECT_DIR$/excursion-backend/pom.xml" />
+        <option value="$PROJECT_DIR$/flight-backend/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
