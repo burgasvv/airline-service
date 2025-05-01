@@ -21,12 +21,16 @@ public class RequireFilterFunction implements HandlerFilterFunction<ServerRespon
 
     @Override
     public @NotNull ServerResponse filter(@NotNull ServerRequest request, @NotNull HandlerFunction<ServerResponse> next) throws Exception {
-        if (request.path().equals("/requires/create-update")) {
+
+        if (
+                request.path().equals("/requires/create-update") || request.path().equals("/requires/by-user") ||
+                request.path().equals("/requires/delete/by-user")
+        ) {
 
             SecurityContext securityContext = SecurityContextHolder.getContext();
-            String userIdParam = request.param("userId").orElse(null);
+            String userIdParam = request.param("userId").orElseThrow();
             Authentication authentication = securityContext.getAuthentication();
-            Long userId = Long.parseLong(userIdParam == null || userIdParam.isBlank() ? "0" : userIdParam);
+            Long userId = Long.parseLong(userIdParam.isBlank() ? "0" : userIdParam);
 
             if (authentication.isAuthenticated()) {
                 IdentityResponse identityResponse = (IdentityResponse) authentication.getPrincipal();
@@ -42,8 +46,30 @@ public class RequireFilterFunction implements HandlerFilterFunction<ServerRespon
                 throw new IdentityNotAuthenticatedException(NOT_AUTHENTICATED.getMessage());
             }
 
-        } else {
-            return next.handle(request);
+        } else if (
+                request.path().equals("/requires/by-admin") || request.path().equals("/requires/delete/by-admin")
+        ) {
+
+            SecurityContext securityContext = SecurityContextHolder.getContext();
+            String adminIdParam = request.param("adminId").orElseThrow();
+            Authentication authentication = securityContext.getAuthentication();
+            Long adminId = Long.parseLong(adminIdParam.isBlank() ? "0" : adminIdParam);
+
+            if (authentication.isAuthenticated()) {
+                IdentityResponse identityResponse = (IdentityResponse) authentication.getPrincipal();
+
+                if (identityResponse.getId().equals(adminId)) {
+                    return next.handle(request);
+
+                } else {
+                    throw new IdentityNotAuthorizedException(NOT_AUTHORIZED.getMessage());
+                }
+
+            } else {
+                throw new IdentityNotAuthenticatedException(NOT_AUTHENTICATED.getMessage());
+            }
         }
+
+        return next.handle(request);
     }
 }

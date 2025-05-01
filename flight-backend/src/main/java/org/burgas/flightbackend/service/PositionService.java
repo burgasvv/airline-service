@@ -8,14 +8,20 @@ import org.burgas.flightbackend.mapper.PositionMapper;
 import org.burgas.flightbackend.repository.PositionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.flightbackend.log.PositionLogs.*;
 import static org.burgas.flightbackend.message.PositionMessages.*;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
@@ -43,6 +49,22 @@ public class PositionService {
                 .collect(Collectors.toList());
     }
 
+    @Async(value = "taskExecutor")
+    public CompletableFuture<List<PositionResponse>> findAllAsync() {
+        return supplyAsync(this.positionRepository::findAll)
+                .thenApplyAsync(
+                        positions -> positions.stream()
+                                .peek(position -> log.info(POSITION_FOUND_ALL_ASYNC.getLogMessage(), position))
+                                .map(this.positionMapper::toPositionResponse)
+                                .collect(Collectors.toList())
+                );
+    }
+
+    public Page<PositionResponse> findAllPages(final Integer page, final Integer size) {
+        return this.positionRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "name"))
+                .map(this.positionMapper::toPositionResponse);
+    }
+
     public PositionResponse findById(final String positionId) {
         return this.positionRepository.findById(Long.valueOf(positionId))
                 .stream()
@@ -50,6 +72,18 @@ public class PositionService {
                 .map(this.positionMapper::toPositionResponse)
                 .findFirst()
                 .orElseGet(PositionResponse::new);
+    }
+
+    @Async(value = "taskExecutor")
+    public CompletableFuture<PositionResponse> findByIdAsync(final String positionId) {
+        return supplyAsync(() -> this.positionRepository.findById(Long.parseLong(positionId)))
+                .thenApplyAsync(
+                        position -> position.stream()
+                                .peek(foundPosition -> log.info(POSITION_FOUND_BY_ID_ASYNC.getLogMessage(), foundPosition))
+                                .map(this.positionMapper::toPositionResponse)
+                                .findFirst()
+                                .orElseGet(PositionResponse::new)
+                );
     }
 
     @Transactional(
@@ -63,6 +97,17 @@ public class PositionService {
                 .orElseThrow(
                         () -> new PositionNotCreatedException(POSITION_NOT_CREATED.getMessage())
                 );
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<PositionResponse> createOrUpdateAsync(final PositionRequest positionRequest) {
+        return supplyAsync(() -> this.positionMapper.toPosition(positionRequest))
+                .thenApplyAsync(this.positionRepository::save)
+                .thenApplyAsync(this.positionMapper::toPositionResponse);
     }
 
     @Transactional(
@@ -86,4 +131,26 @@ public class PositionService {
                 );
     }
 
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> deleteByIdAsync(final String positionId) {
+        return supplyAsync(() -> this.positionRepository.findById(Long.parseLong(positionId)))
+                .thenApplyAsync(
+                        position -> position.stream()
+                                .peek(foundPosition -> log.info(POSITION_FOUND_ALL_ASYNC.getLogMessage(), foundPosition))
+                                .map(
+                                        foundPosition -> {
+                                            this.positionRepository.deleteById(foundPosition.getId());
+                                            return POSITION_DELETED.getMessage();
+                                        }
+                                )
+                                .findFirst()
+                                .orElseThrow(
+                                        () -> new PositionNotFoundException(POSITION_NOT_FOUND.getMessage())
+                                )
+                );
+    }
 }

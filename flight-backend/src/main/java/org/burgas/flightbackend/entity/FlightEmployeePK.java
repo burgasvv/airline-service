@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Embeddable
 @SuppressWarnings("ALL")
-public class FlightEmployeePK {
+public final class FlightEmployeePK {
 
     private Long flightId;
     private Long employeeId;

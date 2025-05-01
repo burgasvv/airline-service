@@ -10,4 +10,8 @@ import java.util.List;
 public interface RequireRepository extends JpaRepository<Require, Long> {
 
     List<Require> findRequiresByClosed(Boolean closed);
+
+    List<Require> findRequiresByUserId(Long userId);
+
+    List<Require> findRequiresByAdminId(Long adminId);
 }

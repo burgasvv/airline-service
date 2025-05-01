@@ -303,6 +303,14 @@ Authorization: Basic admin@gmail.com admin
 ### Require Requests
 
 ###
+GET /requires/by-user?userId=3
+Host: localhost:9000
+
+###
+GET /requires/by-admin?adminId=1
+Host: localhost:9000
+
+###
 POST /requires/create-update?userId=3
 Host: localhost:9000
 Authorization: Basic user@gmail.com user

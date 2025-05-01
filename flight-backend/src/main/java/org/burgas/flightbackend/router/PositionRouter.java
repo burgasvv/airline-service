@@ -10,6 +10,8 @@ import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.ServerResponse;
 
+import java.net.URI;
+
 import static java.net.URI.create;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpStatus.FOUND;
@@ -31,10 +33,34 @@ public class PositionRouter {
                                 .body(positionService.findAll())
                 )
                 .andRoute(
+                        GET("/positions/async"), _ -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(positionService.findAllAsync().get())
+                )
+                .andRoute(
+                        GET("/positions/pages/{page}"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(
+                                        positionService.findAllPages(
+                                                Integer.valueOf(request.pathVariable("page")),
+                                                Integer.valueOf(request.param("size").orElseThrow())
+                                        )
+                                                .getContent()
+                                )
+                )
+                .andRoute(
                         GET("/positions/by-id"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(positionService.findById(request.param("positionId").orElse(null)))
+                                .body(positionService.findById(request.param("positionId").orElseThrow()))
+                )
+                .andRoute(
+                        GET("/positions/by-id/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(APPLICATION_JSON)
+                                .body(positionService.findByIdAsync(request.param("positionId").orElseThrow()).get())
                 )
                 .andRoute(
                         POST("/positions/create-update"), request -> {
@@ -47,10 +73,26 @@ public class PositionRouter {
                         }
                 )
                 .andRoute(
+                        POST("/positions/create-update/async"), request -> {
+                            PositionResponse positionResponse = positionService.createOrUpdateAsync(request.body(PositionRequest.class)).get();
+                            return ServerResponse
+                                    .status(FOUND)
+                                    .contentType(APPLICATION_JSON)
+                                    .location(URI.create("/positions/by-id/async/positionId=" + positionResponse.getId()))
+                                    .body(positionResponse);
+                        }
+                )
+                .andRoute(
                         DELETE("/positions/delete"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(positionService.deleteById(request.param("positionId").orElse(null)))
+                                .body(positionService.deleteById(request.param("positionId").orElseThrow()))
+                )
+                .andRoute(
+                        DELETE("/positions/delete/async"), request -> ServerResponse
+                                .status(OK)
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(positionService.deleteByIdAsync(request.param("positionId").orElseThrow()).get())
                 );
     }
 }

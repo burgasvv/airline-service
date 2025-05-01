@@ -2,6 +2,7 @@ package org.burgas.flightbackend.message;
 
 public enum PlaneMessages {
 
+    PLANE_DELETED("Модель самолета была удалена"),
     PLANE_NOT_CREATED("Запись о модели самолета не была создана"),
     PLANE_NOT_FOUND("Модель самолета не была найдена");
 

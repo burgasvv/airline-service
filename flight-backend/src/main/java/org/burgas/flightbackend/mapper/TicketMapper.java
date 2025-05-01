@@ -12,7 +12,7 @@ import org.burgas.flightbackend.repository.TicketRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TicketMapper implements MapperDataHandler {
+public final class TicketMapper implements MapperDataHandler {
 
     private final TicketRepository ticketRepository;
     private final FlightRepository flightRepository;

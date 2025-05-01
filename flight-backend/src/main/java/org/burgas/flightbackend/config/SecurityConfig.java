@@ -62,6 +62,10 @@ public class SecurityConfig {
                                         "/filial-departments", "/filial-departments/async", "/filial-departments/pages/{page}",
                                         "/filial-departments/by-filial-department", "/filial-departments/by-filial-department/async",
 
+                                        "/planes", "/planes/async", "/planes/pages/{page}",
+                                        "/planes/by-free", "/planes/by-free/async",
+                                        "/planes/by-id","/planes/by-id/async",
+
                                         "/flights", "/flights/by-departure-city-arrival-city-by-departure-date",
                                         "/flights/by-departure-city-by-arrival-city", "/flights/by-departure-city-by-arrival-city-back",
                                         "/flights/by-id",
@@ -79,7 +83,8 @@ public class SecurityConfig {
                                         "/identities/change-password", "/identities/set-password",
                                         "/identities/upload-image", "/identities/change-image", "/identities/delete-image",
 
-                                        "/positions", "/positions/by-id",
+                                        "/positions", "/positions/async", "/positions/pages/{page}",
+                                        "/positions/by-id", "/positions/by-id/async",
 
                                         "/ordered-tickets/by-identity", "/ordered-tickets/order-ticket-identity"
                                 )
@@ -93,6 +98,8 @@ public class SecurityConfig {
                                 .hasAnyAuthority(ADMIN, EMPLOYEE)
 
                                 .requestMatchers(
+                                        "/requires/by-user", "/requires/delete/by-user",
+
                                         "/employees/by-id", "/employees/by-id/async",
 
                                         "/flights/start-flight", "/flights/complete-flight"
@@ -100,7 +107,7 @@ public class SecurityConfig {
                                 .hasAnyAuthority(EMPLOYEE)
 
                                 .requestMatchers(
-                                        "/requires/create-update",
+                                        "/requires/by-user", "/requires/create-update", "/requires/delete/by-user",
 
                                         "/require-answers/by-user",
 
@@ -136,9 +143,13 @@ public class SecurityConfig {
                                         "/filial-departments/create-update", "/filial-departments/create-update/async",
                                         "/filial-departments/delete", "/filial-departments/delete/async",
 
-                                        "/positions/create-update", "/positions/delete",
+                                        "/positions/create-update", "/positions/create-update/async",
+                                        "/positions/delete", "/positions/delete/async",
 
-                                        "/requires/by-closed",
+                                        "/planes/create-update", "/planes/create-update/async",
+                                        "/planes/delete", "/planes/delete/async",
+
+                                        "/requires/by-closed", "/requires/by-admin", "/requires/delete/by-admin",
 
                                         "/require-answers/by-admin", "/require-answers/send-answer-or-token",
 
