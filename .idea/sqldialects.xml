@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/excursion-backend/src/main/java/org/burgas/excursionservice/repository/ExcursionRepository.java" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/excursion-backend/src/main/java/org/burgas/excursionservice/repository/IdentityRepository.java" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/excursion-backend/src/main/java/org/burgas/excursionservice/repository/LanguageRepository.java" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/excursion-backend/src/main/java/org/burgas/excursionservice/repository/SightRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/excursion-backend/src/main/java/org/burgas/excursionbackend/repository/ExcursionRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/excursion-backend/src/main/java/org/burgas/excursionbackend/repository/IdentityRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/excursion-backend/src/main/java/org/burgas/excursionbackend/repository/LanguageRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/excursion-backend/src/main/java/org/burgas/excursionbackend/repository/SightRepository.java" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/excursion-backend/src/main/resources/database/clean.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/excursion-backend/src/main/resources/database/populate.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/flight-backend/src/main/java/org/burgas/ticketservice/repository/AirportRepository.java" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/flight-backend/src/main/java/org/burgas/ticketservice/repository/FilialRepository.java" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/flight-backend/src/main/java/org/burgas/ticketservice/repository/FlightRepository.java" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/flight-backend/src/main/java/org/burgas/ticketservice/repository/OrderedTicketRepository.java" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/flight-backend/src/main/java/org/burgas/ticketservice/repository/RequireAnswerRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/flight-backend/src/main/java/org/burgas/flightbackend/repository/AirportRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/flight-backend/src/main/java/org/burgas/flightbackend/repository/FilialRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/flight-backend/src/main/java/org/burgas/flightbackend/repository/FlightRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/flight-backend/src/main/java/org/burgas/flightbackend/repository/OrderedTicketRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/flight-backend/src/main/java/org/burgas/flightbackend/repository/RequireAnswerRepository.java" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/flight-backend/src/main/resources/database/clean.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/flight-backend/src/main/resources/database/populate.sql" dialect="PostgreSQL" />
   </component>
