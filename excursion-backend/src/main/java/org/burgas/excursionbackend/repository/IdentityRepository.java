@@ -16,7 +16,7 @@ public interface IdentityRepository extends JpaRepository<Identity, Long> {
     @Query(
             nativeQuery = true,
             value = """
-                    select i.* from excursion_service.public.identity i join public.excursion_identity ei on i.id = ei.identity_id
+                    select i.* from excursion_backend.public.identity i join public.excursion_identity ei on i.id = ei.identity_id
                                         where ei.excursion_id = :excursionId
                     """
     )
