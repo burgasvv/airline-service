@@ -27,9 +27,9 @@ public class KafkaConsumerConfig {
                 KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
                 VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
                 TYPE_MAPPINGS, new String[] {
-                        "org.burgas.ticketservice.dto.RequireResponse:org.burgas.ticketservice.dto.RequireResponse",
-                        "org.burgas.ticketservice.dto.RequireAnswerResponse:org.burgas.ticketservice.dto.RequireAnswerResponse",
-                        "org.burgas.ticketservice.dto.RequireAnswerTokenResponse:org.burgas.ticketservice.dto.RequireAnswerTokenResponse"
+                        "org.burgas.flightbackend.dto.RequireResponse:org.burgas.flightbackend.dto.RequireResponse",
+                        "org.burgas.flightbackend.dto.RequireAnswerResponse:org.burgas.flightbackend.dto.RequireAnswerResponse",
+                        "org.burgas.flightbackend.dto.RequireAnswerTokenResponse:org.burgas.flightbackend.dto.RequireAnswerTokenResponse"
                 }
         );
     }
