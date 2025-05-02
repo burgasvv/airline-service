@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ExcursionRepository extends JpaRepository<Excursion, Long> {
@@ -16,6 +18,8 @@ public interface ExcursionRepository extends JpaRepository<Excursion, Long> {
     List<Excursion> findExcursionsByGuideId(Long guideId);
 
     List<Excursion> findExcursionsByPassed(Boolean passed);
+
+    Optional<Excursion> findExcursionByIdAndPassed(Long id, Boolean passed);
 
     @Query(
             nativeQuery = true,

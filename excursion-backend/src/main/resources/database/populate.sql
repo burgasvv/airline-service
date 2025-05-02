@@ -271,18 +271,18 @@ insert into guide_language(guide_id, language_id) values (3,2);
 
 insert into excursion(name, description, guide_id, cost, starts, ends, in_progress, passed, image_id)
 values ('Экскурсия по Санкт-Петербургу', 'Описание экскурсии по Санкт-Петербургу', 1, 15000,
-        '2025-04-10 10:00', '2025-04-10 17:00', false, true, null);
+        '2026-04-10 10:00', '2026-04-10 17:00', false, false, null);
 
 insert into excursion(name, description, guide_id, cost, starts, ends, in_progress, passed, image_id)
-values ('Экскурсия по Москве', 'Описание экскурсии по Москве', 1, 25000, '2025-05-02 12:00', '2025-05-02 18:00',
+values ('Экскурсия по Москве', 'Описание экскурсии по Москве', 1, 25000, '2026-05-02 12:00', '2026-05-02 18:00',
         false,false, null);
 
 insert into excursion(name, description, guide_id, cost, starts, ends, in_progress, passed, image_id)
-values ('Экскурсия по Пекину', 'Описание экскурсии по Пекину', 2, 35000, '2025-05-04 10:30', '2025-05-04 17:00',
+values ('Экскурсия по Пекину', 'Описание экскурсии по Пекину', 2, 35000, '2026-05-04 10:30', '2026-05-04 17:00',
         false,false, null);
 
 insert into excursion(name, description, guide_id, cost, starts, ends, in_progress, passed, image_id)
-values ('Экскурсия по Вашингтону', 'Описание экскурсии по Вашингтону', 3, 45000, '2025-05-06 11:00', '2025-05-06 19:00',
+values ('Экскурсия по Вашингтону', 'Описание экскурсии по Вашингтону', 3, 45000, '2026-05-06 11:00', '2026-05-06 19:00',
         false,false, null);
 
 insert into excursion_sight(excursion_id, sight_id) values (1,4);

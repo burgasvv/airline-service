@@ -3,6 +3,7 @@ package org.burgas.excursionbackend.message;
 public enum ExcursionMessages {
 
     EXCURSION_NOT_FOUND("Указанная вами экскурсия не найдена"),
+    EXCURSION_NOT_FOUND_OR_ALREADY_PASSED("Указанная вами экскурсия не найдена или уже проведена"),
     EXCURSION_DELETED("Указанная вами экскурсия была удалена"),
     IMAGE_UPLOADED("Изображение с идентификатором %s было успешно загружено"),
     IMAGE_UPLOADED_ASYNC("Изображение с идентификатором %s было успешно загружено async"),

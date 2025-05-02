@@ -202,7 +202,7 @@ public class ExcursionService {
         )
                 .filter(exists -> !exists)
                 .map(
-                        _ -> this.excursionRepository.findById(Long.valueOf(excursionId))
+                        _ -> this.excursionRepository.findExcursionByIdAndPassed(Long.valueOf(excursionId), false)
                                 .stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_BEFORE_ADDING_BY_IDENTITY.getLogMessage(), excursion))
                                 .filter(excursion -> !excursion.getPassed())
@@ -218,7 +218,7 @@ public class ExcursionService {
                                         }
                                 )
                                 .findFirst()
-                                .orElseThrow(() -> new ExcursionNotFoundException(EXCURSION_NOT_FOUND.getMessage()))
+                                .orElseThrow(() -> new ExcursionNotFoundException(EXCURSION_NOT_FOUND_OR_ALREADY_PASSED.getMessage()))
                 )
                 .orElseThrow(() -> new ExcursionAlreadyExistsByIdentityException(EXCURSION_ALREADY_EXISTS_BY_IDENTITY.getMessage()));
     }
@@ -233,7 +233,7 @@ public class ExcursionService {
     }
 
     public String addExcursionToSession(final String excursionId, final HttpServletRequest httpServletRequest) {
-        return this.excursionRepository.findById(Long.valueOf(excursionId))
+        return this.excursionRepository.findExcursionByIdAndPassed(Long.valueOf(excursionId), false)
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_FOUND_BEFORE_ADDING_TO_SESSION.getLogMessage(), excursion))
                 .map(
@@ -259,7 +259,7 @@ public class ExcursionService {
                         }
                 )
                 .findFirst()
-                .orElseThrow(() -> new ExcursionNotFoundException(EXCURSION_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new ExcursionNotFoundException(EXCURSION_NOT_FOUND_OR_ALREADY_PASSED.getMessage()));
     }
 
     @Async(value = "taskExecutor")

@@ -26,7 +26,6 @@ class AuthorityServiceTest {
 
     @Test
     @Order(value = 1)
-    @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
     void findAll() {
         List<AuthorityResponse> authorityResponses = this.authorityRepository.findAll()
                 .parallelStream()
@@ -47,7 +46,6 @@ class AuthorityServiceTest {
 
     @Test
     @Order(value = 1)
-    @WithMockUser(value = "admin", username = "admin@gmail.com", password = "admin", authorities = "ADMIN")
     void findById() {
         AuthorityResponse authorityResponse = this.authorityRepository.findById(1L)
                 .map(this.authorityMapper::toAuthorityResponse)

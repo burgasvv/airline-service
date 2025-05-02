@@ -162,20 +162,25 @@ public class ExcursionRouter {
                 .POST(
                         "/excursions/add-by-identity", request -> ServerResponse
                                 .status(OK)
-                                .contentType(APPLICATION_JSON)
-                                .body(excursionService.addExcursionByIdentityId(
-                                        request.param("excursionId").orElseThrow(),
-                                        request.param("identityId").orElseThrow()
-                                ))
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        excursionService.addExcursionByIdentityId(
+                                                request.param("excursionId").orElseThrow(),
+                                                request.param("identityId").orElseThrow()
+                                        )
+                                )
                 )
                 .POST(
                         "/excursions/add-by-identity/async", request -> ServerResponse
                                 .status(OK)
-                                .contentType(APPLICATION_JSON)
-                                .body(excursionService.addExcursionByIdentityIdAsync(
-                                        request.param("excursionId").orElseThrow(),
-                                        request.param("identityId").orElseThrow()
-                                ))
+                                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                                .body(
+                                        excursionService.addExcursionByIdentityIdAsync(
+                                                request.param("excursionId").orElseThrow(),
+                                                request.param("identityId").orElseThrow()
+                                        )
+                                                .get()
+                                )
                 )
                 .POST(
                         "/excursions/add-to-session", request -> ServerResponse
@@ -190,10 +195,13 @@ public class ExcursionRouter {
                         "/excursions/add-to-session/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(excursionService.addExcursionToSessionAsync(
-                                        request.param("excursionId").orElseThrow(),
-                                        request.servletRequest()
-                                ))
+                                .body(
+                                        excursionService.addExcursionToSessionAsync(
+                                                request.param("excursionId").orElseThrow(),
+                                                request.servletRequest()
+                                        )
+                                                .get()
+                                )
                 )
                 .POST(
                         "/excursions/create-update", request -> {
