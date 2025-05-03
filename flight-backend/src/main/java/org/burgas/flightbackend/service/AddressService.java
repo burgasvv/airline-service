@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.of;
-import static java.util.concurrent.CompletableFuture.*;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.flightbackend.log.AddressLogs.ADDRESS_FOUND_ALL;
 import static org.burgas.flightbackend.log.AddressLogs.ADDRESS_FOUND_ALL_ASYNC;
 import static org.burgas.flightbackend.message.AddressMessages.*;

@@ -64,7 +64,7 @@ public class GuideRouter {
                                 .body(
                                         guideService.findAllPages(
                                                 Integer.valueOf(request.pathVariable("page")),
-                                                Integer.valueOf(request.param("page").orElseThrow())
+                                                Integer.valueOf(request.param("size").orElseThrow())
                                         )
                                                 .getContent()
                                 )
@@ -73,13 +73,13 @@ public class GuideRouter {
                         "/guides/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(guideService.findById(request.param("guideId").orElse(null)))
+                                .body(guideService.findById(request.param("guideId").orElseThrow()))
                 )
                 .GET(
                         "/guides/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(guideService.findByIdAsync(request.param("guideId").orElse(null)).get())
+                                .body(guideService.findByIdAsync(request.param("guideId").orElseThrow()).get())
                 )
                 .POST(
                         "/guides/create-update", request -> {
@@ -105,13 +105,13 @@ public class GuideRouter {
                         "/guides/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(guideService.deleteById(request.param("guideId").orElse(null)))
+                                .body(guideService.deleteById(request.param("guideId").orElseThrow()))
                 )
                 .DELETE(
                         "/guides/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(guideService.deleteByIdAsync(request.param("guideId").orElse(null)).get())
+                                .body(guideService.deleteByIdAsync(request.param("guideId").orElseThrow()).get())
                 )
                 .POST(
                         "/guides/upload-image", request -> ServerResponse
@@ -119,7 +119,7 @@ public class GuideRouter {
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         guideService.uploadImage(
-                                                request.param("guideId").orElse(null),
+                                                request.param("guideId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                 )
@@ -130,30 +130,30 @@ public class GuideRouter {
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         guideService.uploadImageAsync(
-                                                request.param("guideId").orElse(null),
+                                                request.param("guideId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                                 .get()
                                 )
                 )
-                .PUT(
+                .POST(
                         "/guides/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         guideService.changeImage(
-                                                request.param("guideId").orElse(null),
+                                                request.param("guideId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                 )
                 )
-                .PUT(
+                .POST(
                         "/guides/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         guideService.changeImageAsync(
-                                                request.param("guideId").orElse(null),
+                                                request.param("guideId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                                 .get()
@@ -163,13 +163,13 @@ public class GuideRouter {
                         "/guides/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(guideService.deleteImage(request.param("guideId").orElse(null)))
+                                .body(guideService.deleteImage(request.param("guideId").orElseThrow()))
                 )
                 .DELETE(
                         "/guides/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(guideService.deleteImageAsync(request.param("guideId").orElse(null)).get())
+                                .body(guideService.deleteImageAsync(request.param("guideId").orElseThrow()).get())
                 )
                 .build();
     }

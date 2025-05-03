@@ -213,16 +213,6 @@ public class ExcursionRouter {
                                     .body(excursionResponse);
                         }
                 )
-                .POST(
-                        "/excursions/create-update/async", request -> {
-                            ExcursionResponse excursionResponse = excursionService.createOrUpdateAsync(request.body(ExcursionRequest.class)).get();
-                            return ServerResponse
-                                    .status(FOUND)
-                                    .contentType(APPLICATION_JSON)
-                                    .location(create("/excursions/by-id/async?excursionId=" + excursionResponse.getId()))
-                                    .body(excursionResponse);
-                        }
-                )
                 .DELETE(
                         "/excursions/delete", request -> ServerResponse
                                 .status(OK)
@@ -252,30 +242,30 @@ public class ExcursionRouter {
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         excursionService.uploadImageAsync(
-                                                request.param("excursionId").orElse(null),
+                                                request.param("excursionId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                                 .get()
                                 )
                 )
-                .PUT(
+                .POST(
                         "/excursions/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         excursionService.changeImage(
-                                                request.param("excursionId").orElse(null),
+                                                request.param("excursionId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                 )
                 )
-                .PUT(
+                .POST(
                         "/excursions/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
                                         excursionService.changeImageAsync(
-                                                request.param("excursionId").orElse(null),
+                                                request.param("excursionId").orElseThrow(),
                                                 request.multipartData().asSingleValueMap().get("file")
                                         )
                                                 .get()
@@ -285,13 +275,13 @@ public class ExcursionRouter {
                         "/excursions/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(excursionService.deleteImage(request.param("excursionId").orElse(null)))
+                                .body(excursionService.deleteImage(request.param("excursionId").orElseThrow()))
                 )
                 .DELETE(
                         "/excursions/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                                .body(excursionService.deleteImageAsync(request.param("excursionId").orElse(null)).get())
+                                .body(excursionService.deleteImageAsync(request.param("excursionId").orElseThrow()).get())
                 )
                 .build();
     }

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Optional.of;
@@ -98,7 +99,7 @@ public class ExcursionService {
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL.getLogMessage(), excursion))
                 .map(this.excursionMapper::toExcursionResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Async(value = "taskExecutor")
@@ -108,7 +109,7 @@ public class ExcursionService {
                         excursions -> excursions.stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_ASYNC.getLogMessage(), excursion))
                                 .map(this.excursionMapper::toExcursionResponse)
-                                .toList()
+                                .collect(Collectors.toList())
                 );
     }
 
@@ -122,7 +123,7 @@ public class ExcursionService {
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_GUIDE_ID.getLogMessage(), excursion))
                 .map(this.excursionMapper::toExcursionResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Async(value = "taskExecutor")
@@ -132,7 +133,7 @@ public class ExcursionService {
                         excursions -> excursions.stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_GUIDE_ID_ASYNC.getLogMessage(), excursion))
                                 .map(this.excursionMapper::toExcursionResponse)
-                                .toList()
+                                .collect(Collectors.toList())
                 );
     }
 
@@ -141,7 +142,7 @@ public class ExcursionService {
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_IDENTITY_ID.getLogMessage(), excursion))
                 .map(this.excursionMapper::toExcursionResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Async(value = "taskExecutor")
@@ -151,7 +152,7 @@ public class ExcursionService {
                         excursions -> excursions.stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_IDENTITY_ID_ASYNC.getLogMessage(), excursion))
                                 .map(this.excursionMapper::toExcursionResponse)
-                                .toList()
+                                .collect(Collectors.toList())
                 );
     }
 
@@ -311,24 +312,6 @@ public class ExcursionService {
                 .map(this.excursionMapper::toExcursionResponse)
                 .findFirst()
                 .orElseGet(ExcursionResponse::new);
-    }
-
-    @Async(value = "taskExecutor")
-    @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
-            rollbackFor = Exception.class
-    )
-    public CompletableFuture<ExcursionResponse> createOrUpdateAsync(final ExcursionRequest excursionRequest) {
-        return supplyAsync(() -> this.excursionMapper.toExcursionSave(excursionRequest))
-                .thenApplyAsync(
-                        excursion -> of(excursion)
-                                .map(this.excursionRepository::save)
-                                .stream()
-                                .peek(savedExcursion -> log.info(EXCURSION_SAVED_ASYNC.getLogMessage(), savedExcursion))
-                                .map(this.excursionMapper::toExcursionResponse)
-                                .findFirst()
-                                .orElseGet(ExcursionResponse::new)
-                );
     }
 
     @Transactional(

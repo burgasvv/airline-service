@@ -358,6 +358,39 @@ Host: localhost:9010
 POST /excursions/add-to-session/async?excursionId=3
 Host: localhost:9010
 
+###
+POST /excursions/create-update
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "New Excursion",
+    "description": "New Excursion description",
+    "guideId": 1,
+    "cost": 15000,
+    "starts": "2026-10-25T15:30",
+    "ends": "2026-10-25T21:30",
+    "inProgress": false,
+    "passed": false,
+    "sights": [1, 3, 5]
+}
+
+###
+POST /excursions/create-update
+Host: localhost:9010
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 5,
+    "name": "New Excursion EDITED",
+    "cost": 10000,
+    "starts": "2026-10-25T15:30",
+    "ends": "2026-10-25T18:30",
+    "sights": [1, 3]
+}
+
 ### Payment Requests
 
 ###

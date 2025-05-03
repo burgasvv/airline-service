@@ -116,7 +116,7 @@ public class SecurityConfig {
                                         "/guides/change-image", "/guides/change-image/async",
                                         "/guides/delete-image", "/guides/delete-image/async",
 
-                                        "/excursions/create-update", "/excursions/create-update/async",
+                                        "/excursions/create-update",
                                         "/excursions/delete", "/excursions/delete/async",
                                         "/excursions/upload-image", "/excursions/upload-image/async",
                                         "/excursions/change-image", "/excursions/change-image/async",
