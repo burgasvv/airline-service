@@ -1,0 +1,13 @@
+
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: hotel_backend_postgres
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hotel_backend
+      PGDATA: /var/lib/data/postgresql

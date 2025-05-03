@@ -1,21 +1,21 @@
 
 server:
-  port: 9000
+  port: 9020
 spring:
   application:
-    name: flight_backend
+    name: hotel_backend
   datasource:
     driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/hotel_backend
     username: postgres
     password: postgres
-    url: jdbc:postgresql://localhost:5432/flight_backend
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: none
+    show-sql: true
     properties:
       hibernate:
-        use_sql_comments: true
+        show_sql: true
         format_sql: true
         highlight_sql: true
     open-in-view: false

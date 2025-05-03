@@ -1,4 +1,4 @@
-package org.burgas.flightbackend.config;
+package org.burgas.hotelbackend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ public class DatabaseConfig {
     }
 
     @Bean
-    public DataSourceInitializer connectionFactoryInitializer(DataSource dataSource) {
+    public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
         DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
         dataSourceInitializer.setDataSource(dataSource);
         dataSourceInitializer.setDatabasePopulator(compositeDatabasePopulator());

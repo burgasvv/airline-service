@@ -9,8 +9,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/excursion_backend
     username: postgres
     password: postgres
-    hikari:
-      maximum-pool-size: 50
   jpa:
     show-sql: true
     hibernate:

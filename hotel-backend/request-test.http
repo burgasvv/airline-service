@@ -1,0 +1,41 @@
+
+### Authority Requests
+
+###
+GET /authorities
+Host: localhost:9020
+
+###
+GET /authorities/async
+Host: localhost:9020
+
+###
+GET /authorities/by-id?authorityId=1
+Host: localhost:9020
+
+###
+GET /authorities/by-id/async?authorityId=2
+Host: localhost:9020
+
+###
+POST /authorities/create-update
+Host: localhost:9020
+Content-Type: application/json
+
+{
+    "name": "MODER"
+}
+
+###
+POST /authorities/create-update/async
+Host: localhost:9020
+Content-Type: application/json
+
+{
+    "id": 4,
+    "name": "MODERATOR"
+}
+
+###
+DELETE /authorities/delete?authorityId=4
+Host: localhost:9020
