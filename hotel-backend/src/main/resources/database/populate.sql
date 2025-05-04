@@ -21,7 +21,8 @@ create table if not exists identity (
     phone varchar not null unique ,
     registered_at timestamp not null ,
     enabled boolean not null ,
-    authority_id bigint references authority(id) on delete set null on update cascade
+    authority_id bigint references authority(id) on delete set null on update cascade ,
+    image_id bigint references image(id) on delete set null on update cascade
 );
 
 /* POPULATIONS */
@@ -30,11 +31,14 @@ insert into authority(name) values ('ADMIN');
 insert into authority(name) values ('EMPLOYEE');
 insert into authority(name) values ('CLIENT');
 
-insert into identity(username, password, email, phone, registered_at, enabled, authority_id)
-values ('admin', 'admin', 'admin@gmail.com', '9039034567', '2025-03-05 14:00', true, 1);
+insert into identity(username, password, email, phone, registered_at, enabled, authority_id, image_id)
+values ('admin', '$2a$10$JYue8cgXAyLYN2BMJcbyaObGtAe//WbjMKzheVHoImcL3Nz8xq/Ie', 'admin@gmail.com', '(903)-903-4567',
+        '2025-03-05 14:00', true, 1, null);
 
-insert into identity(username, password, email, phone, registered_at, enabled, authority_id)
-values ('employee', 'employee', 'employee@gmail.com', '9139138901', '2025-03-05 14:00', true, 2);
+insert into identity(username, password, email, phone, registered_at, enabled, authority_id, image_id)
+values ('employee', '$2a$10$QsHJnLexr/b7UkClaQtjJuvzNBAjeIfzX4ZcKVTtmUFxlBc8G9GRy', 'employee@gmail.com', '(913)-913-8901',
+        '2025-03-05 14:00', true, 2, null);
 
-insert into identity(username, password, email, phone, registered_at, enabled, authority_id)
-values ('client', 'client', 'client@gmail.com', '9529521234', '2025-03-05 14:00', true, 3);
+insert into identity(username, password, email, phone, registered_at, enabled, authority_id, image_id)
+values ('client', '$2a$10$pC9z0BS.nkrrjW8lOeyAhelaQqhSmSO0QBc4JZfnzv.JFTzs322ZO', 'client@gmail.com', '(952)-952-1234',
+        '2025-03-05 14:00', true, 3, null);

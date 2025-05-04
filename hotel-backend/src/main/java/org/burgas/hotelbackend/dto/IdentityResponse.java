@@ -1,40 +1,37 @@
-package org.burgas.flightbackend.dto;
+package org.burgas.hotelbackend.dto;
 
+import org.burgas.hotelbackend.entity.Image;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-@SuppressWarnings("unused")
+@SuppressWarnings("ALL")
 public final class IdentityResponse implements UserDetails {
 
     private Long id;
-    private AuthorityResponse authority;
     private String username;
     private String password;
     private String email;
     private String phone;
     private String registeredAt;
     private Boolean enabled;
-    private Long imageId;
+    private AuthorityResponse authority;
+    private Image image;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(
-                new SimpleGrantedAuthority(this.authority.getAuthority())
-        );
+    public Long getId() {
+        return id;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public String getUsername() {
         return email;
+    }
+
+    public String getUsernameNoUserDetails() {
+        return username;
     }
 
     @Override
@@ -57,16 +54,15 @@ public final class IdentityResponse implements UserDetails {
         return this.getEnabled() || !UserDetails.super.isEnabled();
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(
+                new SimpleGrantedAuthority(this.authority.getAuthority())
+        );
     }
 
-    public AuthorityResponse getAuthority() {
-        return authority;
-    }
-
-    public String getUsernameNotDetails() {
-        return username;
+    public String getPassword() {
+        return password;
     }
 
     public String getEmail() {
@@ -85,22 +81,40 @@ public final class IdentityResponse implements UserDetails {
         return enabled;
     }
 
-    public Long getImageId() {
-        return imageId;
+    public AuthorityResponse getAuthority() {
+        return authority;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        IdentityResponse that = (IdentityResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(password, that.password) &&
+               Objects.equals(email, that.email) && Objects.equals(phone, that.phone) && Objects.equals(registeredAt, that.registeredAt) &&
+               Objects.equals(enabled, that.enabled) && Objects.equals(authority, that.authority) && Objects.equals(image, that.image);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, email, phone, registeredAt, enabled, authority, image);
     }
 
     @Override
     public String toString() {
         return "IdentityResponse{" +
                "id=" + id +
-               ", authority=" + authority +
                ", username='" + username + '\'' +
                ", password='" + password + '\'' +
                ", email='" + email + '\'' +
                ", phone='" + phone + '\'' +
                ", registeredAt='" + registeredAt + '\'' +
                ", enabled=" + enabled +
-               ", imageId=" + imageId +
+               ", authority=" + authority +
+               ", image=" + image +
                '}';
     }
 
@@ -118,11 +132,6 @@ public final class IdentityResponse implements UserDetails {
 
         public Builder id(Long id) {
             this.identityResponse.id = id;
-            return this;
-        }
-
-        public Builder authority(AuthorityResponse authority) {
-            this.identityResponse.authority = authority;
             return this;
         }
 
@@ -156,8 +165,13 @@ public final class IdentityResponse implements UserDetails {
             return this;
         }
 
-        public Builder imageId(Long imageId) {
-            this.identityResponse.imageId = imageId;
+        public Builder authority(AuthorityResponse authority) {
+            this.identityResponse.authority = authority;
+            return this;
+        }
+
+        public Builder image(Image image) {
+            this.identityResponse.image = image;
             return this;
         }
 

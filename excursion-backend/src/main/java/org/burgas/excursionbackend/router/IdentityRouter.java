@@ -12,11 +12,9 @@ import org.springframework.web.servlet.function.ServerResponse;
 
 import java.io.IOException;
 
-import static java.net.URI.create;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
@@ -131,13 +129,12 @@ public class IdentityRouter {
                 .POST(
                         "/identities/update", request -> {
                             IdentityRequest identityRequest = request.body(IdentityRequest.class);
-                            String identityId = request.param("identityId").orElse(null);
+                            String identityId = request.param("identityId").orElseThrow();
                             identityRequest.setId(Long.valueOf(requireNonNull(identityId)));
                             IdentityResponse identityResponse = identityService.createOrUpdate(identityRequest);
                             return ServerResponse
-                                    .status(FOUND)
+                                    .status(OK)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/identities/by-id?identityId=" + identityResponse.getId()))
                                     .body(identityResponse);
                         }
                 )
@@ -148,9 +145,8 @@ public class IdentityRouter {
                             identityRequest.setId(Long.valueOf(requireNonNull(identityId)));
                             IdentityResponse identityResponse = identityService.createOrUpdateAsync(identityRequest).get();
                             return ServerResponse
-                                    .status(FOUND)
+                                    .status(OK)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/identities/by-id/async?identityId=" + identityResponse.getId()))
                                     .body(identityResponse);
                         }
                 )

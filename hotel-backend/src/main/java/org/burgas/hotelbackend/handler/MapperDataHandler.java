@@ -1,4 +1,4 @@
-package org.burgas.hotelbackend.handle;
+package org.burgas.hotelbackend.handler;
 
 import org.springframework.stereotype.Component;
 

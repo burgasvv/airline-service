@@ -91,7 +91,7 @@ public final class IdentityResponse implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(
-                new SimpleGrantedAuthority(authority.getAuthority())
+                new SimpleGrantedAuthority(this.authority.getAuthority())
         );
     }
 
@@ -122,7 +122,7 @@ public final class IdentityResponse implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled || !UserDetails.super.isEnabled();
+        return this.getEnabled() || !UserDetails.super.isEnabled();
     }
 
     @Override

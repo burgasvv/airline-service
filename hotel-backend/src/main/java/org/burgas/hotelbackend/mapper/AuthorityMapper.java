@@ -3,7 +3,7 @@ package org.burgas.hotelbackend.mapper;
 import org.burgas.hotelbackend.dto.AuthorityRequest;
 import org.burgas.hotelbackend.dto.AuthorityResponse;
 import org.burgas.hotelbackend.entity.Authority;
-import org.burgas.hotelbackend.handle.MapperDataHandler;
+import org.burgas.hotelbackend.handler.MapperDataHandler;
 import org.burgas.hotelbackend.repository.AuthorityRepository;
 import org.springframework.stereotype.Component;
 

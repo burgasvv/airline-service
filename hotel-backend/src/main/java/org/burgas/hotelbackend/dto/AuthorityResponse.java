@@ -1,9 +1,11 @@
 package org.burgas.hotelbackend.dto;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class AuthorityResponse {
+public final class AuthorityResponse implements GrantedAuthority {
 
     private Long id;
     private String name;
@@ -38,6 +40,11 @@ public final class AuthorityResponse {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    @Override
+    public String getAuthority() {
+        return getName();
     }
 
     public static final class Builder {

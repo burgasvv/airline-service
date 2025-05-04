@@ -1,16 +1,19 @@
-package org.burgas.excursionbackend.service;
+package org.burgas.hotelbackend.service;
 
-import org.burgas.excursionbackend.exception.IdentityNotFoundException;
-import org.burgas.excursionbackend.mapper.IdentityMapper;
-import org.burgas.excursionbackend.repository.IdentityRepository;
+import org.burgas.hotelbackend.exception.ImageNotFoundException;
+import org.burgas.hotelbackend.mapper.IdentityMapper;
+import org.burgas.hotelbackend.repository.IdentityRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.burgas.excursionbackend.message.IdentityMessages.IDENTITY_NOT_FOUND;
+import static org.burgas.hotelbackend.message.IdentityMessages.IDENTITY_NOT_FOUND;
+import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
 @Service
+@Transactional(readOnly = true, propagation = SUPPORTS)
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final IdentityRepository identityRepository;
@@ -25,6 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.identityRepository.findIdentityByEmail(username)
                 .map(this.identityMapper::toIdentityResponse)
-                .orElseThrow(() -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new ImageNotFoundException(IDENTITY_NOT_FOUND.getMessage()));
     }
 }

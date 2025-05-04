@@ -1,25 +1,36 @@
 
+### Authentication Requests
+
+###
+GET /authentication/csrf-token
+Host: localhost:9020
+
 ### Authority Requests
 
 ###
 GET /authorities
 Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
 
 ###
 GET /authorities/async
 Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
 
 ###
 GET /authorities/by-id?authorityId=1
 Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
 
 ###
 GET /authorities/by-id/async?authorityId=2
 Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
 
 ###
 POST /authorities/create-update
 Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
 Content-Type: application/json
 
 {
@@ -29,6 +40,7 @@ Content-Type: application/json
 ###
 POST /authorities/create-update/async
 Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
 Content-Type: application/json
 
 {
@@ -39,3 +51,56 @@ Content-Type: application/json
 ###
 DELETE /authorities/delete?authorityId=4
 Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+### Identity Requests
+
+###
+GET /identities
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /identities/async
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /identities/pages/1?size=2
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /identities/by-id?identityId=1
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /identities/by-id/async?identityId=2
+Host: localhost:9020
+Authorization: Basic employee@gmail.com employee
+
+###
+POST /identities/create
+Host: localhost:9020
+Content-Type: application/json
+
+{
+    "username": "burgvv",
+    "password": "cg3audio",
+    "email": "burgvv@gmail.com",
+    "phone": "9139035678",
+    "authorityId": 3
+}
+
+###
+POST /identities/update?identityId=4
+Host: localhost:9020
+Authorization: Basic burgvv@gmail.com cg3audio
+Content-Type: application/json
+
+{
+    "username": "burgasvv",
+    "email": "burgasvv@gmail.com",
+    "phone": "9139038923"
+}
