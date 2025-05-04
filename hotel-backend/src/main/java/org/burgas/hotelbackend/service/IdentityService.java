@@ -94,7 +94,9 @@ public class IdentityService {
         return of(this.identityMapper.toIdentity(identityRequest))
                 .map(this.identityRepository::save)
                 .map(this.identityMapper::toIdentityResponse)
-                .orElseThrow(() -> new IdentityNotCreatedException(IDENTITY_NOT_CREATED.getMessage()));
+                .orElseThrow(
+                        () -> new IdentityNotCreatedException(IDENTITY_NOT_CREATED.getMessage())
+                );
     }
 
     @Async(value = "taskExecutor")

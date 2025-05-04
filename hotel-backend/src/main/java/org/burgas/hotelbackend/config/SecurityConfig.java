@@ -43,7 +43,9 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/authentication/csrf-token",
 
-                                        "/identities/create"
+                                        "/identities/create", "/identities/create/async",
+
+                                        "/images/by-id", "/images/by-id/async"
                                 )
                                 .permitAll()
 
