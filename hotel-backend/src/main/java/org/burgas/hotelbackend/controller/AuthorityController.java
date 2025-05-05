@@ -3,20 +3,23 @@ package org.burgas.hotelbackend.controller;
 import org.burgas.hotelbackend.dto.AuthorityRequest;
 import org.burgas.hotelbackend.dto.AuthorityResponse;
 import org.burgas.hotelbackend.service.AuthorityService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.TEXT_PLAIN;
+import static org.springframework.http.MediaType.*;
 
 @Controller
 @RequestMapping(value = "/authorities")
@@ -38,10 +41,11 @@ public class AuthorityController {
 
     @GetMapping(value = "/async")
     public @ResponseBody ResponseEntity<List<AuthorityResponse>> getAllAuthoritiesAsync() throws ExecutionException, InterruptedException {
-        return ResponseEntity
-                .status(OK)
-                .contentType(APPLICATION_JSON)
-                .body(this.authorityService.findAllAsync().get());
+        List<AuthorityResponse> authorityResponses = this.authorityService.findAllAsync().get();
+        HttpHeaders httpHeaders = new HttpHeaders(
+                MultiValueMap.fromSingleValue(Map.of(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+        );
+        return new ResponseEntity<>(authorityResponses, httpHeaders, OK);
     }
 
     @GetMapping(value = "/by-id")
@@ -55,10 +59,10 @@ public class AuthorityController {
     @GetMapping(value = "/by-id/async")
     public @ResponseBody ResponseEntity<AuthorityResponse> getAuthorityByIdAsync(@RequestParam Long authorityId)
             throws ExecutionException, InterruptedException {
-        return ResponseEntity
-                .status(OK)
-                .contentType(APPLICATION_JSON)
-                .body(this.authorityService.findByIdAsync(authorityId).get());
+        AuthorityResponse authorityResponse = this.authorityService.findByIdAsync(authorityId).get();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Type", APPLICATION_JSON_VALUE);
+        return new ResponseEntity<>(authorityResponse, httpHeaders, OK);
     }
 
     @PostMapping(value = "/create-update")
@@ -92,9 +96,9 @@ public class AuthorityController {
 
     @DeleteMapping(value = "/delete/async")
     public @ResponseBody ResponseEntity<String> deleteAuthorityAsync(@RequestParam Long authorityId) throws ExecutionException, InterruptedException {
-        return ResponseEntity
-                .status(OK)
-                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
-                .body(this.authorityService.deleteByIdAsync(authorityId).get());
+        String answer = this.authorityService.deleteByIdAsync(authorityId).get();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Type", new MediaType(TEXT_PLAIN, UTF_8).getType());
+        return new ResponseEntity<>(answer, httpHeaders, OK);
     }
 }
