@@ -20,7 +20,10 @@ import static org.burgas.hotelbackend.message.IdentityMessages.IDENTITY_NOT_AUTH
 @WebFilter(
         urlPatterns = {
                 "/identities/by-id", "/identities/by-id/async",
-                "/identities/update", "/identities/update/async"
+                "/identities/update", "/identities/update/async",
+                "/identities/upload-image", "/identities/upload-image/async",
+                "/identities/change-image", "/identities/change-image/async",
+                "/identities/delete-image", "/identities/delete-image/async"
         }
 )
 public class IdentityWebFilter extends OncePerRequestFilter {

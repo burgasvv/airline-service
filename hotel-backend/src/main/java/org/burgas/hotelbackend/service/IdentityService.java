@@ -2,9 +2,12 @@ package org.burgas.hotelbackend.service;
 
 import org.burgas.hotelbackend.dto.IdentityRequest;
 import org.burgas.hotelbackend.dto.IdentityResponse;
+import org.burgas.hotelbackend.entity.Identity;
+import org.burgas.hotelbackend.entity.Image;
 import org.burgas.hotelbackend.exception.IdentityNotCreatedException;
 import org.burgas.hotelbackend.exception.IdentityNotFoundException;
 import org.burgas.hotelbackend.exception.IdentityStatusAlreadySetException;
+import org.burgas.hotelbackend.exception.ImageNotFoundException;
 import org.burgas.hotelbackend.mapper.IdentityMapper;
 import org.burgas.hotelbackend.repository.IdentityRepository;
 import org.slf4j.Logger;
@@ -15,15 +18,20 @@ import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static java.util.Optional.of;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.hotelbackend.log.IdentityLogs.*;
 import static org.burgas.hotelbackend.message.IdentityMessages.*;
+import static org.burgas.hotelbackend.message.ImageMessages.IMAGE_NOT_FOUND;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -35,10 +43,12 @@ public class IdentityService {
     private static final Logger log = LoggerFactory.getLogger(IdentityService.class);
     private final IdentityRepository identityRepository;
     private final IdentityMapper identityMapper;
+    private final ImageService imageService;
 
-    public IdentityService(IdentityRepository identityRepository, IdentityMapper identityMapper) {
+    public IdentityService(IdentityRepository identityRepository, IdentityMapper identityMapper, ImageService imageService) {
         this.identityRepository = identityRepository;
         this.identityMapper = identityMapper;
+        this.imageService = imageService;
     }
 
     public List<IdentityResponse> findAll() {
@@ -155,6 +165,173 @@ public class IdentityService {
                                         }
                                 )
                                 .findFirst()
+                                .orElseThrow(
+                                        () -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage())
+                                )
+                );
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String uploadIdentityImage(final Long identityId, final MultipartFile multipartFile) {
+        return this.identityRepository.findById(identityId)
+                .stream()
+                .peek(identity -> log.info(IDENTITY_FOUND_BEFORE_UPLOADING_IMAGE.getLogMessage(), identity))
+                .map(
+                        identity -> {
+                            Image image = this.imageService.uploadImage(multipartFile);
+                            identity.setImageId(image.getId());
+                            Identity saved = this.identityRepository.save(identity);
+                            return format(IDENTITY_IMAGE_UPLOADED.getMessage(), image.getId(), saved.getId());
+                        }
+                )
+                .findFirst()
+                .orElseThrow(
+                        () -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage())
+                );
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> uploadIdentityImageAsync(final Long identityId, final MultipartFile multipartFile) {
+        return supplyAsync(() -> this.identityRepository.findById(identityId))
+                .thenApplyAsync(
+                        identity -> identity.stream()
+                                .peek(foundIdentity -> log.info(IDENTITY_FOUND_BEFORE_UPLOADING_IMAGE_ASYNC.getLogMessage(), foundIdentity))
+                                .map(
+                                        foundIdentity -> {
+                                            try {
+                                                Image image = this.imageService.uploadImageAsync(multipartFile).get();
+                                                foundIdentity.setImageId(image.getId());
+                                                Identity saved = this.identityRepository.save(foundIdentity);
+                                                return format(IDENTITY_IMAGE_UPLOADED_ASYNC.getMessage(), image.getId(), saved.getId());
+
+                                            } catch (InterruptedException | ExecutionException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }
+                                )
+                                .findFirst()
+                                .orElseThrow(
+                                        () -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage())
+                                )
+                );
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String changeIdentityImage(final Long identityId, final MultipartFile multipartFile) {
+        return this.identityRepository.findById(identityId)
+                .stream()
+                .peek(identity -> log.info(IDENTITY_FOUND_BEFORE_CHANGING_IMAGE.getLogMessage(), identity))
+                .map(
+                        identity -> Optional.of(identity.getImageId())
+                                .map(
+                                        imageId -> {
+                                            Image image = this.imageService.changeImage(imageId, multipartFile);
+                                            return format(IDENTITY_IMAGE_CHANGED.getMessage(), image.getId(), identity.getId());
+                                        }
+                                )
+                                .orElseThrow(
+                                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
+                                )
+                )
+                .findFirst()
+                .orElseThrow(
+                        () -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage())
+                );
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> changeIdentityImageAsync(final Long identityId, final MultipartFile multipartFile) {
+        return supplyAsync(() -> this.identityRepository.findById(identityId))
+                .thenApplyAsync(
+                        identity -> identity.stream()
+                                .peek(foundIdentity -> log.info(IDENTITY_FOUND_BEFORE_CHANGING_IMAGE_ASYNC.getLogMessage(), foundIdentity))
+                                .findFirst()
+                                .map(
+                                        foundIdentity -> Optional.of(foundIdentity.getImageId())
+                                                .map(
+                                                        imageId -> {
+                                                            try {
+                                                                Image image = this.imageService.changeImageAsync(imageId, multipartFile).get();
+                                                                return format(IDENTITY_IMAGE_CHANGED_ASYNC.getMessage(), image.getId(), foundIdentity.getId());
+
+                                                            } catch (InterruptedException | ExecutionException e) {
+                                                                throw new RuntimeException(e);
+                                                            }
+                                                        }
+                                                )
+                                                .orElseThrow(
+                                                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
+                                                )
+                                )
+                                .orElseThrow(
+                                        () -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage())
+                                )
+                );
+    }
+
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public String deleteIdentityImage(final Long identityId) {
+        return this.identityRepository.findById(identityId)
+                .stream()
+                .peek(identity -> log.info(IDENTITY_FOUND_BEFORE_DELETING_IMAGE.getLogMessage(), identity))
+                .map(
+                        identity -> Optional.of(identity.getImageId())
+                                .map(
+                                        imageId -> {
+                                            this.imageService.deleteImage(imageId);
+                                            return format(IDENTITY_IMAGE_DELETED.getMessage(), identity.getId());
+                                        }
+                                )
+                                .orElseThrow(
+                                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
+                                )
+                )
+                .findFirst()
+                .orElseThrow(
+                        () -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage())
+                );
+    }
+
+    @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
+    public CompletableFuture<String> deleteIdentityImageAsync(final Long identityId) {
+        return supplyAsync(() -> this.identityRepository.findById(identityId))
+                .thenApplyAsync(
+                        identity -> identity.stream()
+                                .peek(foundIdentity -> log.info(IDENTITY_FOUND_BEFORE_DELETING_IMAGE_ASYNC.getLogMessage(), foundIdentity))
+                                .findFirst()
+                                .map(
+                                        foundIdentity -> Optional.of(foundIdentity.getImageId())
+                                                .map(
+                                                        imageId -> {
+                                                            this.imageService.deleteImageAsync(imageId);
+                                                            return format(IDENTITY_IMAGE_DELETED_ASYNC.getMessage(), foundIdentity.getId());
+                                                        }
+                                                )
+                                                .orElseThrow(
+                                                        () -> new ImageNotFoundException(IMAGE_NOT_FOUND.getMessage())
+                                                )
+                                )
                                 .orElseThrow(
                                         () -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage())
                                 )

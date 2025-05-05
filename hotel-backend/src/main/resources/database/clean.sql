@@ -1,2 +1,2 @@
 
-drop table if exists identity, authority;
+drop table if exists identity, authority, image;

@@ -2,6 +2,12 @@ package org.burgas.hotelbackend.message;
 
 public enum IdentityMessages {
 
+    IDENTITY_IMAGE_UPLOADED("Изображение с идентификатором %s было успешно загружено для пользователя с идентификатором %s"),
+    IDENTITY_IMAGE_UPLOADED_ASYNC("Изображение с идентификатором %s было успешно загружено для пользователя с идентификатором %s async"),
+    IDENTITY_IMAGE_CHANGED("Изображение с идентификатором %s было успешно изменено для пользователя с идентификатором %s"),
+    IDENTITY_IMAGE_CHANGED_ASYNC("Изображение с идентификатором %s было успешно изменено для пользователя с идентификатором %s async"),
+    IDENTITY_IMAGE_DELETED("Изображение было успешно удалено пользователем с идентификатором %s"),
+    IDENTITY_IMAGE_DELETED_ASYNC("Изображение было успешно удалено пользователем с идентификатором %s async"),
     IDENTITY_STATUS_ALREADY_SET("Статус пользователя уже установлен эквивалентен предложенному"),
     IDENTITY_ACTIVATED("Пользователь активирован"),
     IDENTITY_DEACTIVATED("Пользователь деактивирован"),
