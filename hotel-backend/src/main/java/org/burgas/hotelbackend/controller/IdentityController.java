@@ -154,7 +154,7 @@ public class IdentityController {
         if (requireNonNull(file.getContentType()).split("/")[0].equals("image")) {
             String answer = this.identityService.uploadIdentityImageAsync(identityId, file).get();
             HttpHeaders httpHeaders = new HttpHeaders(
-                    MultiValueMap.fromSingleValue(Map.of(CONTENT_TYPE, new MediaType(TEXT_PLAIN, UTF_8).getType()))
+                    MultiValueMap.fromSingleValue(Map.of(CONTENT_TYPE, TEXT_PLAIN_VALUE))
             );
             return new ResponseEntity<>(answer, httpHeaders, OK);
 
@@ -182,7 +182,7 @@ public class IdentityController {
         if (requireNonNull(file.getContentType()).split("/")[0].equals("image")) {
             String answer = this.identityService.changeIdentityImageAsync(identityId, file).get();
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add("Content-Type", new MediaType(TEXT_PLAIN, UTF_8).getType());
+            httpHeaders.add("Content-Type", TEXT_PLAIN_VALUE);
             return new ResponseEntity<>(answer, httpHeaders, OK);
 
         } else {
@@ -202,7 +202,7 @@ public class IdentityController {
     public @ResponseBody ResponseEntity<String> deleteIdentityImageAsync(@RequestParam Long identityId) throws ExecutionException, InterruptedException {
         String answer = this.identityService.deleteIdentityImageAsync(identityId).get();
         HttpHeaders httpHeaders = new HttpHeaders(
-                MultiValueMap.fromSingleValue(Map.of("Content-Type", new MediaType(TEXT_PLAIN, UTF_8).getType()))
+                MultiValueMap.fromSingleValue(Map.of("Content-Type", TEXT_PLAIN_VALUE))
         );
         return new ResponseEntity<>(answer, httpHeaders, OK);
     }
