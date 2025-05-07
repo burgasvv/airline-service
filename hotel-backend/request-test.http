@@ -1,11 +1,19 @@
 
+
+
 ### Authentication Requests
+
+
 
 ###
 GET /authentication/csrf-token
 Host: localhost:9020
 
+
+
 ### Authority Requests
+
+
 
 ###
 GET /authorities
@@ -53,7 +61,11 @@ DELETE /authorities/delete?authorityId=4
 Host: localhost:9020
 Authorization: Basic admin@gmail.com admin
 
+
+
 ### Identity Requests
+
+
 
 ###
 GET /identities
@@ -76,9 +88,9 @@ Host: localhost:9020
 Authorization: Basic admin@gmail.com admin
 
 ###
-GET /identities/by-id/async?identityId=2
+GET /identities/by-id/async?identityId=3
 Host: localhost:9020
-Authorization: Basic employee@gmail.com employee
+Authorization: Basic client@gmail.com client
 
 ###
 POST /identities/create
@@ -104,3 +116,124 @@ Content-Type: application/json
     "email": "burgasvv@gmail.com",
     "phone": "9139038923"
 }
+
+###
+PUT /identities/activate-deactivate?identityId=3&enable=true
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+
+
+### Country Requests
+
+
+
+###
+GET /countries
+Host: localhost:9020
+
+###
+GET /countries/pages/1?size=5
+Host: localhost:9020
+
+###
+GET /countries/async
+Host: localhost:9020
+
+###
+GET /countries/by-id?countryId=1
+Host: localhost:9020
+
+###
+GET /countries/by-id/async?countryId=2
+Host: localhost:9020
+
+###
+POST /countries/create-update
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "Испания",
+    "description": "Описание страны Испания"
+}
+
+###
+POST /countries/create-update/async
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 4,
+    "name": "Испания EDITED"
+}
+
+###
+DELETE /countries/delete?countryId=4
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+
+
+### City Requests
+
+
+
+###
+GET /cities
+Host: localhost:9020
+
+###
+GET /cities/async
+Host: localhost:9020
+
+###
+GET /cities/pages/1?size=3
+Host: localhost:9020
+
+###
+GET /cities/by-id?cityId=1
+Host: localhost:9020
+
+###
+GET /cities/by-id/async?cityId=2
+Host: localhost:9020
+
+###
+GET /cities/by-name?name=Шанхай
+Host: localhost:9020
+
+###
+GET /cities/by-name/async?name=Пекин
+Host: localhost:9020
+
+###
+POST /cities/create-update
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "Волгоград",
+    "description": "Описание города Волгоград",
+    "countryId": 1,
+    "capital": false
+}
+
+###
+POST /cities/create-update/async
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 7,
+    "description": "Описание города Волгоград EDITED"
+}
+
+###
+DELETE /cities/delete?cityId=7
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin

@@ -1,2 +1,3 @@
 
-drop table if exists room, room_type, filial, hotel, status, address, city, country, identity, authority, image;
+drop table if exists client_room, client, room, room_type, employee, position, filial_department, department,
+    filial, hotel, status, address, city, country, identity, authority, image;

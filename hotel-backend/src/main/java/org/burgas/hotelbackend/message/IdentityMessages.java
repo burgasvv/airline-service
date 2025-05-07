@@ -2,6 +2,7 @@ package org.burgas.hotelbackend.message;
 
 public enum IdentityMessages {
 
+    WRONG_ACTION_WITH_THIS_IDENTITY("Неверное воздействие с этим именем пользователя"),
     IDENTITY_IMAGE_UPLOADED("Изображение с идентификатором %s было успешно загружено для пользователя с идентификатором %s"),
     IDENTITY_IMAGE_UPLOADED_ASYNC("Изображение с идентификатором %s было успешно загружено для пользователя с идентификатором %s async"),
     IDENTITY_IMAGE_CHANGED("Изображение с идентификатором %s было успешно изменено для пользователя с идентификатором %s"),

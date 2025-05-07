@@ -68,4 +68,76 @@ public class GlobalExceptionHandler {
                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                 .body(exception.getMessage());
     }
+
+    @ExceptionHandler(IdentityNotCreatedException.class)
+    public ResponseEntity<String> handleIdentityNotCreatedException(final IdentityNotCreatedException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(IdentityStatusAlreadySetException.class)
+    public ResponseEntity<String> handleIdentityStatusAlreadySetException(final IdentityStatusAlreadySetException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(MultipartFileIsEmptyException.class)
+    public ResponseEntity<String> handleMultipartFileIsEmptyException(final MultipartFileIsEmptyException exception) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(WrongActionWithIdentityException.class)
+    public ResponseEntity<String> handleWrongActionWithIdentityException(final WrongActionWithIdentityException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(WrongContentTypeException.class)
+    public ResponseEntity<String> handleWrongContentTypeException(final WrongContentTypeException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(CountryNotCreatedOrUpdatedException.class)
+    public ResponseEntity<String> handleCountryNotCreatedOrUpdatedException(final CountryNotCreatedOrUpdatedException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(CountryNotFoundException.class)
+    public ResponseEntity<String> handleCountryNotFoundException(final CountryNotFoundException exception) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(CityNotCreatedOrUpdatedException.class)
+    public ResponseEntity<String> handleCityNotCreatedOrUpdatedException(final CityNotCreatedOrUpdatedException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(CityNotFoundException.class)
+    public ResponseEntity<String> handleCityNotFoundException(final CityNotFoundException exception) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
 }

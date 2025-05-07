@@ -45,7 +45,15 @@ public class SecurityConfig {
 
                                         "/identities/create", "/identities/create/async",
 
-                                        "/images/by-id", "/images/by-id/async"
+                                        "/images/by-id", "/images/by-id/async",
+
+                                        "/countries", "/countries/async", "/countries/pages/{page}",
+                                        "/countries/by-id", "/countries/by-id/async",
+                                        "/countries/by-name", "/countries/by-name/async",
+
+                                        "/cities", "/cities/async", "/cities/pages/{page}",
+                                        "/cities/by-id", "/cities/by-id/async",
+                                        "/cities/by-name", "/cities/by-name/async"
                                 )
                                 .permitAll()
 
@@ -65,7 +73,13 @@ public class SecurityConfig {
                                         "/authorities/delete", "/authorities/delete/async",
 
                                         "/identities", "/identities/async", "/identities/pages/{page}",
-                                        "/identities/by-id", "/identities/by-id/async"
+                                        "/identities/activate-deactivate", "/identities/activate-deactivate/async",
+
+                                        "/countries/create-update", "/countries/create-update/async",
+                                        "/countries/delete", "/countries/delete/async",
+
+                                        "/cities/create-update", "/cities/create-update/async",
+                                        "/cities/delete", "/cities/delete/async"
                                 )
                                 .hasAnyAuthority(ADMIN)
                 )
