@@ -121,7 +121,7 @@ public class CityController {
     public @ResponseBody ResponseEntity<String> deleteCityAsync(@RequestParam Long cityId) throws ExecutionException, InterruptedException {
         String answer = this.cityService.deleteByIdAsync(cityId).get();
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Type", APPLICATION_JSON_VALUE);
+        httpHeaders.add("Content-Type", TEXT_PLAIN_VALUE);
         return new ResponseEntity<>(answer, httpHeaders, OK);
     }
 }

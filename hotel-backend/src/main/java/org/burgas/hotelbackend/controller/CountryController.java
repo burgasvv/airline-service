@@ -122,7 +122,7 @@ public class CountryController {
     public @ResponseBody ResponseEntity<String> deleteCountryAsync(@RequestParam Long countryId) throws ExecutionException, InterruptedException {
         String answer = this.countryService.deleteByIdAsync(countryId).get();
         HttpHeaders httpHeaders = new HttpHeaders(
-                MultiValueMap.fromSingleValue(Map.of(CONTENT_TYPE, new MediaType(TEXT_PLAIN, UTF_8).getType()))
+                MultiValueMap.fromSingleValue(Map.of(CONTENT_TYPE, TEXT_PLAIN_VALUE))
         );
         return new ResponseEntity<>(answer, httpHeaders, OK);
     }

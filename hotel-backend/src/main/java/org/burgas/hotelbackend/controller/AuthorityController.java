@@ -98,7 +98,7 @@ public class AuthorityController {
     public @ResponseBody ResponseEntity<String> deleteAuthorityAsync(@RequestParam Long authorityId) throws ExecutionException, InterruptedException {
         String answer = this.authorityService.deleteByIdAsync(authorityId).get();
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Type", new MediaType(TEXT_PLAIN, UTF_8).getType());
+        httpHeaders.add("Content-Type", TEXT_PLAIN_VALUE);
         return new ResponseEntity<>(answer, httpHeaders, OK);
     }
 }
