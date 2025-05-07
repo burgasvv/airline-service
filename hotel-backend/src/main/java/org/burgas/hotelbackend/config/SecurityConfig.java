@@ -79,7 +79,12 @@ public class SecurityConfig {
                                         "/countries/delete", "/countries/delete/async",
 
                                         "/cities/create-update", "/cities/create-update/async",
-                                        "/cities/delete", "/cities/delete/async"
+                                        "/cities/delete", "/cities/delete/async",
+
+                                        "/addresses", "/addresses/async", "/addresses/pages/{page}",
+                                        "/addresses/by-id", "/addresses/by-id/async",
+                                        "/addresses/create-update", "/addresses/create-update/async",
+                                        "/addresses/delete", "/addresses/delete/async"
                                 )
                                 .hasAnyAuthority(ADMIN)
                 )
