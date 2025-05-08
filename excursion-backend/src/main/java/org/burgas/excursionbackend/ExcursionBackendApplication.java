@@ -3,13 +3,14 @@ package org.burgas.excursionbackend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.core.task.support.TaskExecutorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @EnableAsync
 @EnableScheduling
@@ -26,13 +27,7 @@ public class ExcursionBackendApplication {
     }
 
     @Bean
-    public Executor taskExecutor() {
-        ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-        threadPoolTaskExecutor.setVirtualThreads(true);
-        threadPoolTaskExecutor.setCorePoolSize(6);
-        threadPoolTaskExecutor.setMaxPoolSize(12);
-        threadPoolTaskExecutor.setQueueCapacity(1200);
-        threadPoolTaskExecutor.initialize();
-        return threadPoolTaskExecutor;
+    public AsyncTaskExecutor taskExecutor() {
+        return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
     }
 }

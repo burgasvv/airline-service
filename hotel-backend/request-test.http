@@ -237,3 +237,37 @@ Content-Type: application/json
 DELETE /cities/delete?cityId=7
 Host: localhost:9020
 Authorization: Basic admin@gmail.com admin
+
+
+
+### Hotel Requests
+
+
+
+###
+GET /hotels
+Host: localhost:9020
+
+###
+GET /hotels/async
+Host: localhost:9020
+
+###
+GET /hotels/pages/1?size=5
+Host: localhost:9020
+
+###
+GET /hotels/by-id?hotelId=1
+Host: localhost:9020
+
+###
+GET /hotels/by-id/async?hotelId=2
+Host: localhost:9020
+
+###
+GET /hotels/by-name?name=Marriot
+Host: localhost:9020
+
+###
+GET /hotels/by-name/async?name=Long River
+Host: localhost:9020

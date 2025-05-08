@@ -5,11 +5,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.core.task.support.TaskExecutorAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @SpringBootApplication
 @ServletComponentScan(
@@ -29,12 +30,7 @@ public class HotelBackendApplication {
     }
 
     @Bean
-    public Executor taskExecutor() {
-        ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-        threadPoolTaskExecutor.setVirtualThreads(true);
-        threadPoolTaskExecutor.setQueueCapacity(1200);
-        threadPoolTaskExecutor.setCorePoolSize(2);
-        threadPoolTaskExecutor.setMaxPoolSize(12);
-        return threadPoolTaskExecutor;
+    public AsyncTaskExecutor taskExecutor() {
+        return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
     }
 }

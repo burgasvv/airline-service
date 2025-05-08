@@ -156,4 +156,12 @@ public class GlobalExceptionHandler {
                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                 .body(exception.getMessage());
     }
+
+    @ExceptionHandler(HotelNotFoundException.class)
+    public ResponseEntity<String> handleHotelNotFoundException(final HotelNotFoundException exception) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
 }

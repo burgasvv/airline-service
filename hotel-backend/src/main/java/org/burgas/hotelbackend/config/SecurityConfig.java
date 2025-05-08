@@ -53,7 +53,11 @@ public class SecurityConfig {
 
                                         "/cities", "/cities/async", "/cities/pages/{page}",
                                         "/cities/by-id", "/cities/by-id/async",
-                                        "/cities/by-name", "/cities/by-name/async"
+                                        "/cities/by-name", "/cities/by-name/async",
+
+                                        "/hotels", "/hotels/async", "/hotels/pages/{page}",
+                                        "/hotels/by-id", "/hotels/by-id/async",
+                                        "/hotels/by-name", "/hotels/by-name/async"
                                 )
                                 .permitAll()
 
@@ -65,6 +69,15 @@ public class SecurityConfig {
                                         "/identities/delete-image", "/identities/delete-image/async"
                                 )
                                 .hasAnyAuthority(ADMIN, EMPLOYEE, CLIENT)
+
+                                .requestMatchers(
+                                        "/hotels/create-update", "/hotels/create-update/async",
+                                        "/hotels/delete", "/hotels/delete/async",
+                                        "/hotels/upload-image", "/hotels/upload-image/async",
+                                        "/hotels/change-image", "/hotels/change-image/async",
+                                        "/hotels/delete-image", "/hotels/delete-image/async"
+                                )
+                                .hasAnyAuthority(ADMIN, EMPLOYEE)
 
                                 .requestMatchers(
                                         "/authorities", "/authorities/async",
