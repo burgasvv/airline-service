@@ -1,6 +1,5 @@
 package org.burgas.hotelbackend.dto;
 
-import org.burgas.hotelbackend.entity.Image;
 import org.burgas.hotelbackend.entity.Status;
 
 import java.util.Objects;
