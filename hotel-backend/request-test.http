@@ -271,3 +271,59 @@ Host: localhost:9020
 ###
 GET /hotels/by-name/async?name=Long River
 Host: localhost:9020
+
+
+
+### Filial Requests
+
+
+
+###
+GET /filials
+Host: localhost:9020
+
+###
+GET /filials/async
+Host: localhost:9020
+
+###
+GET /filials/pages/1?size=3
+Host: localhost:9020
+
+###
+GET /filials/by-id?filialId=1
+Host: localhost:9020
+
+###
+GET /filials/by-id/async?filialId=2
+Host: localhost:9020
+
+###
+POST /filials/create-update
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "hotelId": 3,
+    "address": {
+        "cityId": 1,
+        "street": "Сокольники",
+        "house": "34/1"
+    },
+    "luxRooms": 15,
+    "economyRooms": 150,
+    "departmentIds": [1, 2, 3, 4, 5, 6, 11]
+}
+
+###
+POST /filials/create-update/async
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 6,
+    "luxRooms": 20,
+    "economyRooms": 200
+}

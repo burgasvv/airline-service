@@ -57,7 +57,10 @@ public class SecurityConfig {
 
                                         "/hotels", "/hotels/async", "/hotels/pages/{page}",
                                         "/hotels/by-id", "/hotels/by-id/async",
-                                        "/hotels/by-name", "/hotels/by-name/async"
+                                        "/hotels/by-name", "/hotels/by-name/async",
+
+                                        "/filials", "/filials/async", "/filials/pages/{page}",
+                                        "/filials/by-id", "/filials/by-id/async"
                                 )
                                 .permitAll()
 
@@ -75,7 +78,13 @@ public class SecurityConfig {
                                         "/hotels/delete", "/hotels/delete/async",
                                         "/hotels/upload-image", "/hotels/upload-image/async",
                                         "/hotels/change-image", "/hotels/change-image/async",
-                                        "/hotels/delete-image", "/hotels/delete-image/async"
+                                        "/hotels/delete-image", "/hotels/delete-image/async",
+
+                                        "/filials/create-update", "/filials/create-update/async",
+                                        "/filials/delete", "/filials/delete/async",
+                                        "/filials/upload-image", "/filials/upload-image/async",
+                                        "/filials/change-image", "/filials/change-image/async",
+                                        "/filials/delete-image", "/filials/delete-image/async"
                                 )
                                 .hasAnyAuthority(ADMIN, EMPLOYEE)
 
