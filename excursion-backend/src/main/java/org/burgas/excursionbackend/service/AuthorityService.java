@@ -41,7 +41,7 @@ public class AuthorityService {
         return this.authorityRepository.findAll()
                 .stream()
                 .peek(authority -> log.info(AUTHORITY_FOUND_ALL.getLogMessage(), authority))
-                .map(this.authorityMapper::toAuthorityResponse)
+                .map(this.authorityMapper::toResponse)
                 .peek(authorityResponse -> log.info(TRANSFORM_TO_AUTHORITY_RESPONSE.getLogMessage(), authorityResponse))
                 .collect(Collectors.toList());
     }
@@ -53,7 +53,7 @@ public class AuthorityService {
                         authorities -> authorities
                                 .stream()
                                 .peek(authority -> log.info(AUTHORITY_FOUND_ASYNC.getLogMessage(), authority))
-                                .map(this.authorityMapper::toAuthorityResponse)
+                                .map(this.authorityMapper::toResponse)
                                 .peek(authorityResponse -> log.info(TRANSFORM_TO_AUTHORITY_RESPONSE_ASYNC.getLogMessage(), authorityResponse))
                                 .collect(Collectors.toList())
                 );
@@ -64,14 +64,14 @@ public class AuthorityService {
                 .stream()
                 .peek(authority -> log.info(AUTHORITY_FOUND_BY_ID.getLogMessage(), authority))
                 .findFirst()
-                .map(this.authorityMapper::toAuthorityResponse)
+                .map(this.authorityMapper::toResponse)
                 .orElseGet(AuthorityResponse::new);
     }
 
     @Async(value = "taskExecutor")
     public CompletableFuture<AuthorityResponse> findByIdAsync(final String authorityId) {
         return supplyAsync(() -> this.authorityRepository.findById(Long.valueOf(authorityId)))
-                .thenApplyAsync(authority -> authority.map(this.authorityMapper::toAuthorityResponse))
+                .thenApplyAsync(authority -> authority.map(this.authorityMapper::toResponse))
                 .thenApplyAsync(authorityResponse -> authorityResponse.orElseGet(AuthorityResponse::new));
     }
 
@@ -80,9 +80,9 @@ public class AuthorityService {
             rollbackFor = Exception.class
     )
     public AuthorityResponse createOrUpdate(final AuthorityRequest authorityRequest) {
-        return ofNullable(this.authorityMapper.toAuthority(authorityRequest))
+        return ofNullable(this.authorityMapper.toEntity(authorityRequest))
                 .map(this.authorityRepository::save)
-                .map(this.authorityMapper::toAuthorityResponse)
+                .map(this.authorityMapper::toResponse)
                 .orElseThrow(
                         () -> new AuthorityNotCreatedException(AUTHORITY_NOT_CREATED.getMessage())
                 );
@@ -94,9 +94,9 @@ public class AuthorityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<AuthorityResponse> createOrUpdateAsync(final AuthorityRequest authorityRequest) {
-        return supplyAsync(() -> this.authorityMapper.toAuthority(authorityRequest))
+        return supplyAsync(() -> this.authorityMapper.toEntity(authorityRequest))
                 .thenApplyAsync(this.authorityRepository::save)
-                .thenApplyAsync(this.authorityMapper::toAuthorityResponse);
+                .thenApplyAsync(this.authorityMapper::toResponse);
     }
 
     @Transactional(

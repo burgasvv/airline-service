@@ -3,9 +3,13 @@ package org.burgas.hotelbackend.handler;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface MapperDataHandler {
+public interface MapperDataHandler<Request, Entity, Response> {
 
-    default <T> T getData(T first, T second) {
+    default <Data> Data getData(Data first, Data second) {
         return first == null || first == "" ? second : first;
     }
+
+    Entity toEntity(Request request);
+
+    Response toResponse(Entity entity);
 }

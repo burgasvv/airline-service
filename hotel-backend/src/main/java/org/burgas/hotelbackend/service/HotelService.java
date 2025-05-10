@@ -52,7 +52,7 @@ public class HotelService {
         return this.hotelRepository.findAll()
                 .stream()
                 .peek(hotel -> log.info(HOTEL_FOUND_ALL.getLogMessage(), hotel))
-                .map(this.hotelMapper::toHotelResponse)
+                .map(this.hotelMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -62,21 +62,21 @@ public class HotelService {
                 .thenApplyAsync(
                         hotels -> hotels.stream()
                                 .peek(hotel -> log.info(HOTEL_FOUND_ALL_ASYNC.getLogMessage(), hotel))
-                                .map(this.hotelMapper::toHotelResponse)
+                                .map(this.hotelMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
 
     public Page<HotelResponse> findAllPages(final Integer page, final Integer size) {
         return this.hotelRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "name"))
-                .map(this.hotelMapper::toHotelResponse);
+                .map(this.hotelMapper::toResponse);
     }
 
     public HotelResponse findById(final Long hotelId) {
         return this.hotelRepository.findById(hotelId)
                 .stream()
                 .peek(hotel -> log.info(HOTEL_FOUND_BY_ID.getLogMessage(), hotel))
-                .map(this.hotelMapper::toHotelResponse)
+                .map(this.hotelMapper::toResponse)
                 .findFirst()
                 .orElseGet(HotelResponse::new);
     }
@@ -87,7 +87,7 @@ public class HotelService {
                 .thenApplyAsync(
                         hotel -> hotel.stream()
                                 .peek(foundHotel -> log.info(HOTEL_FOUND_BY_ID_ASYNC.getLogMessage(), foundHotel))
-                                .map(this.hotelMapper::toHotelResponse)
+                                .map(this.hotelMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(HotelResponse::new)
                 );
@@ -97,7 +97,7 @@ public class HotelService {
         return this.hotelRepository.findHotelByName(name)
                 .stream()
                 .peek(hotel -> log.info(HOTEL_FOUND_BY_NAME.getLogMessage(), hotel))
-                .map(this.hotelMapper::toHotelResponse)
+                .map(this.hotelMapper::toResponse)
                 .findFirst()
                 .orElseGet(HotelResponse::new);
     }
@@ -108,7 +108,7 @@ public class HotelService {
                 .thenApplyAsync(
                         hotel -> hotel.stream()
                                 .peek(foundHotel -> log.info(HOTEL_FOUND_BY_NAME_ASYNC.getLogMessage(), foundHotel))
-                                .map(this.hotelMapper::toHotelResponse)
+                                .map(this.hotelMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(HotelResponse::new)
                 );
@@ -119,11 +119,11 @@ public class HotelService {
             rollbackFor = Exception.class
     )
     public HotelResponse createOrUpdate(final HotelRequest hotelRequest) {
-        return of(this.hotelMapper.toHotel(hotelRequest))
+        return of(this.hotelMapper.toEntity(hotelRequest))
                 .map(this.hotelRepository::save)
                 .stream()
                 .peek(hotel -> log.info(HOTEL_CREATED_OR_UPDATED.getLogMessage(), hotel))
-                .map(this.hotelMapper::toHotelResponse)
+                .map(this.hotelMapper::toResponse)
                 .findFirst()
                 .orElseGet(HotelResponse::new);
     }
@@ -134,13 +134,13 @@ public class HotelService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<HotelResponse> createOrUpdateAsync(final HotelRequest hotelRequest) {
-        return supplyAsync(() -> this.hotelMapper.toHotel(hotelRequest))
+        return supplyAsync(() -> this.hotelMapper.toEntity(hotelRequest))
                 .thenApplyAsync(this.hotelRepository::save)
                 .thenApplyAsync(
                         hotel -> of(hotel)
                                 .stream()
                                 .peek(foundHotel -> log.info(HOTEL_CREATED_OR_UPDATED_ASYNC.getLogMessage(), foundHotel))
-                                .map(this.hotelMapper::toHotelResponse)
+                                .map(this.hotelMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(HotelResponse::new)
                 );

@@ -51,7 +51,7 @@ public class CountryService {
         return this.countryRepository.findAll()
                 .stream()
                 .peek(country -> log.info(COUNTRY_FOUND_ALL.getLogMessage(), country))
-                .map(this.countryMapper::toCountryResponse)
+                .map(this.countryMapper::toResponse)
                 .toList();
     }
 
@@ -61,21 +61,21 @@ public class CountryService {
                 .thenApplyAsync(
                         countries -> countries.stream()
                                 .peek(country -> log.info(COUNTRY_FOUND_ALL_ASYNC.getLogMessage(), country))
-                                .map(this.countryMapper::toCountryResponse)
+                                .map(this.countryMapper::toResponse)
                                 .toList()
                 );
     }
 
     public Page<CountryResponse> findAllPages(final Integer page, final Integer size) {
         return this.countryRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "name"))
-                .map(this.countryMapper::toCountryResponse);
+                .map(this.countryMapper::toResponse);
     }
 
     public CountryResponse findById(final String countryId) {
         return this.countryRepository.findById(Long.valueOf(countryId))
                 .stream()
                 .peek(country -> log.info(COUNTRY_FOUND_BY_ID.getLogMessage(), country))
-                .map(this.countryMapper::toCountryResponse)
+                .map(this.countryMapper::toResponse)
                 .findFirst()
                 .orElseGet(CountryResponse::new);
     }
@@ -86,7 +86,7 @@ public class CountryService {
                 .thenApplyAsync(
                         country -> country.stream()
                                 .peek(foundCountry -> log.info(COUNTRY_FOUND_BY_ID_ASYNC.getLogMessage(), foundCountry))
-                                .map(this.countryMapper::toCountryResponse)
+                                .map(this.countryMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(CountryResponse::new)
                 );
@@ -97,9 +97,9 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public CountryResponse createOrUpdate(final CountryRequest countryRequest) {
-        return ofNullable(this.countryMapper.toCountry(countryRequest))
+        return ofNullable(this.countryMapper.toEntity(countryRequest))
                 .map(this.countryRepository::save)
-                .map(this.countryMapper::toCountryResponse)
+                .map(this.countryMapper::toResponse)
                 .orElseGet(CountryResponse::new);
     }
 
@@ -109,9 +109,9 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<CountryResponse> createOrUpdateAsync(final CountryRequest countryRequest) {
-        return supplyAsync(() -> this.countryMapper.toCountry(countryRequest))
+        return supplyAsync(() -> this.countryMapper.toEntity(countryRequest))
                 .thenApplyAsync(this.countryRepository::save)
-                .thenApplyAsync(this.countryMapper::toCountryResponse);
+                .thenApplyAsync(this.countryMapper::toResponse);
     }
 
     @Transactional(

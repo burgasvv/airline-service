@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Component
-public final class ExcursionMapper implements MapperDataHandler {
+public final class ExcursionMapper implements MapperDataHandler<ExcursionRequest, Excursion, ExcursionResponse> {
 
     private final ExcursionRepository excursionRepository;
     private final GuideRepository guideRepository;
@@ -34,7 +34,16 @@ public final class ExcursionMapper implements MapperDataHandler {
         this.excursionSightRepository = excursionSightRepository;
     }
 
-    public Excursion toExcursionSave(final ExcursionRequest excursionRequest) {
+    private void saveExcursionSights(ExcursionRequest excursionRequest, Excursion saved) {
+        excursionRequest.getSights().forEach(
+                sightId -> this.excursionSightRepository.save(
+                        ExcursionSight.builder().excursionId(saved.getId()).sightId(sightId).build()
+                )
+        );
+    }
+
+    @Override
+    public Excursion toEntity(ExcursionRequest excursionRequest) {
         Long excursionId = this.getData(excursionRequest.getId(), 0L);
         return this.excursionRepository.findById(excursionId)
                 .map(
@@ -81,15 +90,8 @@ public final class ExcursionMapper implements MapperDataHandler {
                 );
     }
 
-    private void saveExcursionSights(ExcursionRequest excursionRequest, Excursion saved) {
-        excursionRequest.getSights().forEach(
-                sightId -> this.excursionSightRepository.save(
-                        ExcursionSight.builder().excursionId(saved.getId()).sightId(sightId).build()
-                )
-        );
-    }
-
-    public ExcursionResponse toExcursionResponse(final Excursion excursion) {
+    @Override
+    public ExcursionResponse toResponse(Excursion excursion) {
         Guide guide = this.guideRepository.findById(excursion.getGuideId()).orElseGet(Guide::new);
         return ExcursionResponse.builder()
                 .id(excursion.getId())
@@ -105,7 +107,7 @@ public final class ExcursionMapper implements MapperDataHandler {
                 .sights(
                         this.sightRepository.findSightsByExcursionId(excursion.getId())
                                 .stream()
-                                .map(this.sightMapper::toSightResponse)
+                                .map(this.sightMapper::toResponse)
                                 .toList()
                 )
                 .build();

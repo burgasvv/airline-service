@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.identityRepository.findIdentityByEmail(username)
-                .map(this.identityMapper::toIdentityResponse)
+                .map(this.identityMapper::toResponse)
                 .orElseThrow(() -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage()));
     }
 }

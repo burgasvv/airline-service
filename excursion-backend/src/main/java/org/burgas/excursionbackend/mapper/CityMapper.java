@@ -10,7 +10,7 @@ import org.burgas.excursionbackend.repository.CountryRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class CityMapper implements MapperDataHandler {
+public final class CityMapper implements MapperDataHandler<CityRequest, City, CityResponse> {
 
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
@@ -22,7 +22,8 @@ public final class CityMapper implements MapperDataHandler {
         this.countryMapper = countryMapper;
     }
 
-    public City toCity(final CityRequest cityRequest) {
+    @Override
+    public City toEntity(CityRequest cityRequest) {
         Long cityId = this.getData(cityRequest.getId(), 0L);
         return this.cityRepository.findById(cityId)
                 .map(
@@ -46,7 +47,8 @@ public final class CityMapper implements MapperDataHandler {
                 );
     }
 
-    public CityResponse toCityResponse(final City city) {
+    @Override
+    public CityResponse toResponse(City city) {
         return CityResponse.builder()
                 .id(city.getId())
                 .name(city.getName())
@@ -54,7 +56,7 @@ public final class CityMapper implements MapperDataHandler {
                 .population(city.getPopulation())
                 .country(
                         this.countryRepository.findById(city.getCountryId())
-                                .map(this.countryMapper::toCountryResponse)
+                                .map(this.countryMapper::toResponse)
                                 .orElseGet(CountryResponse::new)
                 )
                 .capital(city.getCapital())

@@ -11,7 +11,7 @@ import org.burgas.excursionbackend.repository.LanguageRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class GuideMapper implements MapperDataHandler {
+public final class GuideMapper implements MapperDataHandler<GuideRequest, Guide, GuideResponse> {
 
     private final GuideRepository guideRepository;
     private final LanguageRepository languageRepository;
@@ -23,7 +23,8 @@ public final class GuideMapper implements MapperDataHandler {
         this.guideLanguageRepository = guideLanguageRepository;
     }
 
-    public Guide toGuideSave(final GuideRequest guideRequest) {
+    @Override
+    public Guide toEntity(GuideRequest guideRequest) {
         Long guideId = this.getData(guideRequest.getId(), 0L);
         return this.guideRepository.findById(guideId)
                 .map(
@@ -73,7 +74,8 @@ public final class GuideMapper implements MapperDataHandler {
                 );
     }
 
-    public GuideResponse toGuideResponse(final Guide guide) {
+    @Override
+    public GuideResponse toResponse(Guide guide) {
         return GuideResponse.builder()
                 .id(guide.getId())
                 .name(guide.getName())

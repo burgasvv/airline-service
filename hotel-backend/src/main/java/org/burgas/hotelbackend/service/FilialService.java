@@ -55,7 +55,7 @@ public class FilialService {
         return this.filialRepository.findAll()
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_ALL.getLogMessage(), filial))
-                .map(this.filialMapper::toFilialResponse)
+                .map(this.filialMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -65,21 +65,21 @@ public class FilialService {
                 .thenApplyAsync(
                         filials -> filials.stream()
                                 .peek(filial -> log.info(FILIAL_FOUND_ALL_ASYNC.getLogMessage(), filial))
-                                .map(this.filialMapper::toFilialResponse)
+                                .map(this.filialMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
 
     public Page<FilialResponse> findAllPages(final Integer page, final Integer size) {
         return this.filialRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "id"))
-                .map(this.filialMapper::toFilialResponse);
+                .map(this.filialMapper::toResponse);
     }
 
     public FilialResponse findById(final Long filialId) {
         return this.filialRepository.findById(filialId)
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_BY_ID.getLogMessage(), filial))
-                .map(this.filialMapper::toFilialResponse)
+                .map(this.filialMapper::toResponse)
                 .findFirst()
                 .orElseGet(FilialResponse::new);
     }
@@ -90,7 +90,7 @@ public class FilialService {
                 .thenApplyAsync(
                         filial -> filial.stream()
                                 .peek(foundFilial -> log.info(FILIAL_FOUND_BY_ID_ASYNC.getLogMessage(), foundFilial))
-                                .map(this.filialMapper::toFilialResponse)
+                                .map(this.filialMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(FilialResponse::new)
                 );
@@ -101,10 +101,10 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public FilialResponse createOrUpdate(final FilialRequest filialRequest) {
-        return of(this.filialMapper.toFilialSave(filialRequest))
+        return of(this.filialMapper.toEntity(filialRequest))
                 .stream()
                 .peek(filial -> log.info(FILIAL_CREATED_OR_UPDATED.getLogMessage(), filial))
-                .map(this.filialMapper::toFilialResponse)
+                .map(this.filialMapper::toResponse)
                 .findFirst()
                 .orElseThrow(
                         () -> new FilialNotFoundException(FILIAL_NOT_FOUND.getMessage())
@@ -117,11 +117,11 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<FilialResponse> createOrUpdateAsync(final FilialRequest filialRequest) {
-        return supplyAsync(() -> this.filialMapper.toFilialSave(filialRequest))
+        return supplyAsync(() -> this.filialMapper.toEntity(filialRequest))
                 .thenApplyAsync(
                         filial -> of(filial).stream()
                                 .peek(createdOrUpdatedFilial -> log.info(FILIAL_CREATED_OR_UPDATED_ASYNC.getLogMessage(), createdOrUpdatedFilial))
-                                .map(this.filialMapper::toFilialResponse)
+                                .map(this.filialMapper::toResponse)
                                 .findFirst()
                                 .orElseThrow(
                                         () -> new FilialNotFoundException(FILIAL_NOT_FOUND.getMessage())

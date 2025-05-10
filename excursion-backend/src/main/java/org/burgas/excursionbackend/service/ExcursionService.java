@@ -98,7 +98,7 @@ public class ExcursionService {
         return this.excursionRepository.findAll()
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL.getLogMessage(), excursion))
-                .map(this.excursionMapper::toExcursionResponse)
+                .map(this.excursionMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -108,21 +108,21 @@ public class ExcursionService {
                 .thenApplyAsync(
                         excursions -> excursions.stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_ASYNC.getLogMessage(), excursion))
-                                .map(this.excursionMapper::toExcursionResponse)
+                                .map(this.excursionMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
 
     public Page<ExcursionResponse> findAllPages(final Integer page, final Integer size) {
         return this.excursionRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "name"))
-                .map(this.excursionMapper::toExcursionResponse);
+                .map(this.excursionMapper::toResponse);
     }
 
     public List<ExcursionResponse> findAllByGuideId(final String guideId) {
         return this.excursionRepository.findExcursionsByGuideId(Long.valueOf(guideId))
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_GUIDE_ID.getLogMessage(), excursion))
-                .map(this.excursionMapper::toExcursionResponse)
+                .map(this.excursionMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -132,7 +132,7 @@ public class ExcursionService {
                 .thenApplyAsync(
                         excursions -> excursions.stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_GUIDE_ID_ASYNC.getLogMessage(), excursion))
-                                .map(this.excursionMapper::toExcursionResponse)
+                                .map(this.excursionMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
@@ -141,7 +141,7 @@ public class ExcursionService {
         return this.excursionRepository.findExcursionsByIdentityId(Long.valueOf(identityId))
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_IDENTITY_ID.getLogMessage(), excursion))
-                .map(this.excursionMapper::toExcursionResponse)
+                .map(this.excursionMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -151,7 +151,7 @@ public class ExcursionService {
                 .thenApplyAsync(
                         excursions -> excursions.stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_IDENTITY_ID_ASYNC.getLogMessage(), excursion))
-                                .map(this.excursionMapper::toExcursionResponse)
+                                .map(this.excursionMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
@@ -175,7 +175,7 @@ public class ExcursionService {
         return this.excursionRepository.findById(Long.valueOf(excursionId))
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_BY_ID.getLogMessage(), excursion))
-                .map(this.excursionMapper::toExcursionResponse)
+                .map(this.excursionMapper::toResponse)
                 .findFirst()
                 .orElseGet(ExcursionResponse::new);
     }
@@ -186,7 +186,7 @@ public class ExcursionService {
                 .thenApplyAsync(
                         excursion -> excursion.stream()
                                 .peek(logExcursion -> log.info(EXCURSION_BY_ID_ASYNC.getLogMessage(), logExcursion))
-                                .map(this.excursionMapper::toExcursionResponse)
+                                .map(this.excursionMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(ExcursionResponse::new)
                 );
@@ -242,7 +242,7 @@ public class ExcursionService {
                                 .filter(checkExcursion -> !checkExcursion.getPassed())
                                 .orElseThrow(() -> new ExcursionPassedException(EXCURSION_PASSED.getMessage()))
                 )
-                .map(this.excursionMapper::toExcursionResponse)
+                .map(this.excursionMapper::toResponse)
                 .map(
                         excursionResponse -> {
                             HttpSession session = httpServletRequest.getSession();
@@ -277,7 +277,7 @@ public class ExcursionService {
         )
                 .thenApplyAsync(
                         excursion -> excursion
-                                .map(this.excursionMapper::toExcursionResponse)
+                                .map(this.excursionMapper::toResponse)
                                 .map(
                                         excursionResponse -> {
                                             HttpSession session = httpServletRequest.getSession();
@@ -305,11 +305,11 @@ public class ExcursionService {
             rollbackFor = Exception.class
     )
     public ExcursionResponse createOrUpdate(final ExcursionRequest excursionRequest) {
-        return of(this.excursionMapper.toExcursionSave(excursionRequest))
+        return of(this.excursionMapper.toEntity(excursionRequest))
                 .map(this.excursionRepository::save)
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_SAVED.getLogMessage(), excursion))
-                .map(this.excursionMapper::toExcursionResponse)
+                .map(this.excursionMapper::toResponse)
                 .findFirst()
                 .orElseGet(ExcursionResponse::new);
     }

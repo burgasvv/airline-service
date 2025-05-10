@@ -10,7 +10,7 @@ import org.burgas.excursionbackend.repository.SightRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class SightMapper implements MapperDataHandler {
+public final class SightMapper implements MapperDataHandler<SightRequest, Sight, SightResponse> {
 
     private final SightRepository sightRepository;
     private final CityRepository cityRepository;
@@ -22,7 +22,8 @@ public final class SightMapper implements MapperDataHandler {
         this.cityMapper = cityMapper;
     }
 
-    public Sight toSight(final SightRequest sightRequest) {
+    @Override
+    public Sight toEntity(SightRequest sightRequest) {
         Long sightId = this.getData(sightRequest.getId(), 0L);
         return this.sightRepository.findById(sightId)
                 .map(
@@ -42,14 +43,15 @@ public final class SightMapper implements MapperDataHandler {
                 );
     }
 
-    public SightResponse toSightResponse(final Sight sight) {
+    @Override
+    public SightResponse toResponse(Sight sight) {
         return SightResponse.builder()
                 .id(sight.getId())
                 .name(sight.getName())
                 .description(sight.getDescription())
                 .city(
                         this.cityRepository.findById(sight.getCityId())
-                                .map(this.cityMapper::toCityResponse)
+                                .map(this.cityMapper::toResponse)
                                 .orElseGet(CityResponse::new)
                 )
                 .imageId(sight.getImageId())

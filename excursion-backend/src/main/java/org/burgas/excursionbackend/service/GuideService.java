@@ -50,7 +50,7 @@ public class GuideService {
         return this.guideRepository.findAll()
                 .stream()
                 .peek(guide -> log.info(GUIDE_FOUND_ALL.getLogMessage(), guide))
-                .map(this.guideMapper::toGuideResponse)
+                .map(this.guideMapper::toResponse)
                 .toList();
     }
 
@@ -60,7 +60,7 @@ public class GuideService {
                 .thenApplyAsync(
                         guides -> guides.stream()
                                 .peek(guide -> log.info(GUIDE_FOUND_ALL_ASYNC.getLogMessage(), guide))
-                                .map(this.guideMapper::toGuideResponse)
+                                .map(this.guideMapper::toResponse)
                                 .toList()
                 );
     }
@@ -68,14 +68,14 @@ public class GuideService {
     public Page<GuideResponse> findAllPages(final Integer page, final Integer size) {
         return this.guideRepository.findAll(PageRequest.of(page - 1, size)
                         .withSort(Sort.Direction.ASC, "name", "surname", "patronymic"))
-                .map(this.guideMapper::toGuideResponse);
+                .map(this.guideMapper::toResponse);
     }
 
     public GuideResponse findById(final String guideId) {
         return this.guideRepository.findById(Long.valueOf(guideId))
                 .stream()
                 .peek(guide -> log.info(GUIDE_FOUND_BY_ID.getLogMessage(), guide))
-                .map(this.guideMapper::toGuideResponse)
+                .map(this.guideMapper::toResponse)
                 .findFirst()
                 .orElseGet(GuideResponse::new);
     }
@@ -86,7 +86,7 @@ public class GuideService {
                 .thenApplyAsync(
                         guide -> guide.stream()
                                 .peek(logGuide -> log.info(GUIDE_FOUND_BY_ID_ASYNC.getLogMessage(), logGuide))
-                                .map(this.guideMapper::toGuideResponse)
+                                .map(this.guideMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(GuideResponse::new)
                 );
@@ -97,8 +97,8 @@ public class GuideService {
             rollbackFor = Exception.class
     )
     public GuideResponse createOrUpdate(final GuideRequest guideRequest) {
-        return ofNullable(this.guideMapper.toGuideSave(guideRequest))
-                .map(this.guideMapper::toGuideResponse)
+        return ofNullable(this.guideMapper.toEntity(guideRequest))
+                .map(this.guideMapper::toResponse)
                 .orElseGet(GuideResponse::new);
     }
 
@@ -108,8 +108,8 @@ public class GuideService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<GuideResponse> createOrUpdateAsync(final GuideRequest guideRequest) {
-        return supplyAsync(() -> this.guideMapper.toGuideSave(guideRequest))
-                .thenApplyAsync(this.guideMapper::toGuideResponse);
+        return supplyAsync(() -> this.guideMapper.toEntity(guideRequest))
+                .thenApplyAsync(this.guideMapper::toResponse);
     }
 
     @Transactional(

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Component
-public final class IdentityMapper implements MapperDataHandler {
+public final class IdentityMapper implements MapperDataHandler<IdentityRequest, Identity, IdentityResponse> {
 
     private final IdentityRepository identityRepository;
     private final AuthorityRepository authorityRepository;
@@ -32,7 +32,8 @@ public final class IdentityMapper implements MapperDataHandler {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Identity toIdentity(final IdentityRequest identityRequest) {
+    @Override
+    public Identity toEntity(IdentityRequest identityRequest) {
         Long identityId = this.getData(identityRequest.getId(), 0L);
         String password = identityRequest.getPassword() == null ? "" : identityRequest.getPassword();
         return this.identityRepository.findById(identityId)
@@ -61,7 +62,8 @@ public final class IdentityMapper implements MapperDataHandler {
                 );
     }
 
-    public IdentityResponse toIdentityResponse(final Identity identity) {
+    @Override
+    public IdentityResponse toResponse(Identity identity) {
         return IdentityResponse.builder()
                 .id(identity.getId())
                 .username(identity.getUsername())
@@ -72,7 +74,7 @@ public final class IdentityMapper implements MapperDataHandler {
                 .registeredAt(identity.getRegisteredAt().format(ofPattern("dd.MM.yyyy, hh:mm")))
                 .authority(
                         this.authorityRepository.findById(identity.getAuthorityId())
-                                .map(this.authorityMapper::toAuthorityResponse)
+                                .map(this.authorityMapper::toResponse)
                                 .orElseGet(AuthorityResponse::new)
                 )
                 .imageId(identity.getImageId())

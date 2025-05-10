@@ -3,9 +3,13 @@ package org.burgas.excursionbackend.handler;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface MapperDataHandler {
+public interface MapperDataHandler<Request, Entity, Response> {
 
-    default <T> T getData(final T first, final T second) {
+    default <Data> Data getData(final Data first, final Data second) {
         return first == null || first == "" ? second : first;
     }
+
+    Entity toEntity(Request request);
+
+    Response toResponse(Entity entity);
 }

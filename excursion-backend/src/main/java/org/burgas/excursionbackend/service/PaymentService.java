@@ -48,7 +48,7 @@ public class PaymentService {
         return this.paymentRepository.findPaymentsByIdentityId(Long.valueOf(identityId))
                 .stream()
                 .peek(payment -> log.info(PAYMENT_FOUND_BY_IDENTITY_ID.getLogMessage(), payment))
-                .map(this.paymentMapper::toPaymentResponse)
+                .map(this.paymentMapper::toResponse)
                 .toList();
     }
 
@@ -61,7 +61,7 @@ public class PaymentService {
         return this.paymentRepository.findById(Long.valueOf(paymentId))
                 .stream()
                 .peek(payment -> log.info(PAYMENT_FOUND_BY_ID.getLogMessage(), payment))
-                .map(this.paymentMapper::toPaymentResponse)
+                .map(this.paymentMapper::toResponse)
                 .findFirst()
                 .orElseGet(PaymentResponse::new);
     }
@@ -82,9 +82,9 @@ public class PaymentService {
                             this.excursionService.addExcursionByIdentityId(
                                     String.valueOf(paymentRequest.getExcursionId()), String.valueOf(identityResponse.getId())
                             );
-                            return of(this.paymentMapper.toPayment(paymentRequest))
+                            return of(this.paymentMapper.toEntity(paymentRequest))
                                     .map(this.paymentRepository::save)
-                                    .map(this.paymentMapper::toPaymentResponse)
+                                    .map(this.paymentMapper::toResponse)
                                     .orElseGet(PaymentResponse::new);
                         }
                 )
@@ -106,9 +106,9 @@ public class PaymentService {
                             this.excursionService.addExcursionByIdentityIdAsync(
                                     String.valueOf(paymentRequest.getExcursionId()), String.valueOf(identityResponse.getId())
                             );
-                            return of(this.paymentMapper.toPayment(paymentRequest))
+                            return of(this.paymentMapper.toEntity(paymentRequest))
                                     .map(this.paymentRepository::save)
-                                    .map(this.paymentMapper::toPaymentResponse)
+                                    .map(this.paymentMapper::toResponse)
                                     .orElseGet(PaymentResponse::new);
                         }
                 );

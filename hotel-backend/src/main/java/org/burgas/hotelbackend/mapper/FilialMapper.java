@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class FilialMapper implements MapperDataHandler {
+public final class FilialMapper implements MapperDataHandler<FilialRequest, Filial, FilialResponse> {
 
     private final FilialRepository filialRepository;
     private final HotelRepository hotelRepository;
@@ -35,7 +35,39 @@ public final class FilialMapper implements MapperDataHandler {
         this.filialDepartmentRepository = filialDepartmentRepository;
     }
 
-    public Filial toFilialSave(final FilialRequest filialRequest) {
+    private @Nullable Address getAddress(FilialRequest filialRequest) {
+        Address address = null;
+        if (filialRequest.getAddress() != null && filialRequest.getAddress().getId() != null) {
+            address = this.addressRepository.findById(filialRequest.getAddress().getId()).orElse(null);
+
+        } else if (filialRequest.getAddress() != null) {
+            address = this.addressRepository.save(
+                    this.addressMapper.toEntity(filialRequest.getAddress())
+            );
+        }
+        return address;
+    }
+
+    private void handleFilialDepartment(FilialRequest filialRequest, Filial filial) {
+        if (filialRequest.getDepartmentIds() != null && !filialRequest.getDepartmentIds().isEmpty()) {
+            this.filialDepartmentRepository.deleteFilialDepartmentsByFilialId(filial.getId());
+            filialRequest.getDepartmentIds().forEach(
+                    departmentId -> this.filialDepartmentRepository.save(
+                            FilialDepartment.builder()
+                                    .filialId(filial.getId())
+                                    .departmentId(departmentId)
+                                    .build()
+                    )
+            );
+        }
+
+        if (filialRequest.getDepartmentIds() != null && filialRequest.getDepartmentIds().isEmpty()) {
+            this.filialDepartmentRepository.deleteFilialDepartmentsByFilialId(filial.getId());
+        }
+    }
+
+    @Override
+    public Filial toEntity(FilialRequest filialRequest) {
         Long filialId = this.getData(filialRequest.getId(), 0L);
         return this.filialRepository.findById(filialId)
                 .map(
@@ -77,48 +109,18 @@ public final class FilialMapper implements MapperDataHandler {
                 );
     }
 
-    private @Nullable Address getAddress(FilialRequest filialRequest) {
-        Address address = null;
-        if (filialRequest.getAddress() != null && filialRequest.getAddress().getId() != null) {
-            address = this.addressRepository.findById(filialRequest.getAddress().getId()).orElse(null);
-
-        } else if (filialRequest.getAddress() != null) {
-            address = this.addressRepository.save(
-                    this.addressMapper.toAddress(filialRequest.getAddress())
-            );
-        }
-        return address;
-    }
-
-    private void handleFilialDepartment(FilialRequest filialRequest, Filial filial) {
-        if (filialRequest.getDepartmentIds() != null && !filialRequest.getDepartmentIds().isEmpty()) {
-            this.filialDepartmentRepository.deleteFilialDepartmentsByFilialId(filial.getId());
-            filialRequest.getDepartmentIds().forEach(
-                    departmentId -> this.filialDepartmentRepository.save(
-                            FilialDepartment.builder()
-                                    .filialId(filial.getId())
-                                    .departmentId(departmentId)
-                                    .build()
-                    )
-            );
-        }
-
-        if (filialRequest.getDepartmentIds() != null && filialRequest.getDepartmentIds().isEmpty()) {
-            this.filialDepartmentRepository.deleteFilialDepartmentsByFilialId(filial.getId());
-        }
-    }
-
-    public FilialResponse toFilialResponse(final Filial filial) {
+    @Override
+    public FilialResponse toResponse(Filial filial) {
         return FilialResponse.builder()
                 .id(filial.getId())
                 .hotel(
                         this.hotelRepository.findById(filial.getHotelId())
-                                .map(this.hotelMapper::toHotelResponse)
+                                .map(this.hotelMapper::toResponse)
                                 .orElse(null)
                 )
                 .address(
                         this.addressRepository.findById(filial.getAddressId())
-                                .map(this.addressMapper::toAddressResponse)
+                                .map(this.addressMapper::toResponse)
                                 .orElse(null)
                 )
                 .luxRooms(filial.getLuxRooms())

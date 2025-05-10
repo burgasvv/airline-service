@@ -44,13 +44,13 @@ public class CityService {
         return this.cityRepository.findAll()
                 .stream()
                 .peek(city -> log.info(CITY_FOUND_ALL.getLogMessage(), city))
-                .map(this.cityMapper::toCityResponse)
+                .map(this.cityMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     public Page<CityResponse> findAllPages(final Integer page, final Integer size) {
         return this.cityRepository.findAll(PageRequest.of(page - 1, size).withSort(Sort.Direction.ASC, "name"))
-                .map(this.cityMapper::toCityResponse);
+                .map(this.cityMapper::toResponse);
     }
 
     @Async(value = "taskExecutor")
@@ -59,7 +59,7 @@ public class CityService {
                 .thenApplyAsync(
                         cities -> cities.stream()
                                 .peek(foundCity -> log.info(CITY_FOUND_ALL_ASYNC.getLogMessage(), foundCity))
-                                .map(this.cityMapper::toCityResponse)
+                                .map(this.cityMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
@@ -68,7 +68,7 @@ public class CityService {
         return this.cityRepository.findById(cityId)
                 .stream()
                 .peek(city -> log.info(CITY_FOUND_BY_ID.getLogMessage(), city))
-                .map(this.cityMapper::toCityResponse)
+                .map(this.cityMapper::toResponse)
                 .findFirst()
                 .orElseGet(CityResponse::new);
     }
@@ -79,7 +79,7 @@ public class CityService {
                 .thenApplyAsync(
                         city -> city.stream()
                                 .peek(foundCity -> log.info(CITY_FOUND_BY_ID_ASYNC.getLogMessage(), foundCity))
-                                .map(this.cityMapper::toCityResponse)
+                                .map(this.cityMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(CityResponse::new)
                 );
@@ -89,7 +89,7 @@ public class CityService {
         return this.cityRepository.findCityByName(name)
                 .stream()
                 .peek(city -> log.info(CITY_FOUND_BY_NAME.getLogMessage(), city))
-                .map(this.cityMapper::toCityResponse)
+                .map(this.cityMapper::toResponse)
                 .findFirst()
                 .orElseGet(CityResponse::new);
     }
@@ -100,7 +100,7 @@ public class CityService {
                 .thenApplyAsync(
                         city -> city.stream()
                                 .peek(foundCity -> log.info(CITY_FOUND_BY_NAME_ASYNC.getLogMessage(), foundCity))
-                                .map(this.cityMapper::toCityResponse)
+                                .map(this.cityMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(CityResponse::new)
                 );
@@ -111,11 +111,11 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public CityResponse createOrUpdate(final CityRequest cityRequest) {
-        return of(this.cityMapper.toCity(cityRequest))
+        return of(this.cityMapper.toEntity(cityRequest))
                 .map(this.cityRepository::save)
                 .stream()
                 .peek(city -> log.info(CITY_CREATED_OR_UPDATED.getLogMessage(), city))
-                .map(this.cityMapper::toCityResponse)
+                .map(this.cityMapper::toResponse)
                 .findFirst()
                 .orElseThrow(
                         () -> new CityNotCreatedOrUpdatedException(CITY_NOT_CREATED_OR_UPDATED.getMessage())
@@ -128,12 +128,12 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<CityResponse> createOrUpdateAsync(final CityRequest cityRequest) {
-        return supplyAsync(() -> this.cityMapper.toCity(cityRequest))
+        return supplyAsync(() -> this.cityMapper.toEntity(cityRequest))
                 .thenApplyAsync(this.cityRepository::save)
                 .thenApplyAsync(
                         city -> of(city).stream()
                                 .peek(createdOrUpdatedCity -> log.info(CITY_CREATED_OR_UPDATED_ASYNC.getLogMessage(), createdOrUpdatedCity))
-                                .map(this.cityMapper::toCityResponse)
+                                .map(this.cityMapper::toResponse)
                                 .findFirst()
                                 .orElseThrow(
                                         () -> new CityNotCreatedOrUpdatedException(CITY_NOT_CREATED_OR_UPDATED.getMessage())

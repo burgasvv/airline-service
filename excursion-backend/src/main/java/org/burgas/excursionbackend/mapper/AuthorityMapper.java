@@ -8,7 +8,7 @@ import org.burgas.excursionbackend.repository.AuthorityRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class AuthorityMapper implements MapperDataHandler {
+public final class AuthorityMapper implements MapperDataHandler<AuthorityRequest, Authority, AuthorityResponse> {
 
     private final AuthorityRepository authorityRepository;
 
@@ -16,7 +16,8 @@ public final class AuthorityMapper implements MapperDataHandler {
         this.authorityRepository = authorityRepository;
     }
 
-    public Authority toAuthority(final AuthorityRequest authorityRequest) {
+    @Override
+    public Authority toEntity(AuthorityRequest authorityRequest) {
         Long authorityId = this.getData(authorityRequest.getId(), 0L);
         return this.authorityRepository.findById(authorityId)
                 .map(
@@ -32,7 +33,8 @@ public final class AuthorityMapper implements MapperDataHandler {
                 );
     }
 
-    public AuthorityResponse toAuthorityResponse(final Authority authority) {
+    @Override
+    public AuthorityResponse toResponse(Authority authority) {
         return AuthorityResponse.builder()
                 .id(authority.getId())
                 .name(authority.getName())

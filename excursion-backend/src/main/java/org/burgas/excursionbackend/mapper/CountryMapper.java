@@ -8,7 +8,7 @@ import org.burgas.excursionbackend.repository.CountryRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class CountryMapper implements MapperDataHandler {
+public final class CountryMapper implements MapperDataHandler<CountryRequest, Country, CountryResponse> {
 
     private final CountryRepository countryRepository;
 
@@ -16,7 +16,8 @@ public final class CountryMapper implements MapperDataHandler {
         this.countryRepository = countryRepository;
     }
 
-    public Country toCountry(final CountryRequest countryRequest) {
+    @Override
+    public Country toEntity(CountryRequest countryRequest) {
         Long countryId = this.getData(countryRequest.getId(), 0L);
         return this.countryRepository.findById(countryId)
                 .map(
@@ -36,7 +37,8 @@ public final class CountryMapper implements MapperDataHandler {
                 );
     }
 
-    public CountryResponse toCountryResponse(final Country country) {
+    @Override
+    public CountryResponse toResponse(Country country) {
         return CountryResponse.builder()
                 .id(country.getId())
                 .name(country.getName())

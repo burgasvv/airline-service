@@ -327,3 +327,71 @@ Content-Type: application/json
     "luxRooms": 20,
     "economyRooms": 200
 }
+
+
+
+### Department Requests
+
+
+
+###
+GET /departments
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /departments/async
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /departments/pages/1?size=5
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /departments/by-filial?filialId=1
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /departments/by-filial/async?filialId=3
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /departments/by-id?departmentId=1
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /departments/by-id/async?departmentId=3
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /departments/create-update
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "New Department",
+    "description": "New description for the new department"
+}
+
+###
+POST /departments/create-update/async
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 12,
+    "name": "New Department EDITED"
+}
+
+###
+DELETE /departments/delete?departmentId=12
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin

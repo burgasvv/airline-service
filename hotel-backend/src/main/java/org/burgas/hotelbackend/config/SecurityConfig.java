@@ -84,7 +84,14 @@ public class SecurityConfig {
                                         "/filials/delete", "/filials/delete/async",
                                         "/filials/upload-image", "/filials/upload-image/async",
                                         "/filials/change-image", "/filials/change-image/async",
-                                        "/filials/delete-image", "/filials/delete-image/async"
+                                        "/filials/delete-image", "/filials/delete-image/async",
+
+                                        "/departments", "/departments/async", "/departments/pages/{page}",
+                                        "/departments/by-filial", "/departments/by-filial/async",
+                                        "/departments/by-id", "/departments/by-id/async",
+                                        "/departments/by-name", "/departments/by-name/async",
+                                        "/departments/create-update", "/departments/create-update/async",
+                                        "/departments/delete", "/departments/delete/async"
                                 )
                                 .hasAnyAuthority(ADMIN, EMPLOYEE)
 

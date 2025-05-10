@@ -10,10 +10,11 @@ import org.burgas.excursionbackend.repository.PaymentRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Component
-public final class PaymentMapper implements MapperDataHandler {
+public final class PaymentMapper implements MapperDataHandler<PaymentRequest, Payment, PaymentResponse> {
 
     private final PaymentRepository paymentRepository;
     private final IdentityRepository identityRepository;
@@ -32,7 +33,8 @@ public final class PaymentMapper implements MapperDataHandler {
         this.excursionMapper = excursionMapper;
     }
 
-    public Payment toPayment(final PaymentRequest paymentRequest) {
+    @Override
+    public Payment toEntity(PaymentRequest paymentRequest) {
         Long paymentId = this.getData(paymentRequest.getId(), 0L);
         return this.paymentRepository.findById(paymentId)
                 .map(
@@ -52,20 +54,21 @@ public final class PaymentMapper implements MapperDataHandler {
                 );
     }
 
-    public PaymentResponse toPaymentResponse(final Payment payment) {
+    @Override
+    public PaymentResponse toResponse(Payment payment) {
         return PaymentResponse.builder()
                 .id(payment.getId())
                 .identity(
                         this.identityRepository.findById(payment.getIdentityId())
-                                .map(this.identityMapper::toIdentityResponse)
+                                .map(this.identityMapper::toResponse)
                                 .orElse(null)
                 )
                 .excursion(
                         this.excursionRepository.findById(payment.getExcursionId())
-                                .map(this.excursionMapper::toExcursionResponse)
+                                .map(this.excursionMapper::toResponse)
                                 .orElse(null)
                 )
-                .payedAt(payment.getPayedAt().format(DateTimeFormatter.ofPattern("dd.MM.yyyy, hh:mm:ss")))
+                .payedAt(payment.getPayedAt().format(ofPattern("dd.MM.yyyy, hh:mm:ss")))
                 .build();
     }
 }

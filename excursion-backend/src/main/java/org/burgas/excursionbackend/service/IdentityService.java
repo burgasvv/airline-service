@@ -55,7 +55,7 @@ public class IdentityService {
         return this.identityRepository.findAll()
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_OF_ALL.getLogMessage(), identity))
-                .map(this.identityMapper::toIdentityResponse)
+                .map(this.identityMapper::toResponse)
                 .toList();
     }
 
@@ -65,21 +65,21 @@ public class IdentityService {
                 .thenApplyAsync(
                         identities -> identities.stream()
                                 .peek(identity -> log.info(IDENTITY_FOUND_OF_ALL_ASYNC.getLogMessage(), identity))
-                                .map(this.identityMapper::toIdentityResponse)
+                                .map(this.identityMapper::toResponse)
                                 .toList()
                 );
     }
 
     public Page<IdentityResponse> findAllPages(final Integer page, final Integer size) {
         return this.identityRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "username"))
-                .map(this.identityMapper::toIdentityResponse);
+                .map(this.identityMapper::toResponse);
     }
 
     public List<IdentityResponse> findAllByExcursionId(final String excursionId) {
         return this.identityRepository.findIdentitiesByExcursionId(Long.valueOf(excursionId))
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_OF_ALL_BY_EXCURSION_ID.getLogMessage(), identity))
-                .map(this.identityMapper::toIdentityResponse)
+                .map(this.identityMapper::toResponse)
                 .toList();
     }
 
@@ -89,7 +89,7 @@ public class IdentityService {
                 .thenApplyAsync(
                         identities -> identities.stream()
                                 .peek(identity -> log.info(IDENTITY_FOUND_OF_ALL_BY_EXCURSION_ID_ASYNC.getLogMessage(), identity))
-                                .map(this.identityMapper::toIdentityResponse)
+                                .map(this.identityMapper::toResponse)
                                 .toList()
                 );
     }
@@ -98,7 +98,7 @@ public class IdentityService {
         return this.identityRepository.findById(Long.valueOf(identityId))
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BY_ID.getLogMessage(), identity))
-                .map(this.identityMapper::toIdentityResponse)
+                .map(this.identityMapper::toResponse)
                 .findFirst()
                 .orElseGet(IdentityResponse::new);
     }
@@ -107,7 +107,7 @@ public class IdentityService {
         return this.identityRepository.findById(Long.valueOf(identityId))
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BY_ID.getLogMessage(), identity))
-                .map(this.identityMapper::toIdentityResponse)
+                .map(this.identityMapper::toResponse)
                 .findFirst()
                 .orElseThrow(() -> new IdentityNotFoundException(IDENTITY_NOT_FOUND.getMessage()));
     }
@@ -118,7 +118,7 @@ public class IdentityService {
                 .thenApplyAsync(
                         identity -> identity.stream()
                                 .peek(foundIdentity -> log.info(IDENTITY_FOUND_BY_ID_ASYNC.getLogMessage(), foundIdentity))
-                                .map(this.identityMapper::toIdentityResponse)
+                                .map(this.identityMapper::toResponse)
                                 .findFirst()
                 )
                 .thenApplyAsync(identityResponse -> identityResponse.orElseGet(IdentityResponse::new));
@@ -129,11 +129,11 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public IdentityResponse createOrUpdate(final IdentityRequest identityRequest) {
-        return ofNullable(this.identityMapper.toIdentity(identityRequest))
+        return ofNullable(this.identityMapper.toEntity(identityRequest))
                 .map(this.identityRepository::save)
                 .stream()
                 .peek(identity -> log.info(IDENTITY_SAVED.getLogMessage(), identity))
-                .map(this.identityMapper::toIdentityResponse)
+                .map(this.identityMapper::toResponse)
                 .findFirst()
                 .orElseGet(IdentityResponse::new);
     }
@@ -144,9 +144,9 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<IdentityResponse> createOrUpdateAsync(final IdentityRequest identityRequest) {
-        return supplyAsync(() -> this.identityMapper.toIdentity(identityRequest))
+        return supplyAsync(() -> this.identityMapper.toEntity(identityRequest))
                 .thenApplyAsync(this.identityRepository::save)
-                .thenApplyAsync(this.identityMapper::toIdentityResponse);
+                .thenApplyAsync(this.identityMapper::toResponse);
     }
 
     @Transactional(

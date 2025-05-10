@@ -44,7 +44,7 @@ public class AddressService {
         return this.addressRepository.findAll()
                 .stream()
                 .peek(address -> log.info(ADDRESS_FOUND_ALL.getLogMessage(), address))
-                .map(this.addressMapper::toAddressResponse)
+                .map(this.addressMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -54,21 +54,21 @@ public class AddressService {
                 .thenApplyAsync(
                         addresses -> addresses.stream()
                                 .peek(address -> log.info(ADDRESS_FOUND_ALL_ASYNC.getLogMessage(), address))
-                                .map(this.addressMapper::toAddressResponse)
+                                .map(this.addressMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
 
     public Page<AddressResponse> findAllPages(final Integer page, final Integer size) {
         return this.addressRepository.findAll(PageRequest.of(page - 1, size).withSort(Sort.Direction.ASC, "id"))
-                .map(this.addressMapper::toAddressResponse);
+                .map(this.addressMapper::toResponse);
     }
 
     public AddressResponse findById(final Long addressId) {
         return this.addressRepository.findById(addressId)
                 .stream()
                 .peek(address -> log.info(ADDRESS_FOUND_BY_ID.getLogMessage(), address))
-                .map(this.addressMapper::toAddressResponse)
+                .map(this.addressMapper::toResponse)
                 .findFirst()
                 .orElseGet(AddressResponse::new);
     }
@@ -79,7 +79,7 @@ public class AddressService {
                 .thenApplyAsync(
                         address -> address.stream()
                                 .peek(foundAddress -> log.info(ADDRESS_FOUND_BY_ID_ASYNC.getLogMessage(), foundAddress))
-                                .map(this.addressMapper::toAddressResponse)
+                                .map(this.addressMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(AddressResponse::new)
                 );
@@ -90,11 +90,11 @@ public class AddressService {
             rollbackFor = Exception.class
     )
     public AddressResponse createOrUpdate(final AddressRequest addressRequest) {
-        return Optional.of(this.addressMapper.toAddress(addressRequest))
+        return Optional.of(this.addressMapper.toEntity(addressRequest))
                 .map(this.addressRepository::save)
                 .stream()
                 .peek(address -> log.info(ADDRESS_CREATE_OR_UPDATE.getLogMessage(), address))
-                .map(this.addressMapper::toAddressResponse)
+                .map(this.addressMapper::toResponse)
                 .findFirst()
                 .orElseThrow(
                         () -> new AddressNotCreatedOrUpdatedException(ADDRESS_NOT_CREATED_OR_UPDATED.getMessage())
@@ -107,13 +107,13 @@ public class AddressService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<AddressResponse> createOrUpdateAsync(final AddressRequest addressRequest) {
-        return supplyAsync(() -> this.addressMapper.toAddress(addressRequest))
+        return supplyAsync(() -> this.addressMapper.toEntity(addressRequest))
                 .thenApplyAsync(this.addressRepository::save)
                 .thenApplyAsync(
                         address -> Optional.of(address)
                                 .stream()
                                 .peek(foundAddress -> log.info(ADDRESS_CREATE_OR_UPDATE_ASYNC.getLogMessage(), foundAddress))
-                                .map(this.addressMapper::toAddressResponse)
+                                .map(this.addressMapper::toResponse)
                                 .findFirst()
                                 .orElseThrow(
                                         () -> new AddressNotCreatedOrUpdatedException(ADDRESS_NOT_CREATED_OR_UPDATED.getMessage())

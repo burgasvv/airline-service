@@ -52,7 +52,7 @@ public class SightService {
         return this.sightRepository.findAll()
                 .stream()
                 .peek(sight -> log.info(SIGHT_FOUND_ALL.getLogMessage(), sight))
-                .map(this.sightMapper::toSightResponse)
+                .map(this.sightMapper::toResponse)
                 .collect(Collectors.toSet());
     }
 
@@ -62,21 +62,21 @@ public class SightService {
                 .thenApplyAsync(
                         sights -> sights.stream()
                                 .peek(sight -> log.info(SIGHT_FOUND_ALL_ASYNC.getLogMessage(), sight))
-                                .map(this.sightMapper::toSightResponse)
+                                .map(this.sightMapper::toResponse)
                                 .collect(Collectors.toSet())
                 );
     }
 
     public Page<SightResponse> findAllPages(final Integer page, final Integer size) {
         return this.sightRepository.findAll(PageRequest.of(page - 1, size).withSort(Sort.Direction.ASC, "name"))
-                .map(this.sightMapper::toSightResponse);
+                .map(this.sightMapper::toResponse);
     }
 
     public SightResponse findById(final String sightId) {
         return this.sightRepository.findById(Long.valueOf(sightId))
                 .stream()
                 .peek(sight -> log.info(SIGHT_FOUND_BY_ID.getLogMessage(), sight))
-                .map(this.sightMapper::toSightResponse)
+                .map(this.sightMapper::toResponse)
                 .findFirst()
                 .orElseGet(SightResponse::new);
     }
@@ -87,7 +87,7 @@ public class SightService {
                 .thenApplyAsync(
                         sight -> sight.stream()
                                 .peek(foundSight -> log.info(SIGHT_FOUND_BY_ID_ASYNC.getLogMessage(), foundSight))
-                                .map(this.sightMapper::toSightResponse)
+                                .map(this.sightMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(SightResponse::new)
                 );
@@ -98,9 +98,9 @@ public class SightService {
             rollbackFor = Exception.class
     )
     public SightResponse createOrUpdate(final SightRequest sightRequest) {
-        return ofNullable(this.sightMapper.toSight(sightRequest))
+        return ofNullable(this.sightMapper.toEntity(sightRequest))
                 .map(this.sightRepository::save)
-                .map(this.sightMapper::toSightResponse)
+                .map(this.sightMapper::toResponse)
                 .orElseThrow(() -> new SightSaveOrTransformException(SIGHT_SAVE_OR_TRANSFORM.getMessage()));
     }
 
@@ -110,9 +110,9 @@ public class SightService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<SightResponse> createOrUpdateAsync(final SightRequest sightRequest) {
-        return supplyAsync(() -> this.sightMapper.toSight(sightRequest))
+        return supplyAsync(() -> this.sightMapper.toEntity(sightRequest))
                 .thenApplyAsync(this.sightRepository::save)
-                .thenApplyAsync(this.sightMapper::toSightResponse);
+                .thenApplyAsync(this.sightMapper::toResponse);
     }
 
     @Transactional(

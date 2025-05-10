@@ -9,7 +9,7 @@ import org.burgas.hotelbackend.repository.StatusRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class HotelMapper implements MapperDataHandler {
+public final class HotelMapper implements MapperDataHandler<HotelRequest, Hotel, HotelResponse> {
 
     private final HotelRepository hotelRepository;
     private final StatusRepository statusRepository;
@@ -19,7 +19,8 @@ public final class HotelMapper implements MapperDataHandler {
         this.statusRepository = statusRepository;
     }
 
-    public Hotel toHotel(final HotelRequest hotelRequest) {
+    @Override
+    public Hotel toEntity(HotelRequest hotelRequest) {
         Long hotelId = this.getData(hotelRequest.getId(), 0L);
         return this.hotelRepository.findById(hotelId)
                 .map(
@@ -41,7 +42,8 @@ public final class HotelMapper implements MapperDataHandler {
                 );
     }
 
-    public HotelResponse toHotelResponse(final Hotel hotel) {
+    @Override
+    public HotelResponse toResponse(Hotel hotel) {
         return HotelResponse.builder()
                 .id(hotel.getId())
                 .name(hotel.getName())
