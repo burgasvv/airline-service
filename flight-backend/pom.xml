@@ -11,8 +11,8 @@
     <groupId>org.burgas</groupId>
     <artifactId>flight-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ticket-service</name>
-    <description>ticket-service</description>
+    <name>flight-backend</name>
+    <description>flight-backend</description>
     <url/>
     <licenses>
         <license/>

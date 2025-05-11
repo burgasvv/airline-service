@@ -95,6 +95,7 @@ create table if not exists employee (
     patronymic varchar not null ,
     about varchar not null ,
     passport varchar not null ,
+    identity_id bigint references identity(id) on delete set null on update cascade ,
     filial_id bigint references filial(id) on delete set null on update cascade ,
     department_id bigint references department(id) on delete set null on update cascade ,
     position_id bigint references position(id) on delete set null on update cascade ,

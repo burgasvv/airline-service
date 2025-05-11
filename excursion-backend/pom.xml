@@ -11,8 +11,8 @@
     <groupId>org.burgas</groupId>
     <artifactId>excursion-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>excursion-service</name>
-    <description>excursion-service</description>
+    <name>excursion-backend</name>
+    <description>excursion-backend</description>
     <url/>
     <licenses>
         <license/>
