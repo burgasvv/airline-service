@@ -6,9 +6,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("unused")
-public final class IdentityResponse implements UserDetails {
+public final class IdentityResponse extends Response implements UserDetails {
 
     private Long id;
     private AuthorityResponse authority;
@@ -87,6 +88,20 @@ public final class IdentityResponse implements UserDetails {
 
     public Long getImageId() {
         return imageId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        IdentityResponse that = (IdentityResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(authority, that.authority) && Objects.equals(username, that.username) &&
+               Objects.equals(password, that.password) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone) &&
+               Objects.equals(registeredAt, that.registeredAt) && Objects.equals(enabled, that.enabled) && Objects.equals(imageId, that.imageId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, authority, username, password, email, phone, registeredAt, enabled, imageId);
     }
 
     @Override

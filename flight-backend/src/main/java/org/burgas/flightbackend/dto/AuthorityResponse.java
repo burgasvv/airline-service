@@ -2,8 +2,10 @@ package org.burgas.flightbackend.dto;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class AuthorityResponse implements GrantedAuthority {
+public final class AuthorityResponse extends Response implements GrantedAuthority {
 
     private Long id;
     private String name;
@@ -19,6 +21,18 @@ public final class AuthorityResponse implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthorityResponse that = (AuthorityResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
     @Override

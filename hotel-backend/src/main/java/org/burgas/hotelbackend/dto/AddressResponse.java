@@ -3,7 +3,7 @@ package org.burgas.hotelbackend.dto;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class AddressResponse {
+public final class AddressResponse extends Response {
 
     private Long id;
     private CityResponse city;

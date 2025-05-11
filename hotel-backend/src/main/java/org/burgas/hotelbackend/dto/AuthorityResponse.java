@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class AuthorityResponse implements GrantedAuthority {
+public final class AuthorityResponse extends Response implements GrantedAuthority {
 
     private Long id;
     private String name;

@@ -3,7 +3,7 @@ package org.burgas.flightbackend.dto;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class PlaneRequest {
+public final class PlaneRequest extends Request {
 
     private Long id;
     private String model;
@@ -71,5 +71,17 @@ public final class PlaneRequest {
     @Override
     public int hashCode() {
         return Objects.hash(id, model, businessClass, economyClass, free, inService);
+    }
+
+    @Override
+    public String toString() {
+        return "PlaneRequest{" +
+               "id=" + id +
+               ", model='" + model + '\'' +
+               ", businessClass=" + businessClass +
+               ", economyClass=" + economyClass +
+               ", free=" + free +
+               ", inService=" + inService +
+               '}';
     }
 }

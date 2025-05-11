@@ -39,6 +39,14 @@ public final class GuideLanguagePK {
         return Objects.hash(guideId, languageId);
     }
 
+    @Override
+    public String toString() {
+        return "GuideLanguagePK{" +
+               "guideId=" + guideId +
+               ", languageId=" + languageId +
+               '}';
+    }
+
     public static Builder builder() {
         return new Builder();
     }

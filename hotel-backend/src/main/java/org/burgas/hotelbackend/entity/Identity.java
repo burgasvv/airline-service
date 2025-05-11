@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import org.burgas.hotelbackend.exception.PhoneNotMatchesException;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -15,7 +16,7 @@ import static org.burgas.hotelbackend.message.IdentityMessages.PHONE_NOT_MATCHES
 
 @Entity
 @SuppressWarnings("ALL")
-public final class Identity {
+public final class Identity extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

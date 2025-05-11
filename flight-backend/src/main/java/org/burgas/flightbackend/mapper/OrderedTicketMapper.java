@@ -10,7 +10,7 @@ import org.burgas.flightbackend.repository.TicketRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class OrderedTicketMapper implements MapperDataHandler {
+public final class OrderedTicketMapper implements MapperDataHandler<OrderedTicketRequest, OrderedTicket, OrderedTicketResponse> {
 
     private final OrderedTicketRepository orderedTicketRepository;
     private final IdentityRepository identityRepository;
@@ -34,7 +34,8 @@ public final class OrderedTicketMapper implements MapperDataHandler {
         this.flightSeatMapper = flightSeatMapper;
     }
 
-    public OrderedTicket toOrderedTicket(final OrderedTicketRequest orderedTicketRequest) {
+    @Override
+    public OrderedTicket toEntity(OrderedTicketRequest orderedTicketRequest) {
         Long orderedTicketId = this.getData(orderedTicketRequest.getId(), 0L);
         return this.orderedTicketRepository.findById(orderedTicketId)
                 .map(
@@ -56,17 +57,18 @@ public final class OrderedTicketMapper implements MapperDataHandler {
                 );
     }
 
-    public OrderedTicketResponse toOrderedTicketResponse(final OrderedTicket orderedTicket) {
+    @Override
+    public OrderedTicketResponse toResponse(OrderedTicket orderedTicket) {
         return OrderedTicketResponse.builder()
                 .id(orderedTicket.getId())
                 .identity(
                         this.identityRepository.findById(orderedTicket.getIdentityId() == null ? 0L : orderedTicket.getIdentityId())
-                                .map(this.identityMapper::toIdentityResponse)
+                                .map(this.identityMapper::toResponse)
                                 .orElse(null)
                 )
                 .ticket(
                         this.ticketRepository.findById(orderedTicket.getTicketId())
-                                .map(this.ticketMapper::toTicketResponse)
+                                .map(this.ticketMapper::toResponse)
                                 .orElse(null)
                 )
                 .flightSeat(

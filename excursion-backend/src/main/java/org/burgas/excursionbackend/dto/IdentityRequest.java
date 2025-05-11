@@ -1,7 +1,9 @@
 package org.burgas.excursionbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class IdentityRequest {
+public final class IdentityRequest extends Request {
 
     private Long id;
     private String username;
@@ -65,5 +67,19 @@ public final class IdentityRequest {
 
     public void setAuthorityId(Long authorityId) {
         this.authorityId = authorityId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        IdentityRequest that = (IdentityRequest) o;
+        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(password, that.password) &&
+               Objects.equals(email, that.email) && Objects.equals(phone, that.phone) && Objects.equals(enabled, that.enabled) &&
+               Objects.equals(authorityId, that.authorityId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, email, phone, enabled, authorityId);
     }
 }

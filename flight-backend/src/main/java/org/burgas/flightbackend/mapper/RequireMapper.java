@@ -4,11 +4,12 @@ import org.burgas.flightbackend.dto.IdentityResponse;
 import org.burgas.flightbackend.dto.RequireRequest;
 import org.burgas.flightbackend.dto.RequireResponse;
 import org.burgas.flightbackend.entity.Require;
+import org.burgas.flightbackend.handler.MapperDataHandler;
 import org.burgas.flightbackend.repository.IdentityRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class RequireMapper {
+public final class RequireMapper implements MapperDataHandler<RequireRequest, Require, RequireResponse> {
 
     private final IdentityRepository identityRepository;
     private final IdentityMapper identityMapper;
@@ -18,7 +19,8 @@ public final class RequireMapper {
         this.identityMapper = identityMapper;
     }
 
-    public Require toRequire(final RequireRequest requireRequest) {
+    @Override
+    public Require toEntity(RequireRequest requireRequest) {
         return Require.builder()
                 .name(requireRequest.getName())
                 .surname(requireRequest.getSurname())
@@ -30,7 +32,8 @@ public final class RequireMapper {
                 .build();
     }
 
-    public RequireResponse toRequireResponse(final Require require) {
+    @Override
+    public RequireResponse toResponse(Require require) {
         return RequireResponse.builder()
                 .id(require.getId())
                 .name(require.getName())
@@ -40,12 +43,12 @@ public final class RequireMapper {
                 .closed(require.getClosed())
                 .admin(
                         this.identityRepository.findById(require.getAdminId())
-                                .map(this.identityMapper::toIdentityResponse)
+                                .map(this.identityMapper::toResponse)
                                 .orElseGet(IdentityResponse::new)
                 )
                 .user(
                         this.identityRepository.findById(require.getUserId())
-                                .map(this.identityMapper::toIdentityResponse)
+                                .map(this.identityMapper::toResponse)
                                 .orElseGet(IdentityResponse::new)
                 )
                 .build();

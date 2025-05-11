@@ -2,9 +2,10 @@ package org.burgas.excursionbackend.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class ExcursionRequest {
+public final class ExcursionRequest extends Request {
 
     private Long id;
     private String name;
@@ -95,5 +96,20 @@ public final class ExcursionRequest {
 
     public void setSights(List<Long> sights) {
         this.sights = sights;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ExcursionRequest that = (ExcursionRequest) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) &&
+               Objects.equals(guideId, that.guideId) && Objects.equals(cost, that.cost) &&
+               Objects.equals(starts, that.starts) && Objects.equals(ends, that.ends) && Objects.equals(inProgress, that.inProgress) &&
+               Objects.equals(passed, that.passed) && Objects.equals(sights, that.sights);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, guideId, cost, starts, ends, inProgress, passed, sights);
     }
 }

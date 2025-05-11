@@ -47,7 +47,7 @@ public class OrderedTicketService {
         return this.orderedTicketRepository.findAll()
                 .stream()
                 .peek(orderedTicket -> log.info(ORDERED_TICKET_FOUND_ALL.getLogMessage(), orderedTicket))
-                .map(this.orderedTicketMapper::toOrderedTicketResponse)
+                .map(this.orderedTicketMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -55,7 +55,7 @@ public class OrderedTicketService {
         return this.orderedTicketRepository.findOrderedTicketsByIdentityId(Long.parseLong(identityId))
                 .stream()
                 .peek(orderedTicket -> log.info(ORDERED_TICKET_FOUND_BY_IDENTITY_ID.getLogMessage(), orderedTicket))
-                .map(this.orderedTicketMapper::toOrderedTicketResponse)
+                .map(this.orderedTicketMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +69,7 @@ public class OrderedTicketService {
         return this.orderedTicketRepository.findById(Long.parseLong(orderedTicketId))
                 .stream()
                 .peek(orderedTicket -> log.info(ORDERED_TICKET_FOUND_BY_ID.getLogMessage(), orderedTicket))
-                .map(this.orderedTicketMapper::toOrderedTicketResponse)
+                .map(this.orderedTicketMapper::toResponse)
                 .findFirst()
                 .orElseGet(OrderedTicketResponse::new);
     }
@@ -79,11 +79,9 @@ public class OrderedTicketService {
             rollbackFor = Exception.class
     )
     public OrderedTicketResponse orderTicketByIdentity(final OrderedTicketRequest orderedTicketRequest) {
-        OrderedTicket orderedTicket = this.orderedTicketMapper.toOrderedTicket(orderedTicketRequest);
+        OrderedTicket orderedTicket = this.orderedTicketMapper.toEntity(orderedTicketRequest);
         this.flightSeatService.reserveFlightSeat(orderedTicket);
-        return this.orderedTicketMapper.toOrderedTicketResponse(
-                this.orderedTicketRepository.save(orderedTicket)
-        );
+        return this.orderedTicketMapper.toResponse(this.orderedTicketRepository.save(orderedTicket));
     }
 
     @Transactional(
@@ -92,9 +90,9 @@ public class OrderedTicketService {
     )
     public OrderedTicketResponse orderTicketBySession(final OrderedTicketRequest orderedTicketRequest, final HttpServletRequest httpServletRequest) {
         List<OrderedTicketResponse> orderedTicketResponses = this.findAllInSession(httpServletRequest);
-        OrderedTicket orderedTicket = this.orderedTicketMapper.toOrderedTicket(orderedTicketRequest);
+        OrderedTicket orderedTicket = this.orderedTicketMapper.toEntity(orderedTicketRequest);
         this.flightSeatService.reserveFlightSeat(orderedTicket);
-        OrderedTicketResponse orderedTicketResponse = this.orderedTicketMapper.toOrderedTicketResponse(
+        OrderedTicketResponse orderedTicketResponse = this.orderedTicketMapper.toResponse(
                 this.orderedTicketRepository.save(orderedTicket)
         );
         orderedTicketResponses.add(orderedTicketResponse);

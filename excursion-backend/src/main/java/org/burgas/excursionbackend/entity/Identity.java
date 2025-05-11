@@ -16,7 +16,7 @@ import static org.burgas.excursionbackend.message.IdentityMessages.PHONE_NOT_MAT
 
 @Entity
 @SuppressWarnings(value = "unused")
-public final class Identity implements Serializable {
+public final class Identity extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

@@ -5,7 +5,7 @@ import org.burgas.hotelbackend.entity.Status;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class HotelResponse {
+public final class HotelResponse extends Response {
 
     private Long id;
     private String name;

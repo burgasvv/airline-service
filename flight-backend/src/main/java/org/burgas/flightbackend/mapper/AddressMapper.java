@@ -10,7 +10,7 @@ import org.burgas.flightbackend.repository.CityRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class AddressMapper implements MapperDataHandler {
+public final class AddressMapper implements MapperDataHandler<AddressRequest, Address, AddressResponse> {
 
     private final AddressRepository addressRepository;
     private final CityRepository cityRepository;
@@ -22,7 +22,8 @@ public final class AddressMapper implements MapperDataHandler {
         this.cityMapper = cityMapper;
     }
 
-    public Address toAddress(final AddressRequest addressRequest) {
+    @Override
+    public Address toEntity(AddressRequest addressRequest) {
         Long addressId = this.getData(addressRequest.getId(), 0L);
         return this.addressRepository.findById(addressId)
                 .map(
@@ -44,7 +45,8 @@ public final class AddressMapper implements MapperDataHandler {
                 );
     }
 
-    public AddressResponse toAddressResponse(final Address address) {
+    @Override
+    public AddressResponse toResponse(Address address) {
         return AddressResponse.builder()
                 .id(address.getId())
                 .city(

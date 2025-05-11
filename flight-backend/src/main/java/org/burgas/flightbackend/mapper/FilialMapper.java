@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Component
-public final class FilialMapper implements MapperDataHandler {
+public final class FilialMapper implements MapperDataHandler<FilialRequest, Filial, FilialResponse> {
 
     private final FilialRepository filialRepository;
     private final AddressRepository addressRepository;
@@ -24,7 +24,8 @@ public final class FilialMapper implements MapperDataHandler {
         this.addressMapper = addressMapper;
     }
 
-    public Filial toFilial(final FilialRequest filialRequest) {
+    @Override
+    public Filial toEntity(FilialRequest filialRequest) {
         Long filialId = this.getData(filialRequest.getId(), 0L);
         return this.filialRepository.findById(filialId)
                 .map(
@@ -48,13 +49,14 @@ public final class FilialMapper implements MapperDataHandler {
                 );
     }
 
-    public FilialResponse toFilialResponse(final Filial filial) {
+    @Override
+    public FilialResponse toResponse(Filial filial) {
         return FilialResponse.builder()
                 .id(filial.getId())
                 .name(filial.getName())
                 .address(
                         this.addressRepository.findById(filial.getAddressId())
-                                .map(this.addressMapper::toAddressResponse)
+                                .map(this.addressMapper::toResponse)
                                 .orElseGet(AddressResponse::new)
                 )
                 .opensAt(filial.getOpensAt().format(ofPattern("hh:mm")))

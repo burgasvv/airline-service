@@ -5,7 +5,7 @@ import org.burgas.flightbackend.entity.CabinType;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class FlightSeatResponse {
+public final class FlightSeatResponse extends Response {
 
     private Long id;
     private String flightNumber;

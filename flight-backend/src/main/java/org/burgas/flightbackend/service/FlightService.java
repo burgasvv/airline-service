@@ -59,7 +59,7 @@ public class FlightService {
         return this.flightRepository.findAll()
                 .stream()
                 .peek(flight -> log.info(FLIGHT_FOUND_ALL.getLogMessage(), flight))
-                .map(this.flightMapper::toFlightResponse)
+                .map(this.flightMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -71,7 +71,7 @@ public class FlightService {
                         departureDate != null && !departureDate.isBlank() ? LocalDate.parse(departureDate) : null)
                 .stream()
                 .peek(flight -> log.info(FLIGHT_FOUND_BY_DEPARTURE_AND_ARRIVAL.getLogMessage(), flight))
-                .map(this.flightMapper::toFlightResponse)
+                .map(this.flightMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -79,14 +79,14 @@ public class FlightService {
         return this.flightRepository.findFlightsByDepartureCityIdAndArrivalCityId(Long.parseLong(departureCityId), Long.parseLong(arrivalCityId))
                 .stream()
                 .peek(flight -> log.info(FLIGHT_FOUND_BY_DEPARTURE_AND_ARRIVAL.getLogMessage(),flight))
-                .map(this.flightMapper::toFlightResponse)
+                .map(this.flightMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     public List<FlightResponse> findAllByDepartureCityAndArrivalCityBack(final String flightId) {
         return this.flightRepository.findById(Long.parseLong(flightId))
                 .map(
-                        flight -> of(this.flightMapper.toFlightResponse(flight))
+                        flight -> of(this.flightMapper.toResponse(flight))
                                 .map(
                                         flightResponse -> this.flightRepository.findFlightsByDepartureCityIdAndArrivalCityIdBack(
                                                 flightResponse.getArrival().getAddress().getCity().getId(),
@@ -94,7 +94,7 @@ public class FlightService {
                                                 flight.getArrivalAt()
                                         )
                                                 .stream()
-                                                .map(this.flightMapper::toFlightResponse)
+                                                .map(this.flightMapper::toResponse)
                                                 .collect(Collectors.toList())
                                 )
                                 .orElseThrow(
@@ -110,7 +110,7 @@ public class FlightService {
         return this.flightRepository.findById(Long.parseLong(flightId))
                 .stream()
                 .peek(flight -> log.info(FlightLogs.FLIGHT_FOUND_BY_ID.getLogMessage(), flight))
-                .map(this.flightMapper::toFlightResponse)
+                .map(this.flightMapper::toResponse)
                 .findFirst()
                 .orElseGet(FlightResponse::new);
     }
@@ -120,9 +120,9 @@ public class FlightService {
             rollbackFor = Exception.class
     )
     public FlightResponse createOrUpdate(final FlightRequest flightRequest) {
-        FlightResponse flightResponse = of(this.flightMapper.toFlight(flightRequest))
+        FlightResponse flightResponse = of(this.flightMapper.toEntity(flightRequest))
                 .map(this.flightRepository::save)
-                .map(this.flightMapper::toFlightResponse)
+                .map(this.flightMapper::toResponse)
                 .orElseThrow(
                         () -> new FlightNotCreatedException(FLIGHT_NOT_CREATED.getMessage())
                 );

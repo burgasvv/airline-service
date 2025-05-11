@@ -1,7 +1,9 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class RequireAnswerResponse {
+public final class RequireAnswerResponse extends Response {
 
     private Long id;
     private Boolean allowed;
@@ -22,6 +24,19 @@ public final class RequireAnswerResponse {
 
     public RequireResponse getRequire() {
         return require;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        RequireAnswerResponse that = (RequireAnswerResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(allowed, that.allowed) && Objects.equals(explanation, that.explanation) &&
+               Objects.equals(require, that.require);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, allowed, explanation, require);
     }
 
     @Override

@@ -1,9 +1,10 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @SuppressWarnings("unused")
-public final class RequireAnswerTokenResponse {
+public final class RequireAnswerTokenResponse extends Response {
 
     private Long id;
     private UUID value;
@@ -19,6 +20,18 @@ public final class RequireAnswerTokenResponse {
 
     public RequireAnswerResponse getRequireAnswer() {
         return requireAnswer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        RequireAnswerTokenResponse that = (RequireAnswerTokenResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(value, that.value) && Objects.equals(requireAnswer, that.requireAnswer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, value, requireAnswer);
     }
 
     @Override

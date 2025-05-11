@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import org.burgas.excursionbackend.exception.PhoneNotMatchesException;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,7 +15,7 @@ import static org.burgas.excursionbackend.message.IdentityMessages.PHONE_NOT_MAT
 
 @Entity
 @SuppressWarnings("unused")
-public final class Guide {
+public final class Guide extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

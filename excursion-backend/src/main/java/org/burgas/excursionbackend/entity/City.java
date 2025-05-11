@@ -4,13 +4,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @SuppressWarnings("unused")
-public final class City {
+public final class City extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

@@ -16,7 +16,7 @@ import java.util.UUID;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Component
-public final class FlightMapper implements MapperDataHandler {
+public final class FlightMapper implements MapperDataHandler<FlightRequest, Flight, FlightResponse> {
 
     private final FlightRepository flightRepository;
     private final AirportRepository airportRepository;
@@ -35,7 +35,8 @@ public final class FlightMapper implements MapperDataHandler {
         this.planeMapper = planeMapper;
     }
 
-    public Flight toFlight(final FlightRequest flightRequest) {
+    @Override
+    public Flight toEntity(FlightRequest flightRequest) {
         Long flightId = this.getData(flightRequest.getId(), 0L);
         return this.flightRepository.findById(flightId)
                 .map(
@@ -70,23 +71,24 @@ public final class FlightMapper implements MapperDataHandler {
                 );
     }
 
-    public FlightResponse toFlightResponse(final Flight flight) {
+    @Override
+    public FlightResponse toResponse(Flight flight) {
         return FlightResponse.builder()
                 .id(flight.getId())
                 .number(flight.getNumber())
                 .departure(
                         this.airportRepository.findById(flight.getDepartureId())
-                                .map(this.airportMapper::toAirportResponse)
+                                .map(this.airportMapper::toResponse)
                                 .orElseGet(AirportResponse::new)
                 )
                 .arrival(
                         this.airportRepository.findById(flight.getArrivalId())
-                                .map(this.airportMapper::toAirportResponse)
+                                .map(this.airportMapper::toResponse)
                                 .orElseGet(AirportResponse::new)
                 )
                 .plane(
                         this.planeRepository.findById(flight.getPlaneId())
-                                .map(this.planeMapper::toPlaneResponse)
+                                .map(this.planeMapper::toResponse)
                                 .orElseGet(PlaneResponse::new)
                 )
                 .departureAt(flight.getDepartureAt().format(ofPattern("dd.MM.yyyy, hh:mm")))

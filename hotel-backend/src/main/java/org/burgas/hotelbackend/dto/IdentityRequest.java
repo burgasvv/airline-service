@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class IdentityRequest {
+public final class IdentityRequest extends Request {
 
     private Long id;
     private String username;

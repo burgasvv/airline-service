@@ -23,7 +23,7 @@ public final class RequireAnswerTokenMapper {
                 .value(requireAnswerToken.getValue())
                 .requireAnswer(
                         this.requireAnswerRepository.findById(requireAnswerToken.getRequireAnswerId())
-                                .map(this.requireAnswerMapper::toRequireAnswerResponse)
+                                .map(this.requireAnswerMapper::toResponse)
                                 .orElseGet(RequireAnswerResponse::new)
                 )
                 .build();

@@ -28,7 +28,7 @@ class AuthorityServiceTest {
     void findAll() {
         List<AuthorityResponse> authorityResponses = this.authorityRepository.findAll()
                 .parallelStream()
-                .map(this.authorityMapper::toAuthorityResponse)
+                .map(this.authorityMapper::toResponse)
                 .toList();
         Assertions.assertEquals(2, authorityResponses.size());
         authorityResponses.forEach(
@@ -47,7 +47,7 @@ class AuthorityServiceTest {
     @Order(value = 1)
     void findById() {
         AuthorityResponse authorityResponse = this.authorityRepository.findById(1L)
-                .map(this.authorityMapper::toAuthorityResponse)
+                .map(this.authorityMapper::toResponse)
                 .orElseThrow();
         Assertions.assertEquals("ADMIN", authorityResponse.getAuthority());
         Assertions.assertInstanceOf(AuthorityResponse.class, authorityResponse);

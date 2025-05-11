@@ -46,7 +46,7 @@ public class DepartmentService {
         return this.departmentRepository.findAll()
                 .stream()
                 .peek(department -> log.info(DEPARTMENT_FOUND_ALL.getLogMessage(), department))
-                .map(this.departmentMapper::toDepartmentResponse)
+                .map(this.departmentMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -56,21 +56,21 @@ public class DepartmentService {
                 .thenApplyAsync(
                         departments -> departments.stream()
                                 .peek(department -> log.info(DepartmentLogs.DEPARTMENT_FOUND_ALL_ASYNC.getLogMessage(), department))
-                                .map(this.departmentMapper::toDepartmentResponse)
+                                .map(this.departmentMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
 
     public Page<DepartmentResponse> findAllPages(final Integer page, final Integer size) {
         return this.departmentRepository.findAll(PageRequest.of(page - 1, size).withSort(Sort.Direction.ASC, "name"))
-                .map(this.departmentMapper::toDepartmentResponse);
+                .map(this.departmentMapper::toResponse);
     }
 
     public DepartmentResponse findById(final String departmentId) {
         return this.departmentRepository.findById(Long.valueOf(departmentId))
                 .stream()
                 .peek(department -> log.info(DEPARTMENT_FOUND_BY_ID.getLogMessage(), department))
-                .map(this.departmentMapper::toDepartmentResponse)
+                .map(this.departmentMapper::toResponse)
                 .findFirst()
                 .orElseGet(DepartmentResponse::new);
     }
@@ -81,7 +81,7 @@ public class DepartmentService {
                 .thenApplyAsync(
                         department -> department.stream()
                                 .peek(foundDepartment -> log.info(DEPARTMENT_FOUND_BY_ID_ASYNC.getLogMessage(), foundDepartment))
-                                .map(this.departmentMapper::toDepartmentResponse)
+                                .map(this.departmentMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(DepartmentResponse::new)
                 );
@@ -92,9 +92,9 @@ public class DepartmentService {
             rollbackFor = Exception.class
     )
     public DepartmentResponse createOrUpdate(final DepartmentRequest departmentRequest) {
-        return of(this.departmentMapper.toDepartment(departmentRequest))
+        return of(this.departmentMapper.toEntity(departmentRequest))
                 .map(this.departmentRepository::save)
-                .map(this.departmentMapper::toDepartmentResponse)
+                .map(this.departmentMapper::toResponse)
                 .orElseThrow(() -> new DepartmentNotCreatedException(DEPARTMENT_NOT_CREATED.getMessage()));
     }
 
@@ -104,9 +104,9 @@ public class DepartmentService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<DepartmentResponse> createOrUpdateAsync(final DepartmentRequest departmentRequest) {
-        return supplyAsync(() -> this.departmentMapper.toDepartment(departmentRequest))
+        return supplyAsync(() -> this.departmentMapper.toEntity(departmentRequest))
                 .thenApplyAsync(this.departmentRepository::save)
-                .thenApplyAsync(this.departmentMapper::toDepartmentResponse);
+                .thenApplyAsync(this.departmentMapper::toResponse);
     }
 
     @Transactional(

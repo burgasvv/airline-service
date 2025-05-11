@@ -3,7 +3,7 @@ package org.burgas.flightbackend.dto;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class PlaneResponse {
+public final class PlaneResponse extends Response {
 
     private Long id;
     private String number;

@@ -3,9 +3,10 @@ package org.burgas.excursionbackend.dto;
 import org.burgas.excursionbackend.entity.Language;
 
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("unused")
-public final class GuideResponse {
+public final class GuideResponse extends Response {
 
     private Long id;
     private String name;
@@ -46,6 +47,20 @@ public final class GuideResponse {
 
     public List<Language> getLanguages() {
         return languages;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        GuideResponse that = (GuideResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(surname, that.surname) &&
+               Objects.equals(patronymic, that.patronymic) && Objects.equals(phone, that.phone) && Objects.equals(about, that.about) &&
+               Objects.equals(imageId, that.imageId) && Objects.equals(languages, that.languages);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, patronymic, phone, about, imageId, languages);
     }
 
     @Override

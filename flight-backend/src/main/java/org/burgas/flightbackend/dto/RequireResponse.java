@@ -1,7 +1,9 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class RequireResponse {
+public final class RequireResponse extends Response {
 
     private Long id;
     private String name;
@@ -42,6 +44,20 @@ public final class RequireResponse {
 
     public IdentityResponse getUser() {
         return user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        RequireResponse that = (RequireResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(surname, that.surname) &&
+               Objects.equals(patronymic, that.patronymic) && Objects.equals(passport, that.passport) &&
+               Objects.equals(closed, that.closed) && Objects.equals(admin, that.admin) && Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, patronymic, passport, closed, admin, user);
     }
 
     @Override

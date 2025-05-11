@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -12,7 +13,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @SuppressWarnings("unused")
-public final class Image {
+public final class Image extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

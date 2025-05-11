@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public final class PlaneMapper implements MapperDataHandler {
+public final class PlaneMapper implements MapperDataHandler<PlaneRequest, Plane, PlaneResponse> {
 
     private final PlaneRepository planeRepository;
 
@@ -18,7 +18,8 @@ public final class PlaneMapper implements MapperDataHandler {
         this.planeRepository = planeRepository;
     }
 
-    public Plane toPlane(final PlaneRequest planeRequest) {
+    @Override
+    public Plane toEntity(PlaneRequest planeRequest) {
         Long planeId = this.getData(planeRequest.getId(), 0L);
         return this.planeRepository.findById(planeId)
                 .map(
@@ -36,7 +37,7 @@ public final class PlaneMapper implements MapperDataHandler {
                                 .number(
                                         UUID.randomUUID().toString()
                                                 .replaceAll("-","")
-                                                .substring(1,10)
+                                                .substring(1, 10)
                                 )
                                 .model(planeRequest.getModel())
                                 .businessClass(planeRequest.getBusinessClass())
@@ -46,7 +47,8 @@ public final class PlaneMapper implements MapperDataHandler {
                 );
     }
 
-    public PlaneResponse toPlaneResponse(final Plane plane) {
+    @Override
+    public PlaneResponse toResponse(Plane plane) {
         return PlaneResponse.builder()
                 .id(plane.getId())
                 .number(plane.getNumber())

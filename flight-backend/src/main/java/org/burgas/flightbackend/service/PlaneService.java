@@ -45,7 +45,7 @@ public class PlaneService {
         return this.planeRepository.findAll()
                 .stream()
                 .peek(plane -> log.info(PLANE_FOUND_ALL.getLogMessage(), plane))
-                .map(this.planeMapper::toPlaneResponse)
+                .map(this.planeMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -55,21 +55,21 @@ public class PlaneService {
                 .thenApplyAsync(
                         planes -> planes.stream()
                                 .peek(plane -> log.info(PLANE_FOUND_ALL_ASYNC.getLogMessage(), plane))
-                                .map(this.planeMapper::toPlaneResponse)
+                                .map(this.planeMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
 
     public Page<PlaneResponse> findAllPages(final Integer page, final Integer size) {
         return this.planeRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "model"))
-                .map(this.planeMapper::toPlaneResponse);
+                .map(this.planeMapper::toResponse);
     }
 
     public List<PlaneResponse> findAllByFree(final String free) {
         return this.planeRepository.findPlanesByFree(Boolean.parseBoolean(free))
                 .stream()
                 .peek(plane -> log.info(PlaneLogs.PLANE_FOUND_BY_FREE.getLogMessage(), plane))
-                .map(this.planeMapper::toPlaneResponse)
+                .map(this.planeMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -79,7 +79,7 @@ public class PlaneService {
                 .thenApplyAsync(
                         planes -> planes.stream()
                                 .peek(plane -> log.info(PLANE_FOUND_BY_FREE_ASYNC.getLogMessage(), plane))
-                                .map(this.planeMapper::toPlaneResponse)
+                                .map(this.planeMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
@@ -88,7 +88,7 @@ public class PlaneService {
         return this.planeRepository.findById(Long.parseLong(planeId))
                 .stream()
                 .peek(plane -> log.info(PlaneLogs.PLANE_FOUND_BY_ID.getLogMessage(), plane))
-                .map(this.planeMapper::toPlaneResponse)
+                .map(this.planeMapper::toResponse)
                 .findFirst()
                 .orElseGet(PlaneResponse::new);
     }
@@ -99,7 +99,7 @@ public class PlaneService {
                 .thenApplyAsync(
                         plane -> plane.stream()
                                 .peek(foundPlane -> log.info(PLANE_FOUND_BY_ID_ASYNC.getLogMessage(), foundPlane))
-                                .map(this.planeMapper::toPlaneResponse)
+                                .map(this.planeMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(PlaneResponse::new)
                 );
@@ -110,9 +110,9 @@ public class PlaneService {
             rollbackFor = Exception.class
     )
     public PlaneResponse createOrUpdate(final PlaneRequest planeRequest) {
-        return of(this.planeMapper.toPlane(planeRequest))
+        return of(this.planeMapper.toEntity(planeRequest))
                 .map(this.planeRepository::save)
-                .map(this.planeMapper::toPlaneResponse)
+                .map(this.planeMapper::toResponse)
                 .orElseThrow(
                         () -> new PlaneNotCreateException(PLANE_NOT_CREATED.getMessage())
                 );
@@ -124,9 +124,9 @@ public class PlaneService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<PlaneResponse> createOrUpdateAsync(final PlaneRequest planeRequest) {
-        return supplyAsync(() -> this.planeMapper.toPlane(planeRequest))
+        return supplyAsync(() -> this.planeMapper.toEntity(planeRequest))
                 .thenApplyAsync(this.planeRepository::save)
-                .thenApplyAsync(this.planeMapper::toPlaneResponse);
+                .thenApplyAsync(this.planeMapper::toResponse);
     }
 
     @Transactional(

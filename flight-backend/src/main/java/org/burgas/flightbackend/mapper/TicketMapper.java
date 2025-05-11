@@ -12,7 +12,7 @@ import org.burgas.flightbackend.repository.TicketRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class TicketMapper implements MapperDataHandler {
+public final class TicketMapper implements MapperDataHandler<TicketRequest, Ticket, TicketResponse> {
 
     private final TicketRepository ticketRepository;
     private final FlightRepository flightRepository;
@@ -29,7 +29,8 @@ public final class TicketMapper implements MapperDataHandler {
         this.cabinTypeRepository = cabinTypeRepository;
     }
 
-    public Ticket toTicket(final TicketRequest ticketRequest) {
+    @Override
+    public Ticket toEntity(TicketRequest ticketRequest) {
         Long ticketId = this.getData(ticketRequest.getId(), 0L);
         return this.ticketRepository.findById(ticketId)
                 .map(
@@ -53,12 +54,13 @@ public final class TicketMapper implements MapperDataHandler {
                 );
     }
 
-    public TicketResponse toTicketResponse(final Ticket ticket) {
+    @Override
+    public TicketResponse toResponse(Ticket ticket) {
         return TicketResponse.builder()
                 .id(ticket.getId())
                 .flight(
                         this.flightRepository.findById(ticket.getFlightId())
-                                .map(this.flightMapper::toFlightResponse)
+                                .map(this.flightMapper::toResponse)
                                 .orElseGet(FlightResponse::new)
                 )
                 .cabinType(

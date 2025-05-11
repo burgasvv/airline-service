@@ -3,7 +3,7 @@ package org.burgas.hotelbackend.dto;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class DepartmentRequest {
+public final class DepartmentRequest extends Request {
 
     private Long id;
     private String name;

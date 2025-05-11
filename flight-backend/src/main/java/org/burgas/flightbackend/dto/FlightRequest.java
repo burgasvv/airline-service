@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class FlightRequest {
+public final class FlightRequest extends Request {
 
     private Long id;
     private Long departureId;
@@ -111,5 +111,21 @@ public final class FlightRequest {
     @Override
     public int hashCode() {
         return Objects.hash(id, departureId, arrivalId, planeId, businessPrice, economyPrice, departureAt, arrivalAt, inProgress, completed);
+    }
+
+    @Override
+    public String toString() {
+        return "FlightRequest{" +
+               "id=" + id +
+               ", departureId=" + departureId +
+               ", arrivalId=" + arrivalId +
+               ", planeId=" + planeId +
+               ", businessPrice=" + businessPrice +
+               ", economyPrice=" + economyPrice +
+               ", departureAt=" + departureAt +
+               ", arrivalAt=" + arrivalAt +
+               ", inProgress=" + inProgress +
+               ", completed=" + completed +
+               '}';
     }
 }

@@ -31,6 +31,14 @@ public final class ExcursionSightPK {
         return Objects.hash(excursionId, sightId);
     }
 
+    @Override
+    public String toString() {
+        return "ExcursionSightPK{" +
+               "excursionId=" + excursionId +
+               ", sightId=" + sightId +
+               '}';
+    }
+
     public static Builder builder() {
         return new Builder();
     }

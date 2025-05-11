@@ -1,7 +1,9 @@
 package org.burgas.excursionbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("ALL")
-public final class PaymentRequest {
+public final class PaymentRequest extends Request {
 
     private Long id;
     private Long identityId;
@@ -29,5 +31,17 @@ public final class PaymentRequest {
 
     public void setExcursionId(Long excursionId) {
         this.excursionId = excursionId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PaymentRequest that = (PaymentRequest) o;
+        return Objects.equals(id, that.id) && Objects.equals(identityId, that.identityId) && Objects.equals(excursionId, that.excursionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, identityId, excursionId);
     }
 }

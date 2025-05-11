@@ -67,7 +67,7 @@ public class EmployeeService {
         return this.employeeRepository.findAll()
                 .stream()
                 .peek(employee -> log.info(EMPLOYEE_FOUND_BY_ID.getLogMessage(), employee))
-                .map(this.employeeMapper::toEmployeeResponse)
+                .map(this.employeeMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -77,7 +77,7 @@ public class EmployeeService {
                 .thenApplyAsync(
                         employees -> employees.stream()
                                 .peek(employee -> log.info(EmployeeLogs.EMPLOYEE_FOUND_ALL_ASYNC.getLogMessage(), employee))
-                                .map(this.employeeMapper::toEmployeeResponse)
+                                .map(this.employeeMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
@@ -86,14 +86,14 @@ public class EmployeeService {
         return this.employeeRepository.findAll(
                         PageRequest.of(page - 1, size, Sort.Direction.ASC, "name", "surname", "patronymic")
                 )
-                .map(this.employeeMapper::toEmployeeResponse);
+                .map(this.employeeMapper::toResponse);
     }
 
     public EmployeeResponse findById(final String employeeId) {
         return this.employeeRepository.findById(Long.valueOf(employeeId))
                 .stream()
                 .peek(employee -> log.info(EMPLOYEE_FOUND_BY_ID.getLogMessage(), employee))
-                .map(this.employeeMapper::toEmployeeResponse)
+                .map(this.employeeMapper::toResponse)
                 .findFirst()
                 .orElseGet(EmployeeResponse::new);
     }
@@ -104,7 +104,7 @@ public class EmployeeService {
                 .thenApplyAsync(
                         employee -> employee.stream()
                                 .peek(foundEmployee -> log.info(EMPLOYEE_FOUND_BY_ID_ASYNC.getLogMessage(), foundEmployee))
-                                .map(this.employeeMapper::toEmployeeResponse)
+                                .map(this.employeeMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(EmployeeResponse::new)
                 );
@@ -142,9 +142,9 @@ public class EmployeeService {
                                         .map(
                                                 _ -> {
                                                     this.requireAnswerTokenRepository.deleteById(requireAnswerToken.getId());
-                                                    return of(this.employeeMapper.toEmployee(employeeRequest))
+                                                    return of(this.employeeMapper.toEntity(employeeRequest))
                                                             .map(this.employeeRepository::save)
-                                                            .map(this.employeeMapper::toEmployeeResponse)
+                                                            .map(this.employeeMapper::toResponse)
                                                             .orElseThrow(
                                                                     () -> new EmployeeNotCreatedException(EMPLOYEE_NOT_CREATED.getMessage())
                                                             );
@@ -178,9 +178,9 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public EmployeeResponse updateEmployee(final EmployeeRequest employeeRequest) {
-        return of(this.employeeMapper.toEmployee(employeeRequest))
+        return of(this.employeeMapper.toEntity(employeeRequest))
                 .map(this.employeeRepository::save)
-                .map(this.employeeMapper::toEmployeeResponse)
+                .map(this.employeeMapper::toResponse)
                 .orElseThrow(
                         () -> new EmployeeNotCreatedException(EMPLOYEE_NOT_CREATED.getMessage())
                 );
@@ -192,9 +192,9 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<EmployeeResponse> updateEmployeeAsync(final EmployeeRequest employeeRequest) {
-        return supplyAsync(() -> this.employeeMapper.toEmployee(employeeRequest))
+        return supplyAsync(() -> this.employeeMapper.toEntity(employeeRequest))
                 .thenApplyAsync(this.employeeRepository::save)
-                .thenApplyAsync(this.employeeMapper::toEmployeeResponse);
+                .thenApplyAsync(this.employeeMapper::toResponse);
     }
 
     @Transactional(

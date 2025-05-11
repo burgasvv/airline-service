@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -11,7 +12,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @SuppressWarnings("unused")
-public final class Filial {
+public final class Filial extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

@@ -1,7 +1,9 @@
 package org.burgas.excursionbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class CityRequest {
+public final class CityRequest extends Request {
 
     private Long id;
     private String name;
@@ -56,5 +58,18 @@ public final class CityRequest {
 
     public void setCapital(Boolean capital) {
         this.capital = capital;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CityRequest that = (CityRequest) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) &&
+               Objects.equals(population, that.population) && Objects.equals(countryId, that.countryId) && Objects.equals(capital, that.capital);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, population, countryId, capital);
     }
 }

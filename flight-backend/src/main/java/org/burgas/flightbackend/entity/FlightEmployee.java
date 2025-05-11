@@ -4,12 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @IdClass(value = FlightEmployeePK.class)
 @SuppressWarnings("ALL")
-public final class FlightEmployee {
+public final class FlightEmployee extends AbstractEntity implements Serializable {
 
     @Id
     private Long flightId;

@@ -54,7 +54,7 @@ public class AirportService {
         return this.airportRepository.findAll()
                 .stream()
                 .peek(airport -> log.info(AIRPORT_FOUND_ALL.getLogMessage(), airport))
-                .map(this.airportMapper::toAirportResponse)
+                .map(this.airportMapper::toResponse)
                 .toList();
     }
 
@@ -64,21 +64,21 @@ public class AirportService {
                 .thenApplyAsync(
                         airports -> airports.stream()
                                 .peek(airport -> log.info(AIRPORT_FOUND_ALL_ASYNC.getLogMessage(), airport))
-                                .map(this.airportMapper::toAirportResponse)
+                                .map(this.airportMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
 
     public Page<AirportResponse> findAllPages(final Integer page, final Integer size) {
         return this.airportRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "name"))
-                .map(this.airportMapper::toAirportResponse);
+                .map(this.airportMapper::toResponse);
     }
 
     public List<AirportResponse> findByCountryId(final String countryId) {
         return this.airportRepository.findAirportsByCountryId(Long.valueOf(countryId))
                 .stream()
                 .peek(airport -> log.info(AIRPORT_FOUND_BY_COUNTRY_ID.getLogMessage(), airport))
-                .map(this.airportMapper::toAirportResponse)
+                .map(this.airportMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -88,7 +88,7 @@ public class AirportService {
                 .thenApplyAsync(
                         airports -> airports.stream()
                                 .peek(airport -> log.info(AIRPORT_FOUND_BY_COUNTRY_ID_ASYNC.getLogMessage(), airport))
-                                .map(this.airportMapper::toAirportResponse)
+                                .map(this.airportMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
@@ -97,7 +97,7 @@ public class AirportService {
         return this.airportRepository.findAirportsByCityId(Long.valueOf(cityId))
                 .stream()
                 .peek(airport -> log.info(AIRPORT_FOUND_BY_CITY_ID.getLogMessage(), airport))
-                .map(this.airportMapper::toAirportResponse)
+                .map(this.airportMapper::toResponse)
                 .toList();
     }
 
@@ -107,7 +107,7 @@ public class AirportService {
                 .thenApplyAsync(
                         airports -> airports.stream()
                                 .peek(airport -> log.info(AIRPORT_FOUND_BY_CITY_ID_ASYNC.getLogMessage(), airport))
-                                .map(this.airportMapper::toAirportResponse)
+                                .map(this.airportMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
@@ -117,16 +117,16 @@ public class AirportService {
             rollbackFor = Exception.class
     )
     public AirportResponse createOrUpdate(final AirportRequest airportRequest) {
-        return of(this.addressMapper.toAddress(airportRequest.getAddress()))
+        return of(this.addressMapper.toEntity(airportRequest.getAddress()))
                 .map(this.addressRepository::save)
                 .map(
                         address -> {
                             airportRequest.getAddress().setId(address.getId());
-                            return this.airportMapper.toAirport(airportRequest);
+                            return this.airportMapper.toEntity(airportRequest);
                         }
                 )
                 .map(this.airportRepository::save)
-                .map(this.airportMapper::toAirportResponse)
+                .map(this.airportMapper::toResponse)
                 .orElseThrow(() -> new AirportNotCreatedException(AIRPORT_NOT_CREATED.getMessage()));
     }
 
@@ -136,16 +136,16 @@ public class AirportService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<AirportResponse> createOrUpdateAsync(final AirportRequest airportRequest) {
-        return supplyAsync(() -> this.addressMapper.toAddress(airportRequest.getAddress()))
+        return supplyAsync(() -> this.addressMapper.toEntity(airportRequest.getAddress()))
                 .thenApplyAsync(this.addressRepository::save)
                 .thenApplyAsync(
                         address -> {
                             airportRequest.getAddress().setId(address.getId());
-                            return this.airportMapper.toAirport(airportRequest);
+                            return this.airportMapper.toEntity(airportRequest);
                         }
                 )
                 .thenApplyAsync(this.airportRepository::save)
-                .thenApplyAsync(this.airportMapper::toAirportResponse);
+                .thenApplyAsync(this.airportMapper::toResponse);
     }
 
     @Transactional(

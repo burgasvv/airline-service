@@ -1,7 +1,9 @@
 package org.burgas.excursionbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class AuthorityRequest {
+public final class AuthorityRequest extends Request {
 
     private Long id;
     private String name;
@@ -20,5 +22,17 @@ public final class AuthorityRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthorityRequest that = (AuthorityRequest) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

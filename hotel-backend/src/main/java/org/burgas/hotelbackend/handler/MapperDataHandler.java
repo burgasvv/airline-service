@@ -1,15 +1,18 @@
 package org.burgas.hotelbackend.handler;
 
+import org.burgas.hotelbackend.dto.Request;
+import org.burgas.hotelbackend.dto.Response;
+import org.burgas.hotelbackend.entity.AbstractEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface MapperDataHandler<Request, Entity, Response> {
+public interface MapperDataHandler<T extends Request, S extends AbstractEntity, V extends Response> {
 
-    default <Data> Data getData(Data first, Data second) {
+    default <D> D getData(D first, D second) {
         return first == null || first == "" ? second : first;
     }
 
-    Entity toEntity(Request request);
+    S toEntity(T t);
 
-    Response toResponse(Entity entity);
+    V toResponse(S s);
 }

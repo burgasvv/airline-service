@@ -1,7 +1,9 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class EmployeeResponse {
+public final class EmployeeResponse extends Response {
 
     private Long id;
     private String name;
@@ -52,6 +54,21 @@ public final class EmployeeResponse {
 
     public FilialDepartmentResponse getFilialDepartment() {
         return filialDepartment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeResponse that = (EmployeeResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(surname, that.surname) &&
+               Objects.equals(patronymic, that.patronymic) && Objects.equals(about, that.about) && Objects.equals(passport, that.passport) &&
+               Objects.equals(identity, that.identity) && Objects.equals(address, that.address) && Objects.equals(position, that.position) &&
+               Objects.equals(filialDepartment, that.filialDepartment);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, patronymic, about, passport, identity, address, position, filialDepartment);
     }
 
     @Override

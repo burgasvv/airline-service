@@ -38,7 +38,7 @@ public class TicketService {
         return this.ticketRepository.findAll()
                 .stream()
                 .peek(ticket -> log.info(TICKET_FOUND_ALL.getLogMessage(), ticket))
-                .map(this.ticketMapper::toTicketResponse)
+                .map(this.ticketMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -46,7 +46,7 @@ public class TicketService {
         return this.ticketRepository.findTicketsByFlightId(Long.parseLong(flightId))
                 .stream()
                 .peek(ticket -> log.info(TicketLogs.TICKET_FOUND_BY_FLIGHT_ID.getLogMessage(), ticket))
-                .map(this.ticketMapper::toTicketResponse)
+                .map(this.ticketMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -54,7 +54,7 @@ public class TicketService {
         return this.ticketRepository.findById(Long.parseLong(ticketId))
                 .stream()
                 .peek(ticket -> log.info(TicketLogs.TICKET_WAS_FOUND_BY_ID.getLogMessage(), ticket))
-                .map(this.ticketMapper::toTicketResponse)
+                .map(this.ticketMapper::toResponse)
                 .findFirst()
                 .orElseGet(TicketResponse::new);
     }
@@ -64,9 +64,9 @@ public class TicketService {
             rollbackFor = Exception.class
     )
     public TicketResponse createOrUpdate(final TicketRequest ticketRequest) {
-        return of(this.ticketMapper.toTicket(ticketRequest))
+        return of(this.ticketMapper.toEntity(ticketRequest))
                 .map(this.ticketRepository::save)
-                .map(this.ticketMapper::toTicketResponse)
+                .map(this.ticketMapper::toResponse)
                 .orElseThrow(
                         () -> new TicketNotCreatedException(TicketMessages.TICKET_NOT_CREATED.getMessage())
                 );

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class IdentityResponse implements UserDetails {
+public final class IdentityResponse extends Response implements UserDetails {
 
     private Long id;
     private String username;

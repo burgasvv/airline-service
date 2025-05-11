@@ -1,7 +1,9 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class RequireRequest {
+public final class RequireRequest extends Request {
 
     private Long id;
     private String name;
@@ -65,5 +67,32 @@ public final class RequireRequest {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        RequireRequest that = (RequireRequest) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(surname, that.surname) &&
+               Objects.equals(patronymic, that.patronymic) && Objects.equals(passport, that.passport) && Objects.equals(adminId, that.adminId) &&
+               Objects.equals(userId, that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, patronymic, passport, adminId, userId);
+    }
+
+    @Override
+    public String toString() {
+        return "RequireRequest{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", surname='" + surname + '\'' +
+               ", patronymic='" + patronymic + '\'' +
+               ", passport='" + passport + '\'' +
+               ", adminId=" + adminId +
+               ", userId=" + userId +
+               '}';
     }
 }

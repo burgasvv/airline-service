@@ -1,9 +1,10 @@
 package org.burgas.excursionbackend.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class ExcursionResponse {
+public final class ExcursionResponse extends Response {
 
     private Long id;
     private String name;
@@ -59,6 +60,21 @@ public final class ExcursionResponse {
 
     public List<SightResponse> getSights() {
         return sights;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ExcursionResponse that = (ExcursionResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) &&
+               Objects.equals(guide, that.guide) && Objects.equals(cost, that.cost) && Objects.equals(starts, that.starts) &&
+               Objects.equals(ends, that.ends) && Objects.equals(inProgress, that.inProgress) && Objects.equals(passed, that.passed) &&
+               Objects.equals(imageId, that.imageId) && Objects.equals(sights, that.sights);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, guide, cost, starts, ends, inProgress, passed, imageId, sights);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class IdentityRequest {
+public final class IdentityRequest extends Request {
 
     private Long id;
     private Long authorityId;
@@ -65,6 +67,20 @@ public final class IdentityRequest {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        IdentityRequest that = (IdentityRequest) o;
+        return Objects.equals(id, that.id) && Objects.equals(authorityId, that.authorityId) && Objects.equals(username, that.username) &&
+               Objects.equals(password, that.password) && Objects.equals(email, that.email) &&
+               Objects.equals(phone, that.phone) && Objects.equals(enabled, that.enabled);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, authorityId, username, password, email, phone, enabled);
     }
 
     @Override

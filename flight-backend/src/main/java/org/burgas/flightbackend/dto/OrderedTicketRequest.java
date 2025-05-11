@@ -3,7 +3,7 @@ package org.burgas.flightbackend.dto;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class OrderedTicketRequest {
+public final class OrderedTicketRequest extends Request {
 
     private Long id;
     private Long identityId;

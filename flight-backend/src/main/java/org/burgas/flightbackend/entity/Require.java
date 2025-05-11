@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import org.burgas.flightbackend.exception.PassportNotMatchesException;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,7 +15,7 @@ import static org.burgas.flightbackend.message.EmployeeMessages.PASSPORT_NOT_MAT
 
 @Entity
 @SuppressWarnings("unused")
-public final class Require {
+public final class Require extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

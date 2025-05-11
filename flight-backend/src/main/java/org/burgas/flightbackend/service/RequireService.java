@@ -41,7 +41,7 @@ public class RequireService {
         return this.requireRepository.findRequiresByClosed(Boolean.parseBoolean(closed))
                 .stream()
                 .peek(require -> log.info(RequireLogs.REQUIRE_FOUND_ALL_BY_CLOSED.getLogMessage(), require))
-                .map(this.requireMapper::toRequireResponse)
+                .map(this.requireMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -49,7 +49,7 @@ public class RequireService {
         return this.requireRepository.findRequiresByUserId(Long.valueOf(userId))
                 .stream()
                 .peek(require -> log.info(RequireLogs.REQUIRE_FOUND_BY_USER_ID.getLogMessage(), require))
-                .map(this.requireMapper::toRequireResponse)
+                .map(this.requireMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -57,7 +57,7 @@ public class RequireService {
         return this.requireRepository.findRequiresByAdminId(Long.valueOf(adminId))
                 .stream()
                 .peek(require -> log.info(RequireLogs.REQUIRE_FOUND_BY_ADMIN_ID.getLogMessage(), require))
-                .map(this.requireMapper::toRequireResponse)
+                .map(this.requireMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -65,7 +65,7 @@ public class RequireService {
         return this.requireRepository.findById(Long.valueOf(requireId))
                 .stream()
                 .peek(require -> log.info(RequireLogs.REQUIRE_FOUND_BY_ID.getLogMessage(), require))
-                .map(this.requireMapper::toRequireResponse)
+                .map(this.requireMapper::toResponse)
                 .findFirst()
                 .orElseGet(RequireResponse::new);
     }
@@ -75,9 +75,9 @@ public class RequireService {
             rollbackFor = Exception.class
     )
     public RequireResponse createOrUpdate(final RequireRequest requireRequest) {
-        return of(this.requireMapper.toRequire(requireRequest))
+        return of(this.requireMapper.toEntity(requireRequest))
                 .map(this.requireRepository::save)
-                .map(this.requireMapper::toRequireResponse)
+                .map(this.requireMapper::toResponse)
                 .map(
                         requireResponse -> {
                             this.kafkaProducer.sendStringRequireMessage(requireResponse);

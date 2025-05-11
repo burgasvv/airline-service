@@ -1,15 +1,18 @@
 package org.burgas.excursionbackend.handler;
 
+import org.burgas.excursionbackend.dto.Request;
+import org.burgas.excursionbackend.dto.Response;
+import org.burgas.excursionbackend.entity.AbstractEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface MapperDataHandler<Request, Entity, Response> {
+public interface MapperDataHandler<T extends Request, S extends AbstractEntity, V extends Response> {
 
-    default <Data> Data getData(final Data first, final Data second) {
+    default <D> D getData(final D first, final D second) {
         return first == null || first == "" ? second : first;
     }
 
-    Entity toEntity(Request request);
+    S toEntity(T t);
 
-    Response toResponse(Entity entity);
+    V toResponse(S s);
 }

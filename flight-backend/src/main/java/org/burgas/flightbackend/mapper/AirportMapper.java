@@ -10,7 +10,7 @@ import org.burgas.flightbackend.repository.AirportRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class AirportMapper implements MapperDataHandler {
+public final class AirportMapper implements MapperDataHandler<AirportRequest, Airport, AirportResponse> {
 
     private final AirportRepository airportRepository;
     private final AddressRepository addressRepository;
@@ -22,7 +22,8 @@ public final class AirportMapper implements MapperDataHandler {
         this.addressMapper = addressMapper;
     }
 
-    public Airport toAirport(final AirportRequest airportRequest) {
+    @Override
+    public Airport toEntity(AirportRequest airportRequest) {
         Long airportId = this.getData(airportRequest.getId(), 0L);
         return this.airportRepository.findById(airportId)
                 .map(
@@ -42,13 +43,14 @@ public final class AirportMapper implements MapperDataHandler {
                 );
     }
 
-    public AirportResponse toAirportResponse(final Airport airport) {
+    @Override
+    public AirportResponse toResponse(Airport airport) {
         return AirportResponse.builder()
                 .id(airport.getId())
                 .name(airport.getName())
                 .address(
                         this.addressRepository.findById(airport.getAddressId())
-                                .map(this.addressMapper::toAddressResponse)
+                                .map(this.addressMapper::toResponse)
                                 .orElseGet(AddressResponse::new)
                 )
                 .opened(airport.getOpened())

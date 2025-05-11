@@ -53,7 +53,7 @@ public class FilialDepartmentService {
         return this.filialDepartmentRepository.findAll()
                 .stream()
                 .peek(filialDepartment -> log.info(FILIAL_DEPARTMENT_FOUND_ALL.getLogMessage(), filialDepartment))
-                .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                .map(this.filialDepartmentMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -63,21 +63,21 @@ public class FilialDepartmentService {
                 .thenApplyAsync(
                         filialDepartments -> filialDepartments.stream()
                                 .peek(filialDepartment -> log.info(FILIAL_DEPARTMENT_FOUND_ALL_ASYNC.getLogMessage(), filialDepartment))
-                                .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                                .map(this.filialDepartmentMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
 
     public Page<FilialDepartmentResponse> findAllPages(final Integer page, final Integer size) {
         return this.filialDepartmentRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "filialId", "departmentId"))
-                .map(this.filialDepartmentMapper::toFilialDepartmentResponse);
+                .map(this.filialDepartmentMapper::toResponse);
     }
 
     public FilialDepartmentResponse findByFilialIdAndDepartmentId(final String filialId, final String departmentId) {
         return this.filialDepartmentRepository.findFilialDepartmentByFilialIdAndDepartmentId(Long.valueOf(filialId), Long.valueOf(departmentId))
                 .stream()
                 .peek(filialDepartment -> log.info(FILIAL_DEPARTMENT_FOUND_BY_FILIAL_AND_DEPARTMENT_ID.getLogMessage(), filialDepartment))
-                .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                .map(this.filialDepartmentMapper::toResponse)
                 .findFirst()
                 .orElseGet(FilialDepartmentResponse::new);
     }
@@ -90,7 +90,7 @@ public class FilialDepartmentService {
                 .thenApplyAsync(
                         filialDepartment -> filialDepartment.stream()
                                 .peek(foundFilialDepartment -> log.info(FILIAL_DEPARTMENT_FOUND_BY_FILIAL_AND_DEPARTMENT_ID_ASYNC.getLogMessage(), foundFilialDepartment))
-                                .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                                .map(this.filialDepartmentMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(FilialDepartmentResponse::new)
                 );
@@ -107,9 +107,9 @@ public class FilialDepartmentService {
         DepartmentResponse departmentResponse = this.departmentService.createOrUpdate(filialDepartmentRequest.getDepartment());
         filialDepartmentRequest.getDepartment().setId(departmentResponse.getId());
 
-        return of(this.filialDepartmentMapper.toFilialDepartment(filialDepartmentRequest))
+        return of(this.filialDepartmentMapper.toEntity(filialDepartmentRequest))
                 .map(this.filialDepartmentRepository::save)
-                .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                .map(this.filialDepartmentMapper::toResponse)
                 .orElseThrow(
                         () -> new FilialDepartmentNotCreatedException(FILIAL_DEPARTMENT_NOT_CREATED.getMessage())
                 );
@@ -129,11 +129,11 @@ public class FilialDepartmentService {
                     DepartmentResponse departmentResponse = this.departmentService.createOrUpdate(filialDepartmentRequest.getDepartment());
                     filialDepartmentRequest.getDepartment().setId(departmentResponse.getId());
 
-                    return this.filialDepartmentMapper.toFilialDepartment(filialDepartmentRequest);
+                    return this.filialDepartmentMapper.toEntity(filialDepartmentRequest);
                 }
         )
                 .thenApplyAsync(this.filialDepartmentRepository::save)
-                .thenApplyAsync(this.filialDepartmentMapper::toFilialDepartmentResponse);
+                .thenApplyAsync(this.filialDepartmentMapper::toResponse);
     }
 
     @Transactional(

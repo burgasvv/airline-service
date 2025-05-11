@@ -1,7 +1,9 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("ALL")
-public final class OrderedTicketResponse {
+public final class OrderedTicketResponse extends Response {
 
     private Long id;
     private IdentityResponse identity;
@@ -27,6 +29,30 @@ public final class OrderedTicketResponse {
 
     public Boolean getClosed() {
         return closed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderedTicketResponse that = (OrderedTicketResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(identity, that.identity) && Objects.equals(ticket, that.ticket) &&
+               Objects.equals(flightSeat, that.flightSeat) && Objects.equals(closed, that.closed);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, identity, ticket, flightSeat, closed);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderedTicketResponse{" +
+               "id=" + id +
+               ", identity=" + identity +
+               ", ticket=" + ticket +
+               ", flightSeat=" + flightSeat +
+               ", closed=" + closed +
+               '}';
     }
 
     public static Builder builder() {

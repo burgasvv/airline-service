@@ -12,7 +12,7 @@ import org.burgas.flightbackend.repository.FilialRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class FilialDepartmentMapper implements MapperDataHandler {
+public final class FilialDepartmentMapper implements MapperDataHandler<FilialDepartmentRequest, FilialDepartment, FilialDepartmentResponse> {
 
     private final FilialDepartmentRepository filialDepartmentRepository;
     private final FilialRepository filialRepository;
@@ -31,7 +31,8 @@ public final class FilialDepartmentMapper implements MapperDataHandler {
         this.departmentMapper = departmentMapper;
     }
 
-    public FilialDepartment toFilialDepartment(final FilialDepartmentRequest filialDepartmentRequest) {
+    @Override
+    public FilialDepartment toEntity(FilialDepartmentRequest filialDepartmentRequest) {
         Long filialDepartmentId = this.getData(filialDepartmentRequest.getId(), 0L);
         return this.filialDepartmentRepository.findById(filialDepartmentId)
                 .map(
@@ -49,17 +50,18 @@ public final class FilialDepartmentMapper implements MapperDataHandler {
                 );
     }
 
-    public FilialDepartmentResponse toFilialDepartmentResponse(final FilialDepartment filialDepartment) {
+    @Override
+    public FilialDepartmentResponse toResponse(FilialDepartment filialDepartment) {
         return FilialDepartmentResponse.builder()
                 .id(filialDepartment.getId())
                 .filial(
                         this.filialRepository.findById(filialDepartment.getFilialId())
-                                .map(this.filialMapper::toFilialResponse)
+                                .map(this.filialMapper::toResponse)
                                 .orElseGet(FilialResponse::new)
                 )
                 .department(
                         this.departmentRepository.findById(filialDepartment.getDepartmentId())
-                                .map(this.departmentMapper::toDepartmentResponse)
+                                .map(this.departmentMapper::toResponse)
                                 .orElseGet(DepartmentResponse::new)
                 )
                 .build();

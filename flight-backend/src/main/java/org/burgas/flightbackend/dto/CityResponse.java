@@ -1,7 +1,9 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class CityResponse {
+public final class CityResponse extends Response {
 
     private Long id;
     private String name;
@@ -17,6 +19,18 @@ public final class CityResponse {
 
     public CountryResponse getCountry() {
         return country;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CityResponse that = (CityResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(country, that.country);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, country);
     }
 
     @Override

@@ -5,12 +5,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @SuppressWarnings(value = "unused")
-public final class Authority implements Serializable {
+public final class Authority extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -31,6 +32,26 @@ public final class Authority implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Authority authority = (Authority) o;
+        return Objects.equals(id, authority.id) && Objects.equals(name, authority.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Authority{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               '}';
     }
 
     public static Builder builder() {

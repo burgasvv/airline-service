@@ -1,7 +1,9 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class FilialResponse {
+public final class FilialResponse extends Response {
 
     private Long id;
     private String name;
@@ -32,6 +34,19 @@ public final class FilialResponse {
 
     public Boolean getOpened() {
         return opened;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        FilialResponse that = (FilialResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) &&
+               Objects.equals(opensAt, that.opensAt) && Objects.equals(closesAt, that.closesAt) && Objects.equals(opened, that.opened);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, address, opensAt, closesAt, opened);
     }
 
     @Override

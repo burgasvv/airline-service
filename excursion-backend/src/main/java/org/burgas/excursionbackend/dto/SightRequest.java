@@ -1,7 +1,9 @@
 package org.burgas.excursionbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class SightRequest {
+public final class SightRequest extends Request {
 
     private Long id;
     private String name;
@@ -47,5 +49,18 @@ public final class SightRequest {
 
     public void setImageId(Long imageId) {
         this.imageId = imageId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        SightRequest that = (SightRequest) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) &&
+               Objects.equals(cityId, that.cityId) && Objects.equals(imageId, that.imageId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, cityId, imageId);
     }
 }

@@ -4,12 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @IdClass(value = FilialDepartmentPK.class)
 @SuppressWarnings("ALL")
-public final class FilialDepartment {
+public final class FilialDepartment extends AbstractEntity implements Serializable {
 
     @Id
     private Long filialId;

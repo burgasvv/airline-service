@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -11,7 +12,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @SuppressWarnings("ALL")
-public final class Flight {
+public final class Flight extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

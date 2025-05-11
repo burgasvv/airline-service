@@ -1,7 +1,9 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class AddressRequest {
+public final class AddressRequest extends Request {
 
     private Long id;
     private Long cityId;
@@ -47,5 +49,29 @@ public final class AddressRequest {
 
     public void setApartment(String apartment) {
         this.apartment = apartment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        AddressRequest that = (AddressRequest) o;
+        return Objects.equals(id, that.id) && Objects.equals(cityId, that.cityId) && Objects.equals(street, that.street) &&
+               Objects.equals(house, that.house) && Objects.equals(apartment, that.apartment);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, cityId, street, house, apartment);
+    }
+
+    @Override
+    public String toString() {
+        return "AddressRequest{" +
+               "id=" + id +
+               ", cityId=" + cityId +
+               ", street='" + street + '\'' +
+               ", house='" + house + '\'' +
+               ", apartment='" + apartment + '\'' +
+               '}';
     }
 }

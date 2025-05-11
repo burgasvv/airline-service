@@ -1,7 +1,9 @@
 package org.burgas.excursionbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class SightResponse {
+public final class SightResponse extends Response {
 
     private Long id;
     private String name;
@@ -27,6 +29,19 @@ public final class SightResponse {
 
     public Long getImageId() {
         return imageId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        SightResponse that = (SightResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) &&
+               Objects.equals(city, that.city) && Objects.equals(imageId, that.imageId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, city, imageId);
     }
 
     @Override

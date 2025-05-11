@@ -47,7 +47,7 @@ public class AddressService {
         return this.addressRepository.findAll()
                 .stream()
                 .peek(address -> log.info(ADDRESS_FOUND_ALL.getLogMessage(), address))
-                .map(this.addressMapper::toAddressResponse)
+                .map(this.addressMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -57,7 +57,7 @@ public class AddressService {
                 .thenApplyAsync(
                         addresses -> addresses.stream()
                                 .peek(address -> log.info(ADDRESS_FOUND_ALL_ASYNC.getLogMessage(), address))
-                                .map(this.addressMapper::toAddressResponse)
+                                .map(this.addressMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
@@ -65,7 +65,7 @@ public class AddressService {
     public Page<AddressResponse> findAllPages(final Integer page, final Integer size) {
         return this.addressRepository
                 .findAll(PageRequest.of(page - 1, size).withSort(Sort.Direction.ASC, "id"))
-                .map(this.addressMapper::toAddressResponse);
+                .map(this.addressMapper::toResponse);
     }
 
     @Transactional(
@@ -73,9 +73,9 @@ public class AddressService {
             rollbackFor = Exception.class
     )
     public AddressResponse createOrUpdateSecured(final AddressRequest addressRequest) {
-        return of(this.addressMapper.toAddress(addressRequest))
+        return of(this.addressMapper.toEntity(addressRequest))
                 .map(this.addressRepository::save)
-                .map(this.addressMapper::toAddressResponse)
+                .map(this.addressMapper::toResponse)
                 .orElseThrow(() -> new AddressNotCreatedException(ADDRESS_NOT_CREATED.getMessage()));
     }
 
@@ -85,9 +85,9 @@ public class AddressService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<AddressResponse> createOrUpdateSecuresAsync(final AddressRequest addressRequest) {
-        return supplyAsync(() -> this.addressMapper.toAddress(addressRequest))
+        return supplyAsync(() -> this.addressMapper.toEntity(addressRequest))
                 .thenApplyAsync(this.addressRepository::save)
-                .thenApplyAsync(this.addressMapper::toAddressResponse);
+                .thenApplyAsync(this.addressMapper::toResponse);
     }
 
     @Transactional(

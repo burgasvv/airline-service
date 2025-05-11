@@ -58,7 +58,7 @@ public class RequireAnswerService {
         return this.requireAnswerRepository.findRequireAnswersByUserId(Long.valueOf(userId))
                 .stream()
                 .peek(requireAnswer -> log.info(REQUIRE_ANSWER_FOUND_ALL_BY_USER_ID.getLogMessage(), requireAnswer))
-                .map(this.requireAnswerMapper::toRequireAnswerResponse)
+                .map(this.requireAnswerMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -66,7 +66,7 @@ public class RequireAnswerService {
         return this.requireAnswerRepository.findRequireAnswersByAdminId(Long.valueOf(adminId))
                 .stream()
                 .peek(requireAnswer -> log.info(REQUIRE_ANSWER_FOUND_ALL_BY_ADMIN_ID.getLogMessage(), requireAnswer))
-                .map(this.requireAnswerMapper::toRequireAnswerResponse)
+                .map(this.requireAnswerMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -90,7 +90,7 @@ public class RequireAnswerService {
                 .map(
                         _ -> {
                             if (requireAnswerRequest.getAllowed()) {
-                                return of(this.requireAnswerMapper.toRequireAnswer(requireAnswerRequest))
+                                return of(this.requireAnswerMapper.toEntity(requireAnswerRequest))
                                         .map(this.requireAnswerRepository::save)
                                         .map(
                                                 requireAnswer -> this.requireAnswerTokenRepository.save(
@@ -111,9 +111,9 @@ public class RequireAnswerService {
                                                 () -> new RequireAnswerNotTransformedException(REQUIRE_ANSWER_NOT_TRANSFORMED.getLogMessages())
                                         );
                             } else {
-                                return of(this.requireAnswerMapper.toRequireAnswer(requireAnswerRequest))
+                                return of(this.requireAnswerMapper.toEntity(requireAnswerRequest))
                                         .map(this.requireAnswerRepository::save)
-                                        .map(this.requireAnswerMapper::toRequireAnswerResponse)
+                                        .map(this.requireAnswerMapper::toResponse)
                                         .map(
                                                 requireAnswerResponse -> {
                                                     this.kafkaProducer.sendStringRequireAnswerMessage(requireAnswerResponse);

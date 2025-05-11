@@ -45,7 +45,7 @@ public class PositionService {
         return this.positionRepository.findAll()
                 .stream()
                 .peek(position -> log.info(POSITION_FOUND_ALL.getLogMessage(), position))
-                .map(this.positionMapper::toPositionResponse)
+                .map(this.positionMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -55,21 +55,21 @@ public class PositionService {
                 .thenApplyAsync(
                         positions -> positions.stream()
                                 .peek(position -> log.info(POSITION_FOUND_ALL_ASYNC.getLogMessage(), position))
-                                .map(this.positionMapper::toPositionResponse)
+                                .map(this.positionMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
 
     public Page<PositionResponse> findAllPages(final Integer page, final Integer size) {
         return this.positionRepository.findAll(PageRequest.of(page - 1, size, Sort.Direction.ASC, "name"))
-                .map(this.positionMapper::toPositionResponse);
+                .map(this.positionMapper::toResponse);
     }
 
     public PositionResponse findById(final String positionId) {
         return this.positionRepository.findById(Long.valueOf(positionId))
                 .stream()
                 .peek(position -> log.info(POSITION_FOUND_BY_ID.getLogMessage(), position))
-                .map(this.positionMapper::toPositionResponse)
+                .map(this.positionMapper::toResponse)
                 .findFirst()
                 .orElseGet(PositionResponse::new);
     }
@@ -80,7 +80,7 @@ public class PositionService {
                 .thenApplyAsync(
                         position -> position.stream()
                                 .peek(foundPosition -> log.info(POSITION_FOUND_BY_ID_ASYNC.getLogMessage(), foundPosition))
-                                .map(this.positionMapper::toPositionResponse)
+                                .map(this.positionMapper::toResponse)
                                 .findFirst()
                                 .orElseGet(PositionResponse::new)
                 );
@@ -91,9 +91,9 @@ public class PositionService {
             rollbackFor = Exception.class
     )
     public PositionResponse createOrUpdate(final PositionRequest positionRequest) {
-        return of(this.positionMapper.toPosition(positionRequest))
+        return of(this.positionMapper.toEntity(positionRequest))
                 .map(this.positionRepository::save)
-                .map(this.positionMapper::toPositionResponse)
+                .map(this.positionMapper::toResponse)
                 .orElseThrow(
                         () -> new PositionNotCreatedException(POSITION_NOT_CREATED.getMessage())
                 );
@@ -105,9 +105,9 @@ public class PositionService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<PositionResponse> createOrUpdateAsync(final PositionRequest positionRequest) {
-        return supplyAsync(() -> this.positionMapper.toPosition(positionRequest))
+        return supplyAsync(() -> this.positionMapper.toEntity(positionRequest))
                 .thenApplyAsync(this.positionRepository::save)
-                .thenApplyAsync(this.positionMapper::toPositionResponse);
+                .thenApplyAsync(this.positionMapper::toResponse);
     }
 
     @Transactional(

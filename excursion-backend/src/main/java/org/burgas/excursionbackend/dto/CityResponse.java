@@ -1,7 +1,9 @@
 package org.burgas.excursionbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class CityResponse {
+public final class CityResponse extends Response {
 
     private Long id;
     private String name;
@@ -37,6 +39,20 @@ public final class CityResponse {
 
     public Long getImageId() {
         return imageId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CityResponse that = (CityResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) &&
+               Objects.equals(population, that.population) && Objects.equals(country, that.country) &&
+               Objects.equals(capital, that.capital) && Objects.equals(imageId, that.imageId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, population, country, capital, imageId);
     }
 
     @Override

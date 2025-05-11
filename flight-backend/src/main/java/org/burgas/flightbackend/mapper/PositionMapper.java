@@ -10,7 +10,7 @@ import org.burgas.flightbackend.repository.PositionRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class PositionMapper implements MapperDataHandler {
+public final class PositionMapper implements MapperDataHandler<PositionRequest, Position, PositionResponse> {
 
     private final PositionRepository positionRepository;
     private final DepartmentRepository departmentRepository;
@@ -22,7 +22,8 @@ public final class PositionMapper implements MapperDataHandler {
         this.departmentMapper = departmentMapper;
     }
 
-    public Position toPosition(final PositionRequest positionRequest) {
+    @Override
+    public Position toEntity(PositionRequest positionRequest) {
         Long positionId = this.getData(positionRequest.getId(), 0L);
         return this.positionRepository.findById(positionId)
                 .map(
@@ -42,14 +43,15 @@ public final class PositionMapper implements MapperDataHandler {
                 );
     }
 
-    public PositionResponse toPositionResponse(final Position position) {
+    @Override
+    public PositionResponse toResponse(Position position) {
         return PositionResponse.builder()
                 .id(position.getId())
                 .name(position.getName())
                 .description(position.getDescription())
                 .department(
                         this.departmentRepository.findById(position.getDepartmentId())
-                                .map(this.departmentMapper::toDepartmentResponse)
+                                .map(this.departmentMapper::toResponse)
                                 .orElseGet(DepartmentResponse::new)
                 )
                 .build();

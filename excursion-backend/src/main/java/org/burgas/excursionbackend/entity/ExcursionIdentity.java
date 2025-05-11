@@ -4,10 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 @Entity
 @IdClass(value = ExcursionIdentityPK.class)
 @SuppressWarnings("ALL")
-public final class ExcursionIdentity {
+public final class ExcursionIdentity extends AbstractEntity implements Serializable {
 
     @Id
     private Long excursionId;
@@ -21,6 +24,18 @@ public final class ExcursionIdentity {
 
     public Long getIdentityId() {
         return identityId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ExcursionIdentity that = (ExcursionIdentity) o;
+        return Objects.equals(excursionId, that.excursionId) && Objects.equals(identityId, that.identityId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(excursionId, identityId);
     }
 
     @Override

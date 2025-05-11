@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("ALL")
-public final class FilialRequest {
+public final class FilialRequest extends Request {
 
     private Long id;
     private Long hotelId;

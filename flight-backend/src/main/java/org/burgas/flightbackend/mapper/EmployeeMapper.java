@@ -7,7 +7,7 @@ import org.burgas.flightbackend.repository.*;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class EmployeeMapper implements MapperDataHandler {
+public final class EmployeeMapper implements MapperDataHandler<EmployeeRequest, Employee, EmployeeResponse> {
 
     private final EmployeeRepository employeeRepository;
     private final IdentityRepository identityRepository;
@@ -35,7 +35,8 @@ public final class EmployeeMapper implements MapperDataHandler {
         this.filialDepartmentMapper = filialDepartmentMapper;
     }
 
-    public Employee toEmployee(final EmployeeRequest employeeRequest) {
+    @Override
+    public Employee toEntity(EmployeeRequest employeeRequest) {
         Long employeeId = this.getData(employeeRequest.getId(), 0L);
         return this.employeeRepository.findById(employeeId)
                 .map(
@@ -67,7 +68,8 @@ public final class EmployeeMapper implements MapperDataHandler {
                 );
     }
 
-    public EmployeeResponse toEmployeeResponse(final Employee employee) {
+    @Override
+    public EmployeeResponse toResponse(Employee employee) {
         return EmployeeResponse.builder()
                 .id(employee.getId())
                 .name(employee.getName())
@@ -77,22 +79,22 @@ public final class EmployeeMapper implements MapperDataHandler {
                 .passport(employee.getPassport())
                 .identity(
                         this.identityRepository.findById(employee.getIdentityId())
-                                .map(this.identityMapper::toIdentityResponse)
+                                .map(this.identityMapper::toResponse)
                                 .orElseGet(IdentityResponse::new)
                 )
                 .address(
                         this.addressRepository.findById(employee.getAddressId())
-                                .map(this.addressMapper::toAddressResponse)
+                                .map(this.addressMapper::toResponse)
                                 .orElseGet(AddressResponse::new)
                 )
                 .position(
                         this.positionRepository.findById(employee.getPositionId())
-                                .map(this.positionMapper::toPositionResponse)
+                                .map(this.positionMapper::toResponse)
                                 .orElseGet(PositionResponse::new)
                 )
                 .filialDepartment(
                         this.filialDepartmentRepository.findById(employee.getFilialDepartmentId())
-                                .map(this.filialDepartmentMapper::toFilialDepartmentResponse)
+                                .map(this.filialDepartmentMapper::toResponse)
                                 .orElseGet(FilialDepartmentResponse::new)
                 )
                 .build();

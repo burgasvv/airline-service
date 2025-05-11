@@ -77,7 +77,7 @@ public class FilialService {
         return this.filialRepository.findAll()
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_ALL.getLogMessage(), filial))
-                .map(this.filialMapper::toFilialResponse)
+                .map(this.filialMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -87,21 +87,21 @@ public class FilialService {
                 .thenApplyAsync(
                         filials -> filials.stream()
                                 .peek(filial -> log.info(FILIAL_FOUND_ALL_ASYNC.getLogMessage(), filial))
-                                .map(this.filialMapper::toFilialResponse)
+                                .map(this.filialMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
 
     public Page<FilialResponse> findAllPages(final Integer page, final Integer size) {
         return this.filialRepository.findAll(PageRequest.of(page - 1, size).withSort(Sort.Direction.ASC, "name"))
-                .map(this.filialMapper::toFilialResponse);
+                .map(this.filialMapper::toResponse);
     }
 
     public List<FilialResponse> findByCountryId(final String countryId) {
         return this.filialRepository.findFilialsByCountryId(Long.valueOf(countryId))
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_BY_COUNTRY_ID.getLogMessage(), filial))
-                .map(this.filialMapper::toFilialResponse)
+                .map(this.filialMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -111,7 +111,7 @@ public class FilialService {
                 .thenApplyAsync(
                         filials -> filials.stream()
                                 .peek(filial -> log.info(FILIAL_FOUND_BY_COUNTRY_ID_ASYNC.getLogMessage(), filial))
-                                .map(this.filialMapper::toFilialResponse)
+                                .map(this.filialMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
@@ -120,7 +120,7 @@ public class FilialService {
         return this.filialRepository.findFilialsByCityId(Long.valueOf(cityId))
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_BY_CITY_ID.getLogMessage(), filial))
-                .map(this.filialMapper::toFilialResponse)
+                .map(this.filialMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -130,7 +130,7 @@ public class FilialService {
                 .thenApplyAsync(
                         filials -> filials.stream()
                                 .peek(filial -> log.info(FILIAL_FOUND_BY_CITY_ID_ASYNC.getLogMessage(), filial))
-                                .map(this.filialMapper::toFilialResponse)
+                                .map(this.filialMapper::toResponse)
                                 .collect(Collectors.toList())
                 );
     }
@@ -140,14 +140,14 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public FilialResponse createOrUpdate(final FilialRequest filialRequest) {
-        return of(this.addressMapper.toAddress(filialRequest.getAddress()))
+        return of(this.addressMapper.toEntity(filialRequest.getAddress()))
                 .map(this.addressRepository::save)
                 .map(
                         address -> {
                             filialRequest.getAddress().setId(address.getId());
-                            return of(this.filialMapper.toFilial(filialRequest))
+                            return of(this.filialMapper.toEntity(filialRequest))
                                     .map(this.filialRepository::save)
-                                    .map(this.filialMapper::toFilialResponse)
+                                    .map(this.filialMapper::toResponse)
                                     .orElseThrow(
                                             () -> new FilialNotCreatedException(FILIAL_NOT_CREATED.getMessage())
                                     );
@@ -164,15 +164,15 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<FilialResponse> createOrUpdateAsync(final FilialRequest filialRequest) {
-        return supplyAsync(() -> this.addressMapper.toAddress(filialRequest.getAddress()))
+        return supplyAsync(() -> this.addressMapper.toEntity(filialRequest.getAddress()))
                 .thenApplyAsync(this.addressRepository::save)
                 .thenApplyAsync(
                         address -> {
                             filialRequest.getAddress().setId(address.getId());
                             try {
-                                return supplyAsync(() -> this.filialMapper.toFilial(filialRequest))
+                                return supplyAsync(() -> this.filialMapper.toEntity(filialRequest))
                                         .thenApplyAsync(this.filialRepository::save)
-                                        .thenApplyAsync(this.filialMapper::toFilialResponse)
+                                        .thenApplyAsync(this.filialMapper::toResponse)
                                         .get();
 
                             } catch (InterruptedException | ExecutionException e) {

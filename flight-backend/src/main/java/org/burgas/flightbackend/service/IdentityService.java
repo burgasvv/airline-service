@@ -60,7 +60,7 @@ public class IdentityService {
         return this.identityRepository.findAll()
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_ALL.getLogMessage(), identity))
-                .map(this.identityMapper::toIdentityResponse)
+                .map(this.identityMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -68,7 +68,7 @@ public class IdentityService {
         return this.identityRepository.findById(Long.parseLong(identityId))
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BY_ID.getLogMessage(), identity))
-                .map(this.identityMapper::toIdentityResponse)
+                .map(this.identityMapper::toResponse)
                 .findFirst()
                 .orElseGet(IdentityResponse::new);
     }
@@ -77,7 +77,7 @@ public class IdentityService {
         return this.identityRepository.findIdentityByUsername(username)
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BY_USERNAME.getLogMessage(), identity))
-                .map(this.identityMapper::toIdentityResponse)
+                .map(this.identityMapper::toResponse)
                 .findFirst()
                 .orElseGet(IdentityResponse::new);
     }
@@ -87,9 +87,9 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public IdentityResponse createOrUpdate(final IdentityRequest identityRequest) {
-        return of(this.identityMapper.toIdentity(identityRequest))
+        return of(this.identityMapper.toEntity(identityRequest))
                 .map(this.identityRepository::save)
-                .map(this.identityMapper::toIdentityResponse)
+                .map(this.identityMapper::toResponse)
                 .orElseThrow(
                         () -> new IdentityNotCreatedException(IDENTITY_NOT_CREATED.getMessage())
                 );
@@ -142,7 +142,7 @@ public class IdentityService {
                                             this.restoreTokenRepository
                                                     .deleteRestoreTokenByValueAndIdentityId(UUID.fromString(token), Long.valueOf(identityId));
                                             return of(saved)
-                                                    .map(this.identityMapper::toIdentityResponse)
+                                                    .map(this.identityMapper::toResponse)
                                                     .orElseGet(IdentityResponse::new);
                                         }
                                 )

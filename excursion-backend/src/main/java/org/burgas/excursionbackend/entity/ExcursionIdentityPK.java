@@ -39,6 +39,14 @@ public final class ExcursionIdentityPK {
         return Objects.hash(excursionId, identityId);
     }
 
+    @Override
+    public String toString() {
+        return "ExcursionIdentityPK{" +
+               "excursionId=" + excursionId +
+               ", identityId=" + identityId +
+               '}';
+    }
+
     public static Builder builder() {
         return new Builder();
     }

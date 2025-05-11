@@ -1,7 +1,9 @@
 package org.burgas.flightbackend.dto;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
-public final class EmployeeRequest {
+public final class EmployeeRequest extends Request {
 
     private Long id;
     private String name;
@@ -92,5 +94,36 @@ public final class EmployeeRequest {
 
     public void setFilialDepartmentId(Long filialDepartmentId) {
         this.filialDepartmentId = filialDepartmentId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeRequest that = (EmployeeRequest) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(surname, that.surname) &&
+               Objects.equals(patronymic, that.patronymic) && Objects.equals(about, that.about) && Objects.equals(passport, that.passport) &&
+               Objects.equals(identityId, that.identityId) && Objects.equals(address, that.address) &&
+               Objects.equals(positionId, that.positionId) && Objects.equals(filialDepartmentId, that.filialDepartmentId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, patronymic, about, passport, identityId, address, positionId, filialDepartmentId);
+    }
+
+    @Override
+    public String toString() {
+        return "EmployeeRequest{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", surname='" + surname + '\'' +
+               ", patronymic='" + patronymic + '\'' +
+               ", about='" + about + '\'' +
+               ", passport='" + passport + '\'' +
+               ", identityId=" + identityId +
+               ", address=" + address +
+               ", positionId=" + positionId +
+               ", filialDepartmentId=" + filialDepartmentId +
+               '}';
     }
 }

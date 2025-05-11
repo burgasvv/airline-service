@@ -8,7 +8,7 @@ import org.burgas.flightbackend.repository.DepartmentRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class DepartmentMapper implements MapperDataHandler {
+public final class DepartmentMapper implements MapperDataHandler<DepartmentRequest, Department, DepartmentResponse> {
 
     private final DepartmentRepository departmentRepository;
 
@@ -16,7 +16,8 @@ public final class DepartmentMapper implements MapperDataHandler {
         this.departmentRepository = departmentRepository;
     }
 
-    public Department toDepartment(final DepartmentRequest departmentRequest) {
+    @Override
+    public Department toEntity(DepartmentRequest departmentRequest) {
         Long departmentId = this.getData(departmentRequest.getId(), 0L);
         return this.departmentRepository.findById(departmentId)
                 .map(
@@ -34,7 +35,8 @@ public final class DepartmentMapper implements MapperDataHandler {
                 );
     }
 
-    public DepartmentResponse toDepartmentResponse(final Department department) {
+    @Override
+    public DepartmentResponse toResponse(Department department) {
         return DepartmentResponse.builder()
                 .id(department.getId())
                 .name(department.getName())
