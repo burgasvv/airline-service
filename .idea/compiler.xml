@@ -11,7 +11,7 @@
         </processorPath>
         <module name="hotel-backend" />
       </profile>
-      <profile name="Annotation profile for excursion-backend" enabled="true">
+      <profile name="Annotation profile for flight-backend" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
