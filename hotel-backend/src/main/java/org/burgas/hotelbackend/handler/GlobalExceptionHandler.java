@@ -188,4 +188,20 @@ public class GlobalExceptionHandler {
                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                 .body(exception.getMessage());
     }
+
+    @ExceptionHandler(PositionNotCreatedOrUpdatedException.class)
+    public ResponseEntity<String> handlePositionNotCreatedOrUpdatedException(final PositionNotCreatedOrUpdatedException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(PositionNotFoundException.class)
+    public ResponseEntity<String> handlePositionNotFoundException(final PositionNotFoundException exception) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
 }

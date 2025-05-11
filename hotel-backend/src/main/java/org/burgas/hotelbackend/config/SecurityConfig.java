@@ -91,7 +91,12 @@ public class SecurityConfig {
                                         "/departments/by-id", "/departments/by-id/async",
                                         "/departments/by-name", "/departments/by-name/async",
                                         "/departments/create-update", "/departments/create-update/async",
-                                        "/departments/delete", "/departments/delete/async"
+                                        "/departments/delete", "/departments/delete/async",
+
+                                        "/positions", "/positions/async", "/positions/pages/{page}",
+                                        "/positions/by-id", "/positions/by-id/async",
+                                        "/positions/create-update", "/positions/create-update/async",
+                                        "/positions/delete", "/positions/delete/async"
                                 )
                                 .hasAnyAuthority(ADMIN, EMPLOYEE)
 

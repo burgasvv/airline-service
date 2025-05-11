@@ -395,3 +395,62 @@ Content-Type: application/json
 DELETE /departments/delete?departmentId=12
 Host: localhost:9020
 Authorization: Basic admin@gmail.com admin
+
+
+
+### Position Requests
+
+
+
+###
+GET /positions
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /positions/async
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /positions/pages/1?size=6
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /positions/by-id?positionId=1
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /positions/by-id/async?positionId=2
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /positions/create-update
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "New position",
+    "description": "Description for new Position",
+    "departmentId": 1
+}
+
+###
+POST /positions/create-update
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "id": 19,
+    "name": "New Position EDITED"
+}
+
+###
+DELETE /positions/delete?positionId=19
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
