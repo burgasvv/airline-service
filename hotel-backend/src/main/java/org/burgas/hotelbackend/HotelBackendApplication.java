@@ -1,5 +1,6 @@
 package org.burgas.hotelbackend;
 
+import org.burgas.hotelbackend.filter.EmployeeWebFilter;
 import org.burgas.hotelbackend.filter.IdentityWebFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +16,7 @@ import java.util.concurrent.Executors;
 @SpringBootApplication
 @ServletComponentScan(
         basePackageClasses = {
-                IdentityWebFilter.class
+                IdentityWebFilter.class, EmployeeWebFilter.class
         }
 )
 public class HotelBackendApplication {
@@ -31,6 +32,6 @@ public class HotelBackendApplication {
 
     @Bean
     public AsyncTaskExecutor taskExecutor() {
-        return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
+        return new TaskExecutorAdapter(Executors.newCachedThreadPool());
     }
 }

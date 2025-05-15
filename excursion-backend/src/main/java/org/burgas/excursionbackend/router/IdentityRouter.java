@@ -28,13 +28,13 @@ public class IdentityRouter {
         return route()
                 .filter(new IdentityFilterFunction())
                 .GET(
-                        "/identities", _ -> ServerResponse
+                        "/identities", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findAll())
                 )
                 .GET(
-                        "/identities/sse", _ -> ServerResponse
+                        "/identities/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             identityService.findAll().forEach(
@@ -53,7 +53,7 @@ public class IdentityRouter {
                                 )
                 )
                 .GET(
-                        "/identities/async", _ -> ServerResponse
+                        "/identities/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findAllAsync().get())

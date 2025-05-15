@@ -20,13 +20,13 @@ public class EmployeeRouter {
         return RouterFunctions
                 .route()
                 .GET(
-                        "/employees", _ -> ServerResponse
+                        "/employees", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(employeeService.finaAll())
                 )
                 .GET(
-                        "/employees/async", _ -> ServerResponse
+                        "/employees/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(employeeService.findAllAsync())

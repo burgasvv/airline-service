@@ -74,6 +74,32 @@ public class SecurityConfig {
                                 .hasAnyAuthority(ADMIN, EMPLOYEE, CLIENT)
 
                                 .requestMatchers(
+                                        "/employees/upload-image", "/employees/upload-image/async",
+                                        "/employees/change-image", "/employees/change-image/async",
+                                        "/employees/delete-image", "/employees/delete-image/async"
+                                )
+                                .hasAnyAuthority(EMPLOYEE)
+
+                                .requestMatchers(
+                                        "/authorities", "/authorities/async",
+                                        "/authorities/by-id", "/authorities/by-id/async",
+                                        "/authorities/create-update", "/authorities/create-update/async",
+                                        "/authorities/delete", "/authorities/delete/async",
+
+                                        "/identities", "/identities/async", "/identities/pages/{page}",
+                                        "/identities/activate-deactivate", "/identities/activate-deactivate/async",
+
+                                        "/countries/create-update", "/countries/create-update/async",
+                                        "/countries/delete", "/countries/delete/async",
+
+                                        "/cities/create-update", "/cities/create-update/async",
+                                        "/cities/delete", "/cities/delete/async",
+
+                                        "/addresses", "/addresses/async", "/addresses/pages/{page}",
+                                        "/addresses/by-id", "/addresses/by-id/async",
+                                        "/addresses/create-update", "/addresses/create-update/async",
+                                        "/addresses/delete", "/addresses/delete/async",
+
                                         "/hotels/create-update", "/hotels/create-update/async",
                                         "/hotels/delete", "/hotels/delete/async",
                                         "/hotels/upload-image", "/hotels/upload-image/async",
@@ -96,29 +122,12 @@ public class SecurityConfig {
                                         "/positions", "/positions/async", "/positions/pages/{page}",
                                         "/positions/by-id", "/positions/by-id/async",
                                         "/positions/create-update", "/positions/create-update/async",
-                                        "/positions/delete", "/positions/delete/async"
-                                )
-                                .hasAnyAuthority(ADMIN, EMPLOYEE)
+                                        "/positions/delete", "/positions/delete/async",
 
-                                .requestMatchers(
-                                        "/authorities", "/authorities/async",
-                                        "/authorities/by-id", "/authorities/by-id/async",
-                                        "/authorities/create-update", "/authorities/create-update/async",
-                                        "/authorities/delete", "/authorities/delete/async",
-
-                                        "/identities", "/identities/async", "/identities/pages/{page}",
-                                        "/identities/activate-deactivate", "/identities/activate-deactivate/async",
-
-                                        "/countries/create-update", "/countries/create-update/async",
-                                        "/countries/delete", "/countries/delete/async",
-
-                                        "/cities/create-update", "/cities/create-update/async",
-                                        "/cities/delete", "/cities/delete/async",
-
-                                        "/addresses", "/addresses/async", "/addresses/pages/{page}",
-                                        "/addresses/by-id", "/addresses/by-id/async",
-                                        "/addresses/create-update", "/addresses/create-update/async",
-                                        "/addresses/delete", "/addresses/delete/async"
+                                        "/employees", "/employees/async", "/employees/pages/{page}",
+                                        "/employees/by-id", "/employees/by-id/async",
+                                        "/employees/create-update", "/employees/create-update/async",
+                                        "/employees/delete", "/employees/delete/async"
                                 )
                                 .hasAnyAuthority(ADMIN)
                 )

@@ -134,7 +134,7 @@ public class IdentityService {
         return this.restoreTokenRepository
                 .existsRestoreTokenByValueAndIdentityId(UUID.fromString(token), Long.valueOf(identityId))
                 .map(
-                        _ -> this.identityRepository.findById(Long.valueOf(identityId))
+                        aBoolean -> this.identityRepository.findById(Long.valueOf(identityId))
                                 .map(
                                         identity -> {
                                             identity.setPassword(this.passwordEncoder.encode(password));

@@ -27,13 +27,13 @@ public class AuthorityRouter {
     public RouterFunction<ServerResponse> authorityRoutes(final AuthorityService authorityService) {
         return route()
                 .GET(
-                        "/authorities", _ -> ServerResponse
+                        "/authorities", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(authorityService.findAll())
                 )
                 .GET(
-                        "/authorities/sse", _ -> ServerResponse
+                        "/authorities/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             authorityService.findAll()
@@ -55,7 +55,7 @@ public class AuthorityRouter {
 
                 )
                 .GET(
-                        "/authorities/async", _ -> ServerResponse
+                        "/authorities/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(authorityService.findAllAsync().get())

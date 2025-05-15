@@ -28,6 +28,6 @@ public class ExcursionBackendApplication {
 
     @Bean
     public AsyncTaskExecutor taskExecutor() {
-        return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
+        return new TaskExecutorAdapter(Executors.newCachedThreadPool());
     }
 }

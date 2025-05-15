@@ -25,7 +25,7 @@ public class FlightRouter {
     public RouterFunction<ServerResponse> flightRoutes(final FlightService flightService) {
         return route()
                 .GET(
-                        "/flights", _ -> ServerResponse
+                        "/flights", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(flightService.findAll())

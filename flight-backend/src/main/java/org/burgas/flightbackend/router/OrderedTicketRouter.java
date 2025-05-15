@@ -26,7 +26,7 @@ public class OrderedTicketRouter {
         return route()
                 .filter(new IdentityFilterFunction())
                 .GET(
-                        "/ordered-tickets", _ -> ServerResponse
+                        "/ordered-tickets", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(orderedTicketService.findAll())

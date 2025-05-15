@@ -97,7 +97,6 @@ create table if not exists employee (
     passport varchar not null ,
     identity_id bigint references identity(id) on delete set null on update cascade ,
     filial_id bigint references filial(id) on delete set null on update cascade ,
-    department_id bigint references department(id) on delete set null on update cascade ,
     position_id bigint references position(id) on delete set null on update cascade ,
     image_id bigint references image(id) on delete set null on update cascade
 );
@@ -263,6 +262,14 @@ insert into position(name, description, department_id) values ('Главный �
 insert into position(name, description, department_id) values ('Консьерж','Описание должности Консьерж',8);
 insert into position(name, description, department_id) values ('Главный Бухгалтер','Описание должности Главный Бухгалтер',11);
 insert into position(name, description, department_id) values ('Бухгалтер','Описание должности Бухгалтер',11);
+
+insert into employee(name, surname, patronymic, about, passport, identity_id, filial_id, position_id, image_id)
+values ('Олег','Вангаев','Игоревич','Краткое описание профиля личности','8459 349087',
+        2,5,1, null);
+
+insert into employee(name, surname, patronymic, about, passport, identity_id, filial_id, position_id, image_id)
+values ('Оксана','Парикова','Валерьевна','Краткое описание профиля личности','5621 904578',
+        null,5,1, null);
 
 insert into room_type(type) values ('LUX');
 insert into room_type(type) values ('ECONOMY');

@@ -27,13 +27,13 @@ public class SightRouter {
     public RouterFunction<ServerResponse> sightRoutes(final SightService sightService) {
         return route()
                 .GET(
-                        "/sights", _ -> ServerResponse
+                        "/sights", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(sightService.findAll())
                 )
                 .GET(
-                        "/sights/sse", _ -> ServerResponse
+                        "/sights/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             sightService.findAll().forEach(
@@ -52,7 +52,7 @@ public class SightRouter {
                                 )
                 )
                 .GET(
-                        "/sights/async", _ -> ServerResponse
+                        "/sights/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(sightService.findAllAsync().get())

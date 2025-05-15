@@ -204,4 +204,36 @@ public class GlobalExceptionHandler {
                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                 .body(exception.getMessage());
     }
+
+    @ExceptionHandler(PassportNotMatchesException.class)
+    public ResponseEntity<String> handlePassportNotMatchesException(final PassportNotMatchesException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(EmployeeNotCreatedOrUpdatedException.class)
+    public ResponseEntity<String> handleEmployeeNotCreatedOrUpdatedException(final EmployeeNotCreatedOrUpdatedException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    public ResponseEntity<String> handleEmployeeNotFoundException(final EmployeeNotFoundException exception) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(EmployeeNotAuthorizedException.class)
+    public ResponseEntity<String> handleEmployeeNotAuthorizedException(final EmployeeNotAuthorizedException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
 }

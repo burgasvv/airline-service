@@ -140,7 +140,7 @@ public class EmployeeService {
                                                 }
                                         )
                                         .map(
-                                                _ -> {
+                                                identity -> {
                                                     this.requireAnswerTokenRepository.deleteById(requireAnswerToken.getId());
                                                     return of(this.employeeMapper.toEntity(employeeRequest))
                                                             .map(this.employeeRepository::save)

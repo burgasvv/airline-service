@@ -22,13 +22,13 @@ public class AddressRouter {
     public RouterFunction<ServerResponse> addressRoutes(final AddressService addressService) {
         return RouterFunctions
                 .route(
-                        GET("/addresses"), _ -> ServerResponse
+                        GET("/addresses"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(addressService.findAll())
                 )
                 .andRoute(
-                        GET("/addresses/async"), _ -> ServerResponse
+                        GET("/addresses/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(addressService.findAllAsync().get())

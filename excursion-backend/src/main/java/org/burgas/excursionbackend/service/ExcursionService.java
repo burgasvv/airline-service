@@ -203,7 +203,7 @@ public class ExcursionService {
         )
                 .filter(exists -> !exists)
                 .map(
-                        _ -> this.excursionRepository.findExcursionByIdAndPassed(Long.valueOf(excursionId), false)
+                        aBoolean -> this.excursionRepository.findExcursionByIdAndPassed(Long.valueOf(excursionId), false)
                                 .stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_BEFORE_ADDING_BY_IDENTITY.getLogMessage(), excursion))
                                 .filter(excursion -> !excursion.getPassed())

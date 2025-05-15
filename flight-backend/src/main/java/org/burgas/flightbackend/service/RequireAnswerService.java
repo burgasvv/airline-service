@@ -88,7 +88,7 @@ public class RequireAnswerService {
                         }
                 )
                 .map(
-                        _ -> {
+                        require -> {
                             if (requireAnswerRequest.getAllowed()) {
                                 return of(this.requireAnswerMapper.toEntity(requireAnswerRequest))
                                         .map(this.requireAnswerRepository::save)

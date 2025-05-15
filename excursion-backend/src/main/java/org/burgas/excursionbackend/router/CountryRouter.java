@@ -27,13 +27,13 @@ public class CountryRouter {
     public RouterFunction<ServerResponse> countryRoutes(final CountryService countryService) {
         return route()
                 .GET(
-                        "/countries", _ -> ServerResponse
+                        "/countries", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(countryService.findAll())
                 )
                 .GET(
-                        "/countries/sse", _ -> ServerResponse
+                        "/countries/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             countryService.findAll().forEach(
@@ -52,7 +52,7 @@ public class CountryRouter {
                                 )
                 )
                 .GET(
-                        "/countries/async", _ -> ServerResponse
+                        "/countries/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(countryService.findAllAsync().get())

@@ -25,14 +25,14 @@ public class FilialDepartmentRouter {
     public RouterFunction<ServerResponse> filialDepartmentRoutes(final FilialDepartmentService filialDepartmentService) {
         return RouterFunctions
                 .route(
-                        GET("/filial-departments"), _ ->
+                        GET("/filial-departments"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(filialDepartmentService.findAll())
                 )
                 .andRoute(
-                        GET("/filial-departments/async"), _ -> ServerResponse
+                        GET("/filial-departments/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(filialDepartmentService.findAllAsync())

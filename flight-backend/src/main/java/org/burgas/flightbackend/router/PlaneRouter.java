@@ -25,13 +25,13 @@ public class PlaneRouter {
     public RouterFunction<ServerResponse> planeRoutes(final PlaneService planeService) {
         return route()
                 .GET(
-                        "/planes", _ -> ServerResponse
+                        "/planes", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(planeService.findAll())
                 )
                 .GET(
-                        "/planes/async", _ -> ServerResponse
+                        "/planes/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(planeService.findAllAsync().get())

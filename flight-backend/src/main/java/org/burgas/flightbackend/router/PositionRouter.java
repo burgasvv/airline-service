@@ -27,13 +27,13 @@ public class PositionRouter {
     public RouterFunction<ServerResponse> positionRoutes(final PositionService positionService) {
         return RouterFunctions
                 .route(
-                        GET("/positions"), _ -> ServerResponse
+                        GET("/positions"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(positionService.findAll())
                 )
                 .andRoute(
-                        GET("/positions/async"), _ -> ServerResponse
+                        GET("/positions/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(positionService.findAllAsync().get())

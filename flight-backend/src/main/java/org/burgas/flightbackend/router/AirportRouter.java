@@ -22,14 +22,14 @@ public class AirportRouter {
     public RouterFunction<ServerResponse> airportRoutes(final AirportService airportService) {
         return RouterFunctions
                 .route(
-                        GET("/airports"), _ ->
+                        GET("/airports"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(airportService.findAll())
                 )
                 .andRoute(
-                        GET("/airports/async"), _ -> ServerResponse
+                        GET("/airports/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(airportService.findAllAsync().get())

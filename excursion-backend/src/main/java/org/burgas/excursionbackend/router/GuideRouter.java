@@ -27,13 +27,13 @@ public class GuideRouter {
     public RouterFunction<ServerResponse> guideRoutes(final GuideService guideService) {
         return route()
                 .GET(
-                        "/guides", _ -> ServerResponse
+                        "/guides", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(guideService.findAll())
                 )
                 .GET(
-                        "/guides/sse", _ -> ServerResponse
+                        "/guides/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             guideService.findAll().forEach(
@@ -52,7 +52,7 @@ public class GuideRouter {
                                 )
                 )
                 .GET(
-                        "/guides/async", _ -> ServerResponse
+                        "/guides/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(guideService.findAllAsync().get())

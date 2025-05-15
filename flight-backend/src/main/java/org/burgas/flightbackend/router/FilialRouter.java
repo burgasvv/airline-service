@@ -22,14 +22,14 @@ public class FilialRouter {
     public RouterFunction<ServerResponse> filialRoutes(final FilialService filialService) {
         return RouterFunctions
                 .route(
-                        GET("/filials"), _ ->
+                        GET("/filials"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(filialService.findAll())
                 )
                 .andRoute(
-                        GET("/filials/async"), _ -> ServerResponse
+                        GET("/filials/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(filialService.findAllAsync().get())

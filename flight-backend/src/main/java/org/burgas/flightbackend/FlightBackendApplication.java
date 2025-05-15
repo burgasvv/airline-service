@@ -28,6 +28,6 @@ public class FlightBackendApplication {
 
     @Bean
     public AsyncTaskExecutor taskExecutor() {
-        return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
+        return new TaskExecutorAdapter(Executors.newCachedThreadPool());
     }
 }

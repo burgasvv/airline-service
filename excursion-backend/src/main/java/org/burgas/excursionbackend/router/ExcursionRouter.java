@@ -29,13 +29,13 @@ public class ExcursionRouter {
         return route()
                 .filter(new IdentityFilterFunction())
                 .GET(
-                        "/excursions", _ -> ServerResponse
+                        "/excursions", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findAll())
                 )
                 .GET(
-                        "/excursions/sse", _ -> ServerResponse
+                        "/excursions/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             excursionService.findAll().forEach(
@@ -54,7 +54,7 @@ public class ExcursionRouter {
                                 )
                 )
                 .GET(
-                        "/excursions/async", _ -> ServerResponse
+                        "/excursions/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findAllAsync().get())

@@ -27,13 +27,13 @@ public class CityRouter {
     public RouterFunction<ServerResponse> cityRoutes(final CityService cityService) {
         return route()
                 .GET(
-                        "/cities", _ -> ServerResponse
+                        "/cities", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(cityService.findAll())
                 )
                 .GET(
-                        "/cities/sse", _ -> ServerResponse
+                        "/cities/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             cityService.findAll().forEach(
@@ -52,7 +52,7 @@ public class CityRouter {
                                 )
                 )
                 .GET(
-                        "/cities/async", _ -> ServerResponse
+                        "/cities/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(cityService.findAllAsync().get())

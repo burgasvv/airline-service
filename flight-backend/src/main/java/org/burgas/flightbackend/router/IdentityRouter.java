@@ -24,7 +24,7 @@ public class IdentityRouter {
         return route()
                 .filter(new IdentityFilterFunction())
                 .GET(
-                        "/identities", _ -> ServerResponse
+                        "/identities", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findAll())

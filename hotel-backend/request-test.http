@@ -454,3 +454,50 @@ Content-Type: application/json
 DELETE /positions/delete?positionId=19
 Host: localhost:9020
 Authorization: Basic admin@gmail.com admin
+
+
+
+### Employee Requests
+
+
+
+###
+GET /employees
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /employees/async
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /employees/by-id?employeeId=1
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /employees/by-id/async?employeeId=2
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /employees/create-update
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "Василий",
+    "surname": "Киреев",
+    "patronymic": "Кириллович",
+    "about": "Информация о Василии",
+    "passport": "5793 958375",
+    "filialId": 1,
+    "positionId": 2
+}
+
+###
+DELETE /employees/delete?employeeId=3
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin

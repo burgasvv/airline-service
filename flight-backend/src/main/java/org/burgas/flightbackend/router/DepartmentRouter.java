@@ -27,14 +27,14 @@ public class DepartmentRouter {
     public RouterFunction<ServerResponse> departmentRoutes(final DepartmentService departmentService) {
         return RouterFunctions
                 .route(
-                        GET("/departments"), _ ->
+                        GET("/departments"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(departmentService.findAll())
                 )
                 .andRoute(
-                        GET("/departments/async"), _ -> ServerResponse
+                        GET("/departments/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(departmentService.findAllAsync())
