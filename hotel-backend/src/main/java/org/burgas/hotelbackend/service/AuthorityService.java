@@ -57,7 +57,7 @@ public class AuthorityService {
     }
 
     public AuthorityResponse findById(final Long authorityId) {
-        return this.authorityRepository.findById(authorityId)
+        return this.authorityRepository.findById(authorityId == null ? 0L : authorityId)
                 .stream()
                 .peek(authority -> log.info(AUTHORITY_FOUND_BY_ID_ASYNC.getLogMessage(), authority))
                 .map(this.authorityMapper::toResponse)
@@ -67,7 +67,7 @@ public class AuthorityService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<AuthorityResponse> findByIdAsync(final Long authorityId) {
-        return supplyAsync(() -> this.authorityRepository.findById(authorityId))
+        return supplyAsync(() -> this.authorityRepository.findById(authorityId == null ? 0L : authorityId))
                 .thenApplyAsync(
                         authority -> authority.stream()
                                 .peek(foundAuthority -> log.info(AUTHORITY_FOUND_BY_ID_ASYNC.getLogMessage(), foundAuthority))
@@ -104,7 +104,7 @@ public class AuthorityService {
             rollbackFor = Exception.class
     )
     public String deleteById(final Long authorityId) {
-        return this.authorityRepository.findById(authorityId)
+        return this.authorityRepository.findById(authorityId == null ? 0L : authorityId)
                 .map(
                         authority -> {
                             this.authorityRepository.deleteById(authority.getId());
@@ -122,7 +122,7 @@ public class AuthorityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long authorityId) {
-        return supplyAsync(() -> this.authorityRepository.findById(authorityId))
+        return supplyAsync(() -> this.authorityRepository.findById(authorityId == null ? 0L : authorityId))
                 .thenApplyAsync(
                         authority -> authority.stream()
                                 .peek(foundAuthority -> log.info(AUTHORITY_FOUND_BEFORE_DELETE.getLogMessage(), foundAuthority))

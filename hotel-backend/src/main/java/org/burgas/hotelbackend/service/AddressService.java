@@ -65,7 +65,7 @@ public class AddressService {
     }
 
     public AddressResponse findById(final Long addressId) {
-        return this.addressRepository.findById(addressId)
+        return this.addressRepository.findById(addressId == null ? 0L : addressId)
                 .stream()
                 .peek(address -> log.info(ADDRESS_FOUND_BY_ID.getLogMessage(), address))
                 .map(this.addressMapper::toResponse)
@@ -75,7 +75,7 @@ public class AddressService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<AddressResponse> findByIdAsync(final Long addressId) {
-        return supplyAsync(() -> this.addressRepository.findById(addressId))
+        return supplyAsync(() -> this.addressRepository.findById(addressId == null ? 0L : addressId))
                 .thenApplyAsync(
                         address -> address.stream()
                                 .peek(foundAddress -> log.info(ADDRESS_FOUND_BY_ID_ASYNC.getLogMessage(), foundAddress))
@@ -126,7 +126,7 @@ public class AddressService {
             rollbackFor = Exception.class
     )
     public String deleteById(final Long addressId) {
-        return this.addressRepository.findById(addressId)
+        return this.addressRepository.findById(addressId == null ? 0L : addressId)
                 .stream()
                 .peek(address -> log.info(ADDRESS_FOUND_BEFORE_DELETE.getLogMessage(), address))
                 .map(
@@ -147,7 +147,7 @@ public class AddressService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long addressId) {
-        return supplyAsync(() -> this.addressRepository.findById(addressId))
+        return supplyAsync(() -> this.addressRepository.findById(addressId == null ? 0L : addressId))
                 .thenApplyAsync(
                         address -> address.stream()
                                 .peek(foundAddress -> log.info(ADDRESS_FOUND_BEFORE_DELETE_ASYNC.getLogMessage(), foundAddress))

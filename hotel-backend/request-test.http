@@ -501,3 +501,127 @@ Content-Type: application/json
 DELETE /employees/delete?employeeId=3
 Host: localhost:9020
 Authorization: Basic admin@gmail.com admin
+
+
+
+### Room Requests
+
+
+
+###
+GET /rooms/by-filial?filialId=1
+Host: localhost:9020
+
+###
+GET /rooms/by-filial/async?filialId=2
+Host: localhost:9020
+
+###
+GET /rooms/by-id?roomId=1
+Host: localhost:9020
+
+###
+GET /rooms/by-id/async?roomId=2
+Host: localhost:9020
+
+###
+POST /rooms/create-update
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "number": 102,
+    "roomTypeId": 1,
+    "filialId": 1,
+    "description": "New room description",
+    "hourPrice": 2500
+}
+
+
+
+### Client Requests
+
+
+
+###
+GET /clients
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /clients/async
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /clients/create-update
+Host: localhost:9020
+X-Csrf-Token: JvaR828vvpNiA5gb2GGuSsjDR_ebRfMhiV01iCDA8lHc_F7jEcWmwV0e2KNPNfop6kyaL6ygapX-d8oMvjlUu0H1x2nuzjuB
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "Olga",
+    "surname": "Parusheva",
+    "patronymic": "Igorevna",
+    "passport": "8954839385"
+}
+
+###
+POST /clients/create-update
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "Aleksandr",
+    "surname": "Kirsanov",
+    "patronymic": "Valer'evich",
+    "passport": "7652786354"
+}
+
+###
+POST /rooms/rent-room
+Host: localhost:9020
+Content-Type: application/json
+
+{
+    "clientId": 1,
+    "roomId": 3,
+    "rentedFrom": "2025-05-19T15:00",
+    "rentedTo": "2025-05-21T12:00"
+}
+
+###
+POST /rooms/rent-room
+Host: localhost:9020
+Content-Type: application/json
+
+{
+    "clientId": 2,
+    "roomId": 2,
+    "rentedFrom": "2025-05-20T23:00",
+    "rentedTo": "2025-05-22T15:00"
+}
+
+
+
+### Payment Requests
+
+
+
+###
+GET /payments/by-client?clientId=1
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /payments/by-client/async?clientId=1
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+PUT /payments/close-payment?clientId=1
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin

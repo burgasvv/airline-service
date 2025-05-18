@@ -65,7 +65,7 @@ public class CityService {
     }
 
     public CityResponse findById(final Long cityId) {
-        return this.cityRepository.findById(cityId)
+        return this.cityRepository.findById(cityId == null ? 0L : cityId)
                 .stream()
                 .peek(city -> log.info(CITY_FOUND_BY_ID.getLogMessage(), city))
                 .map(this.cityMapper::toResponse)
@@ -75,7 +75,7 @@ public class CityService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<CityResponse> findByIdAsync(final Long cityId) {
-        return supplyAsync(() -> this.cityRepository.findById(cityId))
+        return supplyAsync(() -> this.cityRepository.findById(cityId == null ? 0L : cityId))
                 .thenApplyAsync(
                         city -> city.stream()
                                 .peek(foundCity -> log.info(CITY_FOUND_BY_ID_ASYNC.getLogMessage(), foundCity))
@@ -86,7 +86,7 @@ public class CityService {
     }
 
     public CityResponse findByName(final String name) {
-        return this.cityRepository.findCityByName(name)
+        return this.cityRepository.findCityByName(name == null ? "" : name)
                 .stream()
                 .peek(city -> log.info(CITY_FOUND_BY_NAME.getLogMessage(), city))
                 .map(this.cityMapper::toResponse)
@@ -96,7 +96,7 @@ public class CityService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<CityResponse> findByNameAsync(final String name) {
-        return supplyAsync(() -> this.cityRepository.findCityByName(name))
+        return supplyAsync(() -> this.cityRepository.findCityByName(name == null ? "" : name))
                 .thenApplyAsync(
                         city -> city.stream()
                                 .peek(foundCity -> log.info(CITY_FOUND_BY_NAME_ASYNC.getLogMessage(), foundCity))
@@ -146,7 +146,7 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public String deleteById(final Long cityId) {
-        return this.cityRepository.findById(cityId)
+        return this.cityRepository.findById(cityId == null ? 0L : cityId)
                 .stream()
                 .peek(city -> log.info(CITY_FOUND_BEFORE_DELETE.getLogMessage(), city))
                 .map(
@@ -167,7 +167,7 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long cityId) {
-        return supplyAsync(() -> this.cityRepository.findById(cityId))
+        return supplyAsync(() -> this.cityRepository.findById(cityId == null ? 0L : cityId))
                 .thenApplyAsync(
                         city -> city.stream()
                                 .peek(foundCity -> log.info(CITY_FOUND_BEFORE_DELETE_ASYNC.getLogMessage(), foundCity))

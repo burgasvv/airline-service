@@ -60,7 +60,10 @@ public class SecurityConfig {
                                         "/hotels/by-name", "/hotels/by-name/async",
 
                                         "/filials", "/filials/async", "/filials/pages/{page}",
-                                        "/filials/by-id", "/filials/by-id/async"
+                                        "/filials/by-id", "/filials/by-id/async",
+
+                                        "/rooms/by-filial", "/rooms/by-filial/async", "/rooms/by-filial/pages/{page}",
+                                        "/rooms/by-id", "/rooms/by-id/async", "/rooms/rent-room"
                                 )
                                 .permitAll()
 
@@ -127,7 +130,18 @@ public class SecurityConfig {
                                         "/employees", "/employees/async", "/employees/pages/{page}",
                                         "/employees/by-id", "/employees/by-id/async",
                                         "/employees/create-update", "/employees/create-update/async",
-                                        "/employees/delete", "/employees/delete/async"
+                                        "/employees/delete", "/employees/delete/async",
+
+                                        "/rooms/create-update", "/rooms/create-update/async",
+                                        "/rooms/delete", "/rooms/delete/async",
+                                        "/rooms/upload-images", "/rooms/upload-images/async",
+
+                                        "/clients", "/clients/async", "/clients/pages/{page}",
+                                        "/clients/by-id", "/clients/by-id/async",
+                                        "/clients/create-update", "/clients/create-update/async",
+
+                                        "/payments/by-client", "/payments/by-client/async",
+                                        "/payments/close-payment"
                                 )
                                 .hasAnyAuthority(ADMIN)
                 )

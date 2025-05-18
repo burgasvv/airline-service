@@ -236,4 +236,52 @@ public class GlobalExceptionHandler {
                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                 .body(exception.getMessage());
     }
+
+    @ExceptionHandler(RoomNotCreatedOrUpdatedException.class)
+    public ResponseEntity<String> handleRoomNotCreatedOrUpdatedException(final RoomNotCreatedOrUpdatedException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(RoomNotFoundException.class)
+    public ResponseEntity<String> handleRoomNotFoundException(final RoomNotFoundException exception) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(ClientNotCreatedOrUpdatedException.class)
+    public ResponseEntity<String> handleClientNotCreatedOrUpdatedException(final ClientNotCreatedOrUpdatedException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(RoomByNumberAndFilialIdAlreadyExistsException.class)
+    public ResponseEntity<String> handleRoomByNumberAndFilialIdAlreadyExistsException(final RoomByNumberAndFilialIdAlreadyExistsException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(PaymentNotFoundException.class)
+    public ResponseEntity<String> handlePaymentNotFoundException(final PaymentNotFoundException exception) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(WrongRentedDateException.class)
+    public ResponseEntity<String> handleWrongRentedDateException(final WrongRentedDateException exception) {
+        return ResponseEntity
+                .status(NOT_ACCEPTABLE)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(exception.getMessage());
+    }
 }

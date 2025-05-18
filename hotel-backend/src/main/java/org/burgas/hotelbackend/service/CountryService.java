@@ -65,7 +65,7 @@ public class CountryService {
     }
 
     public CountryResponse findById(final Long countryId) {
-        return this.countryRepository.findById(countryId)
+        return this.countryRepository.findById(countryId == null ? 0L : countryId)
                 .stream()
                 .peek(country -> log.info(COUNTRY_FOUND_BY_ID_ASYNC.getLogMessage(), country))
                 .map(this.countryMapper::toResponse)
@@ -75,7 +75,7 @@ public class CountryService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<CountryResponse> findByIdAsync(final Long countryId) {
-        return supplyAsync(() -> this.countryRepository.findById(countryId))
+        return supplyAsync(() -> this.countryRepository.findById(countryId == null ? 0L : countryId))
                 .thenApplyAsync(
                         country -> country.stream()
                                 .peek(foundCountry -> log.info(COUNTRY_FOUND_BY_ID_ASYNC.getLogMessage(), foundCountry))
@@ -86,7 +86,7 @@ public class CountryService {
     }
 
     public CountryResponse findByName(final String name) {
-        return this.countryRepository.findCountryByName(name)
+        return this.countryRepository.findCountryByName(name == null ? "" : name)
                 .stream()
                 .peek(country -> log.info(COUNTRY_FOUND_BY_NAME.getLogMessage(), country))
                 .map(this.countryMapper::toResponse)
@@ -96,7 +96,7 @@ public class CountryService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<CountryResponse> findByNameAsync(final String name) {
-        return supplyAsync(() -> this.countryRepository.findCountryByName(name))
+        return supplyAsync(() -> this.countryRepository.findCountryByName(name == null ? "" : name))
                 .thenApplyAsync(
                         country -> country.stream()
                                 .peek(foundCountry -> log.info(COUNTRY_FOUND_BY_NAME_ASYNC.getLogMessage(), foundCountry))
@@ -149,7 +149,7 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public String deleteById(final Long countryId) {
-        return this.countryRepository.findById(countryId)
+        return this.countryRepository.findById(countryId == null ? 0L : countryId)
                 .stream()
                 .peek(country -> log.info(COUNTRY_FOUND_BEFORE_DELETE.getLogMessage(), country))
                 .map(
@@ -170,7 +170,7 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long countryId) {
-        return supplyAsync(() -> this.countryRepository.findById(countryId))
+        return supplyAsync(() -> this.countryRepository.findById(countryId == null ? 0L : countryId))
                 .thenApplyAsync(
                         country -> country.stream()
                                 .peek(foundCountry -> log.info(COUNTRY_FOUND_BEFORE_DELETE_ASYNC.getLogMessage(), foundCountry))
