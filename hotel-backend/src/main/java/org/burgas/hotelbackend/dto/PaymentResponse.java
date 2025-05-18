@@ -12,6 +12,7 @@ public final class PaymentResponse {
     private List<RoomResponse> rooms;
     private Long cost;
     private Boolean closed;
+    private Boolean cancelled;
 
     public Long getId() {
         return id;
@@ -37,17 +38,22 @@ public final class PaymentResponse {
         return closed;
     }
 
+    public Boolean getCancelled() {
+        return cancelled;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         PaymentResponse that = (PaymentResponse) o;
         return Objects.equals(id, that.id) && Objects.equals(client, that.client) && Objects.equals(filial, that.filial) &&
-               Objects.equals(rooms, that.rooms) && Objects.equals(cost, that.cost) && Objects.equals(closed, that.closed);
+               Objects.equals(rooms, that.rooms) && Objects.equals(cost, that.cost) && Objects.equals(closed, that.closed) &&
+               Objects.equals(cancelled, that.cancelled);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, client, filial, rooms, cost, closed);
+        return Objects.hash(id, client, filial, rooms, cost, closed, cancelled);
     }
 
     @Override
@@ -59,6 +65,7 @@ public final class PaymentResponse {
                ", rooms=" + rooms +
                ", cost=" + cost +
                ", closed=" + closed +
+               ", cancelled=" + cancelled +
                '}';
     }
 
@@ -101,6 +108,11 @@ public final class PaymentResponse {
 
         public Builder closed(Boolean closed) {
             this.paymentResponse.closed = closed;
+            return this;
+        }
+
+        public Builder cancelled(Boolean cancelled) {
+            this.paymentResponse.cancelled = cancelled;
             return this;
         }
 

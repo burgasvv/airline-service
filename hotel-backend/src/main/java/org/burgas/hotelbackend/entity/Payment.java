@@ -22,6 +22,7 @@ public final class Payment extends AbstractEntity implements Serializable {
     private Long[] rooms;
     private Long cost;
     private Boolean closed;
+    private Boolean cancelled;
 
     public Long getId() {
         return id;
@@ -71,17 +72,26 @@ public final class Payment extends AbstractEntity implements Serializable {
         this.closed = closed;
     }
 
+    public Boolean getCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(Boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Payment payment = (Payment) o;
         return Objects.equals(id, payment.id) && Objects.equals(clientId, payment.clientId) && Objects.equals(filialId, payment.filialId) &&
-               Objects.deepEquals(rooms, payment.rooms) && Objects.equals(cost, payment.cost) && Objects.equals(closed, payment.closed);
+               Objects.deepEquals(rooms, payment.rooms) && Objects.equals(cost, payment.cost) && Objects.equals(closed, payment.closed) &&
+               Objects.equals(cancelled, payment.cancelled);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, clientId, filialId, Arrays.hashCode(rooms), cost, closed);
+        return Objects.hash(id, clientId, filialId, Arrays.hashCode(rooms), cost, closed, cancelled);
     }
 
     @Override
@@ -93,6 +103,7 @@ public final class Payment extends AbstractEntity implements Serializable {
                ", rooms=" + Arrays.toString(rooms) +
                ", cost=" + cost +
                ", closed=" + closed +
+               ", cancelled=" + cancelled +
                '}';
     }
 
@@ -135,6 +146,11 @@ public final class Payment extends AbstractEntity implements Serializable {
 
         public Builder closed(Boolean closed) {
             this.payment.closed = closed;
+            return this;
+        }
+
+        public Builder cancelled(Boolean cancelled) {
+            this.payment.cancelled = cancelled;
             return this;
         }
 

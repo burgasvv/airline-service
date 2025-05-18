@@ -56,6 +56,7 @@ public final class PaymentMapper {
                 .rooms(rooms)
                 .cost(payment.getCost())
                 .closed(payment.getClosed())
+                .cancelled(payment.getCancelled())
                 .build();
     }
 }

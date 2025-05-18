@@ -1,0 +1,13 @@
+
+FROM postgres:latest
+EXPOSE 5434
+
+FROM maven:3.9.9 AS build
+COPY pom.sml .
+COPY /src ./src/
+RUN mvn clean package -DskipTests
+
+FROM openjdk:17 AS prod
+COPY --from=build target/hotel-backend-0.0.1-SNAPSHOT.jar hotel-backend.jar
+EXPOSE 9020
+ENTRYPOINT ["java", "-jar", "hotel-backend.jar"]

@@ -141,7 +141,8 @@ public class SecurityConfig {
                                         "/clients/create-update", "/clients/create-update/async",
 
                                         "/payments/by-client", "/payments/by-client/async",
-                                        "/payments/close-payment"
+                                        "/payments/close-payment", "/payments/cancel-payment",
+                                        "/payments/early-payment"
                                 )
                                 .hasAnyAuthority(ADMIN)
                 )

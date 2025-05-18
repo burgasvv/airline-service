@@ -49,4 +49,20 @@ public class PaymentController {
                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                 .body(this.paymentService.closePayment(clientId));
     }
+
+    @PutMapping(value = "/cancel-payment")
+    public @ResponseBody ResponseEntity<String> cancelClientPayment(@RequestParam Long paymentId) {
+        return ResponseEntity
+                .status(OK)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(this.paymentService.cancelRentAndPayment(paymentId));
+    }
+
+    @PutMapping(value = "/early-payment")
+    public @ResponseBody ResponseEntity<String> earlyPaymentAndReturnReservation(@RequestParam Long paymentId) {
+        return ResponseEntity
+                .status(OK)
+                .contentType(new MediaType(TEXT_PLAIN, UTF_8))
+                .body(this.paymentService.earlyPaymentReservationReturn(paymentId));
+    }
 }

@@ -557,8 +557,8 @@ Authorization: Basic admin@gmail.com admin
 ###
 POST /clients/create-update
 Host: localhost:9020
-X-Csrf-Token: JvaR828vvpNiA5gb2GGuSsjDR_ebRfMhiV01iCDA8lHc_F7jEcWmwV0e2KNPNfop6kyaL6ygapX-d8oMvjlUu0H1x2nuzjuB
 Authorization: Basic admin@gmail.com admin
+X-Csrf-Token: 2h01bmyqHliebYvw0shUAIaHZrOKoaaY3UqQkPmivjlWm7bSv3kNDQrIezyzXbrI4eVgNuW0S4vuxZC1vy-p85jA211h-dOw
 Content-Type: application/json
 
 {
@@ -584,6 +584,7 @@ Content-Type: application/json
 ###
 POST /rooms/rent-room
 Host: localhost:9020
+X-Csrf-Token: 2h01bmyqHliebYvw0shUAIaHZrOKoaaY3UqQkPmivjlWm7bSv3kNDQrIezyzXbrI4eVgNuW0S4vuxZC1vy-p85jA211h-dOw
 Content-Type: application/json
 
 {
@@ -623,5 +624,10 @@ Authorization: Basic admin@gmail.com admin
 
 ###
 PUT /payments/close-payment?clientId=1
+Host: localhost:9020
+Authorization: Basic admin@gmail.com admin
+
+###
+PUT /payments/cancel-payment?paymentId=1
 Host: localhost:9020
 Authorization: Basic admin@gmail.com admin

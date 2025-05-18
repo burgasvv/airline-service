@@ -53,7 +53,8 @@ public class RoomService {
 
     public RoomService(
             ClientRepository clientRepository, FilialRepository filialRepository,
-            RoomRepository roomRepository, RoomMapper roomMapper, ClientRoomRepository clientRoomRepository, PaymentRepository paymentRepository,
+            RoomRepository roomRepository, RoomMapper roomMapper,
+            ClientRoomRepository clientRoomRepository, PaymentRepository paymentRepository,
             RoomImageRepository roomImageRepository, ImageService imageService
     ) {
         this.clientRepository = clientRepository;
@@ -228,7 +229,7 @@ public class RoomService {
         Room room = this.roomRepository.findById(rentRoom.getRoomId() == null ? 0L : rentRoom.getRoomId())
                 .orElseThrow(() -> new RoomNotFoundException(ROOM_NOT_FOUND.getMessage()));
 
-        return this.paymentRepository.findPaymentByClientIdAndClosed(client.getId(), false)
+        return this.paymentRepository.findPaymentByClientIdAndClosedAndCancelled(client.getId(), false, false)
                 .map(
                         payment -> {
                             if (!room.getRented()) {
@@ -286,6 +287,7 @@ public class RoomService {
                                             .rooms(roomIds)
                                             .cost(hours * savedRoom.getHourPrice())
                                             .closed(false)
+                                            .cancelled(false)
                                             .build();
                                     this.paymentRepository.save(payment);
 

@@ -144,7 +144,8 @@ create table if not exists payment (
     filial_id bigint references filial(id) on delete cascade on update cascade ,
     rooms bigint array not null ,
     cost bigint not null default 0,
-    closed boolean not null
+    closed boolean not null ,
+    cancelled boolean not null
 );
 
 /* POPULATIONS */
