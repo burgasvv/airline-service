@@ -2,14 +2,13 @@ package org.burgas.hotelbackend.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @SuppressWarnings("ALL")

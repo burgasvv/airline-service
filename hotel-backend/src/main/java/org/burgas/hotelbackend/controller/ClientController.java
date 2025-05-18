@@ -2,10 +2,8 @@ package org.burgas.hotelbackend.controller;
 
 import org.burgas.hotelbackend.dto.ClientRequest;
 import org.burgas.hotelbackend.dto.ClientResponse;
-import org.burgas.hotelbackend.dto.RentRoom;
 import org.burgas.hotelbackend.service.ClientService;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
@@ -16,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static java.nio.charset.StandardCharsets.*;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Controller
 @RequestMapping(value = "/clients")
