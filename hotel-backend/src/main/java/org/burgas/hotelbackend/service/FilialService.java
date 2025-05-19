@@ -76,7 +76,7 @@ public class FilialService {
     }
 
     public FilialResponse findById(final Long filialId) {
-        return this.filialRepository.findById(filialId)
+        return this.filialRepository.findById(filialId == null ? 0L : filialId)
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_BY_ID.getLogMessage(), filial))
                 .map(this.filialMapper::toResponse)
@@ -86,7 +86,7 @@ public class FilialService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<FilialResponse> findByIdAsync(final Long filialId) {
-        return supplyAsync(() -> this.filialRepository.findById(filialId))
+        return supplyAsync(() -> this.filialRepository.findById(filialId == null ? 0L : filialId))
                 .thenApplyAsync(
                         filial -> filial.stream()
                                 .peek(foundFilial -> log.info(FILIAL_FOUND_BY_ID_ASYNC.getLogMessage(), foundFilial))
@@ -134,7 +134,7 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public String deleteById(final Long filialId) {
-        return this.filialRepository.findById(filialId)
+        return this.filialRepository.findById(filialId == null ? 0L : filialId)
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_BEFORE_DELETE.getLogMessage(), filial))
                 .map(
@@ -158,7 +158,7 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long filialId) {
-        return supplyAsync(() -> this.filialRepository.findById(filialId))
+        return supplyAsync(() -> this.filialRepository.findById(filialId == null ? 0L : filialId))
                 .thenApplyAsync(
                         filial -> filial.stream()
                                 .peek(foundFilial -> log.info(FILIAL_FOUND_BEFORE_DELETE_ASYNC.getLogMessage(), foundFilial))
@@ -183,7 +183,7 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public String uploadFilialImage(final Long filialId, final MultipartFile multipartFile) {
-        return this.filialRepository.findById(filialId)
+        return this.filialRepository.findById(filialId == null ? 0L : filialId)
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_BEFORE_UPLOAD_IMAGE.getLogMessage(), filial))
                 .map(
@@ -206,7 +206,7 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadFilialImageAsync(final Long filialId, final MultipartFile multipartFile) {
-        return supplyAsync(() -> this.filialRepository.findById(filialId))
+        return supplyAsync(() -> this.filialRepository.findById(filialId == null ? 0L : filialId))
                 .thenApplyAsync(
                         filial -> filial.stream()
                                 .peek(foundFilial -> log.info(FILIAL_FOUND_BEFORE_CHANGE_IMAGE_ASYNC.getLogMessage(), foundFilial))
@@ -235,7 +235,7 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public String changeFilialImage(final Long filialId, final MultipartFile multipartFile) {
-        return this.filialRepository.findById(filialId)
+        return this.filialRepository.findById(filialId == null ? 0L : filialId)
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_BEFORE_CHANGE_IMAGE.getLogMessage(), filial))
                 .map(
@@ -262,7 +262,7 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeFilialImageAsync(final Long filialId, final MultipartFile multipartFile) {
-        return supplyAsync(() -> this.filialRepository.findById(filialId))
+        return supplyAsync(() -> this.filialRepository.findById(filialId == null ? 0L : filialId))
                 .thenApplyAsync(
                         filial -> filial.stream()
                                 .peek(foundFilial -> log.info(FILIAL_FOUND_BEFORE_CHANGE_IMAGE_ASYNC.getLogMessage(), foundFilial))
@@ -295,7 +295,7 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public String deleteFilialImage(final Long filialId) {
-        return this.filialRepository.findById(filialId)
+        return this.filialRepository.findById(filialId == null ? 0L : filialId)
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_BEFORE_DELETE_IMAGE.getLogMessage(), filial))
                 .map(
@@ -322,7 +322,7 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteFilialImageAsync(final Long filialId) {
-        return supplyAsync(() -> this.filialRepository.findById(filialId))
+        return supplyAsync(() -> this.filialRepository.findById(filialId == null ? 0L : filialId))
                 .thenApplyAsync(
                         filial -> filial.stream()
                                 .peek(foundFilial -> log.info(FILIAL_FOUND_BEFORE_CHANGE_IMAGE_ASYNC.getLogMessage(), foundFilial))

@@ -73,7 +73,7 @@ public class HotelService {
     }
 
     public HotelResponse findById(final Long hotelId) {
-        return this.hotelRepository.findById(hotelId)
+        return this.hotelRepository.findById(hotelId == null ? 0L : hotelId)
                 .stream()
                 .peek(hotel -> log.info(HOTEL_FOUND_BY_ID.getLogMessage(), hotel))
                 .map(this.hotelMapper::toResponse)
@@ -83,7 +83,7 @@ public class HotelService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<HotelResponse> findByIdAsync(final Long hotelId) {
-        return supplyAsync(() -> this.hotelRepository.findById(hotelId))
+        return supplyAsync(() -> this.hotelRepository.findById(hotelId == null ? 0L : hotelId))
                 .thenApplyAsync(
                         hotel -> hotel.stream()
                                 .peek(foundHotel -> log.info(HOTEL_FOUND_BY_ID_ASYNC.getLogMessage(), foundHotel))
@@ -94,7 +94,7 @@ public class HotelService {
     }
 
     public HotelResponse findByName(final String name) {
-        return this.hotelRepository.findHotelByName(name)
+        return this.hotelRepository.findHotelByName(name == null ? "" : name)
                 .stream()
                 .peek(hotel -> log.info(HOTEL_FOUND_BY_NAME.getLogMessage(), hotel))
                 .map(this.hotelMapper::toResponse)
@@ -104,7 +104,7 @@ public class HotelService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<HotelResponse> findByNameAsync(final String name) {
-        return supplyAsync(() -> this.hotelRepository.findHotelByName(name))
+        return supplyAsync(() -> this.hotelRepository.findHotelByName(name == null ? "" : name))
                 .thenApplyAsync(
                         hotel -> hotel.stream()
                                 .peek(foundHotel -> log.info(HOTEL_FOUND_BY_NAME_ASYNC.getLogMessage(), foundHotel))
@@ -151,7 +151,7 @@ public class HotelService {
             rollbackFor = Exception.class
     )
     public String deleteById(final Long hotelId) {
-        return this.hotelRepository.findById(hotelId)
+        return this.hotelRepository.findById(hotelId == null ? 0L : hotelId)
                 .stream()
                 .peek(hotel -> log.info(HOTEL_FOUND_BEFORE_DELETE.getLogMessage(), hotel))
                 .map(
@@ -172,7 +172,7 @@ public class HotelService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long hotelId) {
-        return supplyAsync(() -> this.hotelRepository.findById(hotelId))
+        return supplyAsync(() -> this.hotelRepository.findById(hotelId == null ? 0L : hotelId))
                 .thenApplyAsync(
                         hotel -> hotel.stream()
                                 .peek(foundHotel -> log.info(HOTEL_FOUND_BEFORE_DELETE_ASYNC.getLogMessage(), foundHotel))
@@ -194,7 +194,7 @@ public class HotelService {
             rollbackFor = Exception.class
     )
     public String uploadHotelImage(final Long hotelId, final MultipartFile multipartFile) {
-        return this.hotelRepository.findById(hotelId)
+        return this.hotelRepository.findById(hotelId == null ? 0L : hotelId)
                 .stream()
                 .peek(hotel -> log.info(HOTEL_FOUND_BEFORE_UPLOAD_IMAGE.getLogMessage(), hotel))
                 .map(
@@ -217,7 +217,7 @@ public class HotelService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadHotelImageAsync(final Long hotelId, final MultipartFile multipartFile) {
-        return supplyAsync(() -> this.hotelRepository.findById(hotelId))
+        return supplyAsync(() -> this.hotelRepository.findById(hotelId == null ? 0L : hotelId))
                 .thenApplyAsync(
                         hotel -> hotel.stream()
                                 .peek(foundHotel -> log.info(HOTEL_FOUND_BEFORE_UPLOAD_IMAGE_ASYNC.getLogMessage(), foundHotel))
@@ -246,7 +246,7 @@ public class HotelService {
             rollbackFor = Exception.class
     )
     public String changeHotelImage(final Long hotelId, final MultipartFile multipartFile) {
-        return this.hotelRepository.findById(hotelId)
+        return this.hotelRepository.findById(hotelId == null ? 0L : hotelId)
                 .stream()
                 .peek(hotel -> log.info(HOTEL_FOUND_BEFORE_CHANGE_IMAGE.getLogMessage(), hotel))
                 .map(
@@ -273,7 +273,7 @@ public class HotelService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeHotelImageAsync(final Long hotelId, final MultipartFile multipartFile) {
-        return supplyAsync(() -> this.hotelRepository.findById(hotelId))
+        return supplyAsync(() -> this.hotelRepository.findById(hotelId == null ? 0L : hotelId))
                 .thenApplyAsync(
                         hotel -> hotel.stream()
                                 .peek(foundHotel -> log.info(HOTEL_FOUND_BEFORE_CHANGE_IMAGE_ASYNC.getLogMessage(), foundHotel))
@@ -306,7 +306,7 @@ public class HotelService {
             rollbackFor = Exception.class
     )
     public String deleteHotelImage(final Long hotelId) {
-        return this.hotelRepository.findById(hotelId)
+        return this.hotelRepository.findById(hotelId == null ? 0L : hotelId)
                 .stream()
                 .peek(hotel -> log.info(HOTEL_FOUND_BEFORE_DELETE_IMAGE.getLogMessage(), hotel))
                 .map(
@@ -333,7 +333,7 @@ public class HotelService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteHotelImageAsync(final Long hotelId) {
-        return supplyAsync(() -> this.hotelRepository.findById(hotelId))
+        return supplyAsync(() -> this.hotelRepository.findById(hotelId == null ? 0L : hotelId))
                 .thenApplyAsync(
                         hotel -> hotel.stream()
                                 .peek(foundHotel -> log.info(HOTEL_FOUND_BEFORE_DELETE_IMAGE_ASYNC.getLogMessage(), foundHotel))

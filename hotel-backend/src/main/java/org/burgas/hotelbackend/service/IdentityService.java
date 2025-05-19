@@ -76,7 +76,7 @@ public class IdentityService {
     }
 
     public IdentityResponse findById(final Long identityId) {
-        return this.identityRepository.findById(identityId)
+        return this.identityRepository.findById(identityId == null ? 0L : identityId)
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BY_ID.getLogMessage(), identity))
                 .map(this.identityMapper::toResponse)
@@ -86,7 +86,7 @@ public class IdentityService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<IdentityResponse> findByIdAsync(final Long identityId) {
-        return supplyAsync(() -> this.identityRepository.findById(identityId))
+        return supplyAsync(() -> this.identityRepository.findById(identityId == null ? 0L : identityId))
                 .thenApplyAsync(
                         identity -> identity.stream()
                                 .peek(foundIdentity -> log.info(IDENTITY_FOUND_BY_ID_ASYNC.getLogMessage(), foundIdentity))
@@ -125,7 +125,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public String activateOrDeactivate(final Long identityId, final Boolean enable) {
-        return this.identityRepository.findById(identityId)
+        return this.identityRepository.findById(identityId == null ? 0L : identityId)
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BEFORE_ACTIVATE_DEACTIVATE.getLogMessage(), identity))
                 .map(
@@ -150,7 +150,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> activateOrDeactivateAsync(final Long identityId, final Boolean enable) {
-        return supplyAsync(() -> this.identityRepository.findById(identityId))
+        return supplyAsync(() -> this.identityRepository.findById(identityId == null ? 0L : identityId))
                 .thenApplyAsync(
                         identity -> identity.stream()
                                 .peek(foundIdentity -> log.info(IDENTITY_FOUND_BEFORE_ACTIVATE_DEACTIVATE_ASYNC.getLogMessage(), foundIdentity))
@@ -176,7 +176,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public String uploadIdentityImage(final Long identityId, final MultipartFile multipartFile) {
-        return this.identityRepository.findById(identityId)
+        return this.identityRepository.findById(identityId == null ? 0L : identityId)
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BEFORE_UPLOADING_IMAGE.getLogMessage(), identity))
                 .map(
@@ -199,7 +199,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadIdentityImageAsync(final Long identityId, final MultipartFile multipartFile) {
-        return supplyAsync(() -> this.identityRepository.findById(identityId))
+        return supplyAsync(() -> this.identityRepository.findById(identityId == null ? 0L : identityId))
                 .thenApplyAsync(
                         identity -> identity.stream()
                                 .peek(foundIdentity -> log.info(IDENTITY_FOUND_BEFORE_UPLOADING_IMAGE_ASYNC.getLogMessage(), foundIdentity))
@@ -228,7 +228,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public String changeIdentityImage(final Long identityId, final MultipartFile multipartFile) {
-        return this.identityRepository.findById(identityId)
+        return this.identityRepository.findById(identityId == null ? 0L : identityId)
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BEFORE_CHANGING_IMAGE.getLogMessage(), identity))
                 .map(
@@ -255,7 +255,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeIdentityImageAsync(final Long identityId, final MultipartFile multipartFile) {
-        return supplyAsync(() -> this.identityRepository.findById(identityId))
+        return supplyAsync(() -> this.identityRepository.findById(identityId == null ? 0L : identityId))
                 .thenApplyAsync(
                         identity -> identity.stream()
                                 .peek(foundIdentity -> log.info(IDENTITY_FOUND_BEFORE_CHANGING_IMAGE_ASYNC.getLogMessage(), foundIdentity))
@@ -288,7 +288,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public String deleteIdentityImage(final Long identityId) {
-        return this.identityRepository.findById(identityId)
+        return this.identityRepository.findById(identityId == null ? 0L : identityId)
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BEFORE_DELETING_IMAGE.getLogMessage(), identity))
                 .map(
@@ -315,7 +315,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteIdentityImageAsync(final Long identityId) {
-        return supplyAsync(() -> this.identityRepository.findById(identityId))
+        return supplyAsync(() -> this.identityRepository.findById(identityId == null ? 0L : identityId))
                 .thenApplyAsync(
                         identity -> identity.stream()
                                 .peek(foundIdentity -> log.info(IDENTITY_FOUND_BEFORE_DELETING_IMAGE_ASYNC.getLogMessage(), foundIdentity))

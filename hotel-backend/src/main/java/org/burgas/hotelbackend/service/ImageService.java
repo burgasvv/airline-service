@@ -36,7 +36,7 @@ public class ImageService {
     }
 
     public Image findById(final Long imageId) {
-        return this.imageRepository.findById(imageId)
+        return this.imageRepository.findById(imageId == null ? 0L : imageId)
                 .stream()
                 .peek(image -> log.info(IMAGE_FOUND_BY_ID.getLogMessage(), image))
                 .findFirst()
@@ -45,7 +45,7 @@ public class ImageService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<Image> findByIdAsync(final Long imageId) {
-        return supplyAsync(() -> this.imageRepository.findById(imageId))
+        return supplyAsync(() -> this.imageRepository.findById(imageId == null ? 0L : imageId))
                 .thenApplyAsync(
                         image -> image.stream()
                                 .peek(foundImage -> log.info(IMAGE_FOUND_BY_ID_ASYNC.getLogMessage(), foundImage))
@@ -101,7 +101,7 @@ public class ImageService {
         return of(multipartFile)
                 .filter(file -> !file.isEmpty())
                 .map(
-                        file -> this.imageRepository.findById(imageId)
+                        file -> this.imageRepository.findById(imageId == null ? 0L : imageId)
                                 .map(
                                         image -> {
                                             try {
@@ -144,7 +144,7 @@ public class ImageService {
             rollbackFor = Exception.class
     )
     public String deleteImage(final Long imageId) {
-        return this.imageRepository.findById(imageId)
+        return this.imageRepository.findById(imageId == null ? 0L : imageId)
                 .map(
                         image -> {
                             this.imageRepository.deleteById(image.getId());
@@ -162,6 +162,6 @@ public class ImageService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteImageAsync(final Long imageId) {
-        return supplyAsync(() -> this.deleteImage(imageId));
+        return supplyAsync(() -> this.deleteImage(imageId == null ? 0L : imageId));
     }
 }

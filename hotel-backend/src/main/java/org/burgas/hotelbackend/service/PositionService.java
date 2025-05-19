@@ -65,7 +65,7 @@ public class PositionService {
     }
 
     public PositionResponse findById(final Long positionId) {
-        return this.positionRepository.findById(positionId)
+        return this.positionRepository.findById(positionId == null ? 0L : positionId)
                 .stream()
                 .peek(position -> log.info(POSITION_FOUND_BY_ID.getLogMessage(), position))
                 .map(this.positionMapper::toResponse)
@@ -75,7 +75,7 @@ public class PositionService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<PositionResponse> findByIdAsync(final Long positionId) {
-        return supplyAsync(() -> this.positionRepository.findById(positionId))
+        return supplyAsync(() -> this.positionRepository.findById(positionId == null ? 0L : positionId))
                 .thenApplyAsync(
                         position -> position.stream()
                                 .peek(foundPosition -> log.info(POSITION_FOUND_BY_ID_ASYNC.getLogMessage(), foundPosition))
@@ -125,7 +125,7 @@ public class PositionService {
             rollbackFor = Exception.class
     )
     public String deleteById(final Long positionId) {
-        return this.positionRepository.findById(positionId)
+        return this.positionRepository.findById(positionId == null ? 0L : positionId)
                 .stream()
                 .peek(position -> log.info(POSITION_FOUND_BEFORE_DELETE.getLogMessage(), position))
                 .map(
@@ -146,7 +146,7 @@ public class PositionService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long positionId) {
-        return supplyAsync(() -> this.positionRepository.findById(positionId))
+        return supplyAsync(() -> this.positionRepository.findById(positionId == null ? 0L : positionId))
                 .thenApplyAsync(
                         position -> position.stream()
                                 .peek(foundPosition -> log.info(POSITION_FOUND_BEFORE_DELETE_ASYNC.getLogMessage(), foundPosition))

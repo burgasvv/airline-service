@@ -65,7 +65,7 @@ public class DepartmentService {
     }
 
     public List<DepartmentResponse> findByFilialId(final Long filialId) {
-        return this.departmentRepository.findDepartmentsByFilialId(filialId)
+        return this.departmentRepository.findDepartmentsByFilialId(filialId == null ? 0L : filialId)
                 .stream()
                 .peek(department -> log.info(DEPARTMENT_FOUND_BY_FILIAL_ID.getLogMessage(), department))
                 .map(this.departmentMapper::toResponse)
@@ -74,7 +74,7 @@ public class DepartmentService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<List<DepartmentResponse>> findByFilialIdAsync(final Long filialId) {
-        return supplyAsync(() -> this.departmentRepository.findDepartmentsByFilialId(filialId))
+        return supplyAsync(() -> this.departmentRepository.findDepartmentsByFilialId(filialId == null ? 0L : filialId))
                 .thenApplyAsync(
                         departments -> departments.stream()
                                 .peek(department -> log.info(DEPARTMENT_FOUND_BY_FILIAL_ID_ASYNC.getLogMessage(), department))
@@ -84,7 +84,7 @@ public class DepartmentService {
     }
 
     public DepartmentResponse findById(final Long departmentId) {
-        return this.departmentRepository.findById(departmentId)
+        return this.departmentRepository.findById(departmentId == null ? 0L : departmentId)
                 .stream()
                 .peek(department -> log.info(DEPARTMENT_FOUND_BY_ID.getLogMessage(), department))
                 .map(this.departmentMapper::toResponse)
@@ -93,8 +93,8 @@ public class DepartmentService {
     }
 
     @Async(value = "taskExecutor")
-    public CompletableFuture<DepartmentResponse> findByIdAsync(final long departmentId) {
-        return supplyAsync(() -> this.departmentRepository.findById(departmentId))
+    public CompletableFuture<DepartmentResponse> findByIdAsync(final Long departmentId) {
+        return supplyAsync(() -> this.departmentRepository.findById(departmentId == null ? 0L : departmentId))
                 .thenApplyAsync(
                         department -> department.stream()
                                 .peek(foundDepartment -> log.info(DEPARTMENT_FOUND_BY_ID_ASYNC.getLogMessage(), foundDepartment))
@@ -105,7 +105,7 @@ public class DepartmentService {
     }
 
     public DepartmentResponse findByName(final String name) {
-        return this.departmentRepository.findDepartmentByName(name)
+        return this.departmentRepository.findDepartmentByName(name == null ? "" : name)
                 .stream()
                 .peek(department -> log.info(DEPARTMENT_FOUND_BY_NAME.getLogMessage(), department))
                 .map(this.departmentMapper::toResponse)
@@ -115,7 +115,7 @@ public class DepartmentService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<DepartmentResponse> findByNameAsync(final String name) {
-        return supplyAsync(() -> this.departmentRepository.findDepartmentByName(name))
+        return supplyAsync(() -> this.departmentRepository.findDepartmentByName(name == null ? "" : name))
                 .thenApplyAsync(
                         department -> department.stream()
                                 .peek(foundDepartment -> log.info(DEPARTMENT_FOUND_BY_NAME_ASYNC.getLogMessage(), foundDepartment))
@@ -165,7 +165,7 @@ public class DepartmentService {
             rollbackFor = Exception.class
     )
     public String deleteById(final Long departmentId) {
-        return this.departmentRepository.findById(departmentId)
+        return this.departmentRepository.findById(departmentId == null ? 0L : departmentId)
                 .stream()
                 .peek(department -> log.info(DEPARTMENT_FOUND_BEFORE_DELETE.getLogMessage(), department))
                 .map(
@@ -184,7 +184,7 @@ public class DepartmentService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long departmentId) {
-        return supplyAsync(() -> this.departmentRepository.findById(departmentId))
+        return supplyAsync(() -> this.departmentRepository.findById(departmentId == null ? 0L : departmentId))
                 .thenApplyAsync(
                         department -> department.stream()
                                 .peek(foundDepartment -> log.info(DEPARTMENT_FOUND_BEFORE_DELETE_ASYNC.getLogMessage(), foundDepartment))

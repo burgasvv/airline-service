@@ -78,7 +78,7 @@ public class EmployeeService {
     }
 
     public EmployeeResponse findById(final Long employeeId) {
-        return this.employeeRepository.findById(employeeId)
+        return this.employeeRepository.findById(employeeId == null ? 0L : employeeId)
                 .stream()
                 .peek(employee -> log.info(EMPLOYEE_FOUND_BY_ID.getLogMessage(), employee))
                 .map(this.employeeMapper::toResponse)
@@ -88,7 +88,7 @@ public class EmployeeService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<EmployeeResponse> findByIdAsync(final Long employeeId) {
-        return supplyAsync(() -> this.employeeRepository.findById(employeeId))
+        return supplyAsync(() -> this.employeeRepository.findById(employeeId == null ? 0L : employeeId))
                 .thenApplyAsync(
                         employee -> employee.stream()
                                 .peek(foundEmployee -> log.info(EMPLOYEE_FOUND_BY_ID_ASYNC.getLogMessage(), foundEmployee))
@@ -134,7 +134,7 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public String deleteById(final Long employeeId) {
-        return this.employeeRepository.findById(employeeId)
+        return this.employeeRepository.findById(employeeId == null ? 0L : employeeId)
                 .stream()
                 .peek(employee -> log.info(EMPLOYEE_FOUND_BEFORE_DELETE.getLogMessage(), employee))
                 .map(
@@ -153,7 +153,7 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long employeeId) {
-        return supplyAsync(() -> this.employeeRepository.findById(employeeId))
+        return supplyAsync(() -> this.employeeRepository.findById(employeeId == null ? 0L : employeeId))
                 .thenApplyAsync(
                         employee -> employee.stream()
                                 .peek(foundEmployee -> log.info(EMPLOYEE_FOUND_BEFORE_DELETE_ASYNC.getLogMessage(), foundEmployee))
@@ -173,7 +173,7 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public String uploadEmployeeImage(final Long employeeId, final MultipartFile multipartFile) {
-        return this.employeeRepository.findById(employeeId)
+        return this.employeeRepository.findById(employeeId == null ? 0L : employeeId)
                 .stream()
                 .peek(employee -> log.info(EMPLOYEE_FOUND_BEFORE_UPLOAD_IMAGE.getLogMessage(), employee))
                 .map(
@@ -196,7 +196,7 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadEmployeeImageAsync(final Long employeeId, final MultipartFile multipartFile) {
-        return supplyAsync(() -> this.employeeRepository.findById(employeeId))
+        return supplyAsync(() -> this.employeeRepository.findById(employeeId == null ? 0L : employeeId))
                 .thenApplyAsync(
                         employee -> employee.stream()
                                 .peek(foundEmployee -> log.info(EMPLOYEE_FOUND_BEFORE_UPLOAD_IMAGE_ASYNC.getLogMessage(), foundEmployee))
@@ -225,7 +225,7 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public String changeEmployeeImage(final Long employeeId, final MultipartFile multipartFile) {
-        return this.employeeRepository.findById(employeeId)
+        return this.employeeRepository.findById(employeeId == null ? 0L : employeeId)
                 .stream()
                 .peek(employee -> log.info(EMPLOYEE_FOUND_BEFORE_CHANGE_IMAGE.getLogMessage(), employee))
                 .map(
@@ -252,7 +252,7 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeEmployeeImageAsync(final Long employeeId, final MultipartFile multipartFile) {
-        return supplyAsync(() -> this.employeeRepository.findById(employeeId))
+        return supplyAsync(() -> this.employeeRepository.findById(employeeId == null ? 0L : employeeId))
                 .thenApplyAsync(
                         employee -> employee.stream()
                                 .peek(foundEmployee -> log.info(EMPLOYEE_FOUND_BEFORE_CHANGE_IMAGE_ASYNC.getLogMessage(), foundEmployee))
@@ -285,7 +285,7 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public String deleteEmployeeImage(final Long employeeId) {
-        return this.employeeRepository.findById(employeeId)
+        return this.employeeRepository.findById(employeeId == null ? 0L : employeeId)
                 .stream()
                 .peek(employee -> log.info(EMPLOYEE_FOUND_BEFORE_DELETE.getLogMessage(), employee))
                 .map(
@@ -312,7 +312,7 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteEmployeeImageAsync(final Long employeeId) {
-        return supplyAsync(() -> this.employeeRepository.findById(employeeId))
+        return supplyAsync(() -> this.employeeRepository.findById(employeeId == null ? 0L : employeeId))
                 .thenApplyAsync(
                         employee -> employee.stream()
                                 .peek(foundEmployee -> log.info(EMPLOYEE_FOUND_BEFORE_DELETE_IMAGE_ASYNC.getLogMessage(), foundEmployee))
