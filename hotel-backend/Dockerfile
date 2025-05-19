@@ -3,7 +3,7 @@ FROM postgres:latest
 EXPOSE 5434
 
 FROM maven:3.9.9 AS build
-COPY pom.sml .
+COPY pom.xml .
 COPY /src ./src/
 RUN mvn clean package -DskipTests
 
