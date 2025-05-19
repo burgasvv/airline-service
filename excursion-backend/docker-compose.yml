@@ -6,8 +6,6 @@ services:
     container_name: excursion_backend_postgres
     ports:
       - "5433:5432"
-    expose:
-      - "5433"
     environment:
       POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: postgres
@@ -20,10 +18,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "9010:9010"
-    expose:
-      - "9010"
     depends_on:
       - postgres
     restart: unless-stopped
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5433/excursion_backend
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/excursion_backend

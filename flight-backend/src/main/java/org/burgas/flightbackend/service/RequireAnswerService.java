@@ -5,7 +5,6 @@ import org.burgas.flightbackend.dto.RequireAnswerResponse;
 import org.burgas.flightbackend.entity.RequireAnswerToken;
 import org.burgas.flightbackend.exception.RequireAlreadyClosedException;
 import org.burgas.flightbackend.exception.RequireAnswerNotTransformedException;
-import org.burgas.flightbackend.kafka.KafkaProducer;
 import org.burgas.flightbackend.mapper.RequireAnswerMapper;
 import org.burgas.flightbackend.mapper.RequireAnswerTokenMapper;
 import org.burgas.flightbackend.repository.RequireAnswerRepository;
@@ -40,18 +39,16 @@ public class RequireAnswerService {
     private final RequireAnswerMapper requireAnswerMapper;
     private final RequireAnswerTokenRepository requireAnswerTokenRepository;
     private final RequireAnswerTokenMapper requireAnswerTokenMapper;
-    private final KafkaProducer kafkaProducer;
 
     public RequireAnswerService(
             RequireRepository requireRepository, RequireAnswerRepository requireAnswerRepository, RequireAnswerMapper requireAnswerMapper,
-            RequireAnswerTokenRepository requireAnswerTokenRepository, RequireAnswerTokenMapper requireAnswerTokenMapper, KafkaProducer kafkaProducer
+            RequireAnswerTokenRepository requireAnswerTokenRepository, RequireAnswerTokenMapper requireAnswerTokenMapper
     ) {
         this.requireRepository = requireRepository;
         this.requireAnswerRepository = requireAnswerRepository;
         this.requireAnswerMapper = requireAnswerMapper;
         this.requireAnswerTokenRepository = requireAnswerTokenRepository;
         this.requireAnswerTokenMapper = requireAnswerTokenMapper;
-        this.kafkaProducer = kafkaProducer;
     }
 
     public List<RequireAnswerResponse> findByUserId(final String userId) {
@@ -101,12 +98,6 @@ public class RequireAnswerService {
                                                 )
                                         )
                                         .map(this.requireAnswerTokenMapper::toRequireAnswerTokenResponse)
-                                        .map(
-                                                requireAnswerTokenResponse -> {
-                                                    this.kafkaProducer.sendStringRequireAnswerTokenMessage(requireAnswerTokenResponse);
-                                                    return requireAnswerTokenResponse;
-                                                }
-                                        )
                                         .orElseThrow(
                                                 () -> new RequireAnswerNotTransformedException(REQUIRE_ANSWER_NOT_TRANSFORMED.getLogMessages())
                                         );
@@ -114,12 +105,6 @@ public class RequireAnswerService {
                                 return of(this.requireAnswerMapper.toEntity(requireAnswerRequest))
                                         .map(this.requireAnswerRepository::save)
                                         .map(this.requireAnswerMapper::toResponse)
-                                        .map(
-                                                requireAnswerResponse -> {
-                                                    this.kafkaProducer.sendStringRequireAnswerMessage(requireAnswerResponse);
-                                                    return requireAnswerResponse;
-                                                }
-                                        )
                                         .orElseThrow(
                                                 () -> new RequireAnswerNotTransformedException(REQUIRE_ANSWER_NOT_TRANSFORMED.getLogMessages())
                                         );

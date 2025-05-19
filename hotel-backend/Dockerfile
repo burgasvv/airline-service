@@ -1,6 +1,6 @@
 
 FROM postgres:latest
-EXPOSE 5434
+EXPOSE 5432
 
 FROM maven:3.9.9 AS build
 COPY pom.xml .

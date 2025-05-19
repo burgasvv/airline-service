@@ -18,10 +18,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "9020:9020"
-    expose:
-      - "9020"
     depends_on:
       - postgres
     restart: unless-stopped
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5434/hotel_backend
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hotel_backend

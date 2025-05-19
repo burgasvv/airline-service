@@ -4,7 +4,6 @@ import org.burgas.flightbackend.dto.RequireRequest;
 import org.burgas.flightbackend.dto.RequireResponse;
 import org.burgas.flightbackend.exception.RequireNotCreatedException;
 import org.burgas.flightbackend.exception.RequireNotFoundException;
-import org.burgas.flightbackend.kafka.KafkaProducer;
 import org.burgas.flightbackend.log.RequireLogs;
 import org.burgas.flightbackend.mapper.RequireMapper;
 import org.burgas.flightbackend.repository.RequireRepository;
@@ -29,12 +28,10 @@ public class RequireService {
     private static final Logger log = LoggerFactory.getLogger(RequireService.class);
     private final RequireRepository requireRepository;
     private final RequireMapper requireMapper;
-    private final KafkaProducer kafkaProducer;
 
-    public RequireService(RequireRepository requireRepository, RequireMapper requireMapper, KafkaProducer kafkaProducer) {
+    public RequireService(RequireRepository requireRepository, RequireMapper requireMapper) {
         this.requireRepository = requireRepository;
         this.requireMapper = requireMapper;
-        this.kafkaProducer = kafkaProducer;
     }
 
     public List<RequireResponse> findAllByClosed(final String closed) {
@@ -78,12 +75,6 @@ public class RequireService {
         return of(this.requireMapper.toEntity(requireRequest))
                 .map(this.requireRepository::save)
                 .map(this.requireMapper::toResponse)
-                .map(
-                        requireResponse -> {
-                            this.kafkaProducer.sendStringRequireMessage(requireResponse);
-                            return requireResponse;
-                        }
-                )
                 .orElseThrow(
                         () -> new RequireNotCreatedException(REQUIRE_NOT_CREATED.getMessage())
                 );
