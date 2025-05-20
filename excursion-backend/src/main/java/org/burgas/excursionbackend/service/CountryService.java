@@ -72,7 +72,7 @@ public class CountryService {
     }
 
     public CountryResponse findById(final String countryId) {
-        return this.countryRepository.findById(Long.valueOf(countryId))
+        return this.countryRepository.findById(Long.valueOf(countryId == null ? "0" : countryId))
                 .stream()
                 .peek(country -> log.info(COUNTRY_FOUND_BY_ID.getLogMessage(), country))
                 .map(this.countryMapper::toResponse)
@@ -82,7 +82,7 @@ public class CountryService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<CountryResponse> findByIdAsync(final String countryId) {
-        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId)))
+        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId == null ? "0" : countryId)))
                 .thenApplyAsync(
                         country -> country.stream()
                                 .peek(foundCountry -> log.info(COUNTRY_FOUND_BY_ID_ASYNC.getLogMessage(), foundCountry))
@@ -119,7 +119,7 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String countryId) {
-        return this.countryRepository.findById(Long.valueOf(countryId))
+        return this.countryRepository.findById(Long.valueOf(countryId == null ? "0" : countryId))
                 .map(
                         country -> {
                             log.info(COUNTRY_FOUND_BEFORE_DELETING.getLogMessage(), country);
@@ -136,7 +136,7 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String countryId) {
-        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId)))
+        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId == null ? "0" : countryId)))
                 .thenApplyAsync(
                         country -> country.map(
                                 foundCountry -> {
@@ -154,7 +154,7 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public String uploadImage(final String countryId, final Part part) {
-        return this.countryRepository.findById(Long.valueOf(countryId))
+        return this.countryRepository.findById(Long.valueOf(countryId == null ? "0" : countryId))
                 .map(
                         country -> {
                             Image image = this.imageService.uploadImage(part);
@@ -172,7 +172,7 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadImageAsync(final String countryId, final Part part) {
-        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId)))
+        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId == null ? "0" : countryId)))
                 .thenApplyAsync(
                         country -> country.map(
                                 foundCountry -> {
@@ -196,7 +196,7 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public String changeImage(final String countryId, final Part part) {
-        return this.countryRepository.findById(Long.valueOf(countryId))
+        return this.countryRepository.findById(Long.valueOf(countryId == null ? "0" : countryId))
                 .map(
                         country -> of(country.getImageId())
                                 .map(
@@ -216,7 +216,7 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeImageAsync(final String countryId, final Part part) {
-        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId)))
+        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId == null ? "0" : countryId)))
                 .thenApplyAsync(
                         country -> country.map(
                                         foundCountry -> of(foundCountry.getImageId())
@@ -242,7 +242,7 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public String deleteImage(final String countryId) {
-        return this.countryRepository.findById(Long.valueOf(countryId))
+        return this.countryRepository.findById(Long.valueOf(countryId == null ? "0" : countryId))
                 .map(
                         country -> of(country.getImageId())
                                 .map(
@@ -262,7 +262,7 @@ public class CountryService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteImageAsync(final String countryId) {
-        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId)))
+        return supplyAsync(() -> this.countryRepository.findById(Long.valueOf(countryId == null ? "0" : countryId)))
                 .thenApplyAsync(
                         country -> country.map(
                                         foundCountry -> of(foundCountry.getImageId())

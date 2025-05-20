@@ -52,7 +52,7 @@ public class OrderedTicketService {
     }
 
     public List<OrderedTicketResponse> findAllByIdentityId(final String identityId) {
-        return this.orderedTicketRepository.findOrderedTicketsByIdentityId(Long.parseLong(identityId))
+        return this.orderedTicketRepository.findOrderedTicketsByIdentityId(Long.parseLong(identityId == null ? "0" : identityId))
                 .stream()
                 .peek(orderedTicket -> log.info(ORDERED_TICKET_FOUND_BY_IDENTITY_ID.getLogMessage(), orderedTicket))
                 .map(this.orderedTicketMapper::toResponse)
@@ -66,7 +66,7 @@ public class OrderedTicketService {
     }
 
     public OrderedTicketResponse findById(final String orderedTicketId) {
-        return this.orderedTicketRepository.findById(Long.parseLong(orderedTicketId))
+        return this.orderedTicketRepository.findById(Long.parseLong(orderedTicketId == null ? "0" : orderedTicketId))
                 .stream()
                 .peek(orderedTicket -> log.info(ORDERED_TICKET_FOUND_BY_ID.getLogMessage(), orderedTicket))
                 .map(this.orderedTicketMapper::toResponse)
@@ -105,7 +105,7 @@ public class OrderedTicketService {
             rollbackFor = Exception.class
     )
     public String cancelOrderedTicket(final String orderedTicketId) {
-        return this.orderedTicketRepository.findById(Long.parseLong(orderedTicketId))
+        return this.orderedTicketRepository.findById(Long.parseLong(orderedTicketId == null ? "0" : orderedTicketId))
                 .map(
                         orderedTicket -> {
                             this.flightSeatService.cancelReserveFlightSeat(orderedTicket);

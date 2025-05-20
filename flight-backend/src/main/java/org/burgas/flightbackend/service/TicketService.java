@@ -43,7 +43,7 @@ public class TicketService {
     }
 
     public List<TicketResponse> findAllByFlightId(final String flightId) {
-        return this.ticketRepository.findTicketsByFlightId(Long.parseLong(flightId))
+        return this.ticketRepository.findTicketsByFlightId(Long.parseLong(flightId == null ? "0" : flightId))
                 .stream()
                 .peek(ticket -> log.info(TicketLogs.TICKET_FOUND_BY_FLIGHT_ID.getLogMessage(), ticket))
                 .map(this.ticketMapper::toResponse)
@@ -51,7 +51,7 @@ public class TicketService {
     }
 
     public TicketResponse findById(final String ticketId) {
-        return this.ticketRepository.findById(Long.parseLong(ticketId))
+        return this.ticketRepository.findById(Long.parseLong(ticketId == null ? "0" : ticketId))
                 .stream()
                 .peek(ticket -> log.info(TicketLogs.TICKET_WAS_FOUND_BY_ID.getLogMessage(), ticket))
                 .map(this.ticketMapper::toResponse)

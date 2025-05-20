@@ -95,7 +95,7 @@ public class AddressService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String addressId) {
-        return this.addressRepository.findById(Long.parseLong(addressId))
+        return this.addressRepository.findById(Long.parseLong(addressId == null ? "0" : addressId))
                 .map(
                         address -> {
                             this.addressRepository.deleteById(address.getId());
@@ -113,7 +113,7 @@ public class AddressService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String addressId) {
-        return supplyAsync(() -> this.addressRepository.findById(Long.parseLong(addressId)))
+        return supplyAsync(() -> this.addressRepository.findById(Long.parseLong(addressId == null ? "0" : addressId)))
                 .thenApplyAsync(
                         address -> address.stream()
                                 .peek(foundAddress -> log.info(AddressLogs.ADDRESS_FOUND_BEFORE_DELETE.getLogMessage(), foundAddress))

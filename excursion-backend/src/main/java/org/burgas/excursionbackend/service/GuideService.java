@@ -72,7 +72,7 @@ public class GuideService {
     }
 
     public GuideResponse findById(final String guideId) {
-        return this.guideRepository.findById(Long.valueOf(guideId))
+        return this.guideRepository.findById(Long.valueOf(guideId == null ? "0" : guideId))
                 .stream()
                 .peek(guide -> log.info(GUIDE_FOUND_BY_ID.getLogMessage(), guide))
                 .map(this.guideMapper::toResponse)
@@ -82,7 +82,7 @@ public class GuideService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<GuideResponse> findByIdAsync(final String guideId) {
-        return supplyAsync(() -> this.guideRepository.findById(Long.valueOf(guideId)))
+        return supplyAsync(() -> this.guideRepository.findById(Long.valueOf(guideId == null ? "0" : guideId)))
                 .thenApplyAsync(
                         guide -> guide.stream()
                                 .peek(logGuide -> log.info(GUIDE_FOUND_BY_ID_ASYNC.getLogMessage(), logGuide))
@@ -117,7 +117,7 @@ public class GuideService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String guideId) {
-        return this.guideRepository.findById(Long.valueOf(guideId))
+        return this.guideRepository.findById(Long.valueOf(guideId == null ? "0" : guideId))
                 .map(
                         guide -> {
                             this.guideRepository.deleteById(guide.getId());
@@ -133,7 +133,7 @@ public class GuideService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String guideId) {
-        return supplyAsync(() -> this.guideRepository.findById(Long.valueOf(guideId)))
+        return supplyAsync(() -> this.guideRepository.findById(Long.valueOf(guideId == null ? "0" : guideId)))
                 .thenApplyAsync(
                         guide -> guide.map(
                                 foundGuide -> {
@@ -150,7 +150,7 @@ public class GuideService {
             rollbackFor = Exception.class
     )
     public String uploadImage(final String guideId, final Part part) {
-        return this.guideRepository.findById(Long.valueOf(guideId))
+        return this.guideRepository.findById(Long.valueOf(guideId == null ? "0" : guideId))
                 .map(
                         guide -> {
                             Image image = this.imageService.uploadImage(part);
@@ -168,7 +168,7 @@ public class GuideService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadImageAsync(final String guideId, final Part part) {
-        return supplyAsync(() -> this.guideRepository.findById(Long.valueOf(guideId)))
+        return supplyAsync(() -> this.guideRepository.findById(Long.valueOf(guideId == null ? "0" : guideId)))
                 .thenApplyAsync(
                         guide -> guide.map(
                                 foundGuide -> {
@@ -192,7 +192,7 @@ public class GuideService {
             rollbackFor = Exception.class
     )
     public String changeImage(final String guideId, final Part part) {
-        return this.guideRepository.findById(Long.valueOf(guideId))
+        return this.guideRepository.findById(Long.valueOf(guideId == null ? "0" : guideId))
                 .map(
                         guide -> of(guide.getImageId())
                                 .map(
@@ -212,7 +212,7 @@ public class GuideService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeImageAsync(final String guideId, final Part part) {
-        return supplyAsync(() -> this.guideRepository.findById(Long.valueOf(guideId)))
+        return supplyAsync(() -> this.guideRepository.findById(Long.valueOf(guideId == null ? "0" : guideId)))
                 .thenApplyAsync(
                         guide -> guide.map(
                                 foundGuide -> of(foundGuide.getImageId())
@@ -238,7 +238,7 @@ public class GuideService {
             rollbackFor = Exception.class
     )
     public String deleteImage(final String guideId) {
-        return this.guideRepository.findById(Long.valueOf(guideId))
+        return this.guideRepository.findById(Long.valueOf(guideId == null ? "0" : guideId))
                 .map(
                         guide -> of(guide.getImageId())
                                 .map(
@@ -258,7 +258,7 @@ public class GuideService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteImageAsync(final String guideId) {
-        return supplyAsync(() -> this.guideRepository.findById(Long.valueOf(guideId)))
+        return supplyAsync(() -> this.guideRepository.findById(Long.valueOf(guideId == null ? "0" : guideId)))
                 .thenApplyAsync(
                         guide -> guide.map(
                                 foundGuide -> of(foundGuide.getImageId())

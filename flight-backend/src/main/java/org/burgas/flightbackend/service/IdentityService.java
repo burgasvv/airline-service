@@ -65,7 +65,7 @@ public class IdentityService {
     }
 
     public IdentityResponse findById(final String identityId) {
-        return this.identityRepository.findById(Long.parseLong(identityId))
+        return this.identityRepository.findById(Long.parseLong(identityId == null ? "0" : identityId))
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BY_ID.getLogMessage(), identity))
                 .map(this.identityMapper::toResponse)
@@ -74,7 +74,7 @@ public class IdentityService {
     }
 
     public IdentityResponse findByUsername(final String username) {
-        return this.identityRepository.findIdentityByUsername(username)
+        return this.identityRepository.findIdentityByUsername(username == null ? "" : username)
                 .stream()
                 .peek(identity -> log.info(IDENTITY_FOUND_BY_USERNAME.getLogMessage(), identity))
                 .map(this.identityMapper::toResponse)
@@ -100,7 +100,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public String accountEnableOrDisable(final String identityId, final String enabled) {
-        return this.identityRepository.findById(Long.valueOf(identityId))
+        return this.identityRepository.findById(Long.valueOf(identityId == null ? "0" : identityId))
                 .map(
                         identity -> {
                             Boolean value = Boolean.valueOf(enabled);
@@ -123,7 +123,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public String changePassword(final String identityId) {
-        return this.customJavaMailSender.sendTokenByEmail(Long.valueOf(identityId));
+        return this.customJavaMailSender.sendTokenByEmail(Long.valueOf(identityId == null ? "0" : identityId));
     }
 
     @Transactional(
@@ -132,7 +132,7 @@ public class IdentityService {
     )
     public IdentityResponse setPassword(final String identityId, final String token, final String password) {
         return this.restoreTokenRepository
-                .existsRestoreTokenByValueAndIdentityId(UUID.fromString(token), Long.valueOf(identityId))
+                .existsRestoreTokenByValueAndIdentityId(UUID.fromString(token), Long.valueOf(identityId == null ? "0" : identityId))
                 .map(
                         aBoolean -> this.identityRepository.findById(Long.valueOf(identityId))
                                 .map(
@@ -158,7 +158,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public String uploadImage(final String identityId, final Part part) {
-        return this.identityRepository.findById(Long.parseLong(identityId))
+        return this.identityRepository.findById(Long.parseLong(identityId == null ? "0" : identityId))
                 .map(
                         identity -> {
                             Image image = this.imageService.uploadImage(part);
@@ -175,7 +175,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public String changeImage(final String identityId, final Part part) {
-        return this.identityRepository.findById(Long.parseLong(identityId))
+        return this.identityRepository.findById(Long.parseLong(identityId == null ? "0" : identityId))
                 .map(
                         identity -> of(identity.getImageId())
                                 .map(
@@ -198,7 +198,7 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public String deleteImage(final String identityId) {
-        return this.identityRepository.findById(Long.parseLong(identityId))
+        return this.identityRepository.findById(Long.parseLong(identityId == null ? "0" : identityId))
                 .map(
                         identity -> Optional.of(identity.getImageId())
                                 .map(

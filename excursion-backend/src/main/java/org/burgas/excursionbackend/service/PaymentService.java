@@ -45,7 +45,7 @@ public class PaymentService {
     }
 
     public List<PaymentResponse> findAllByIdentityId(final String identityId) {
-        return this.paymentRepository.findPaymentsByIdentityId(Long.valueOf(identityId))
+        return this.paymentRepository.findPaymentsByIdentityId(Long.valueOf(identityId == null ? "0" : identityId))
                 .stream()
                 .peek(payment -> log.info(PAYMENT_FOUND_BY_IDENTITY_ID.getLogMessage(), payment))
                 .map(this.paymentMapper::toResponse)
@@ -58,7 +58,7 @@ public class PaymentService {
     }
 
     public PaymentResponse findById(final String paymentId) {
-        return this.paymentRepository.findById(Long.valueOf(paymentId))
+        return this.paymentRepository.findById(Long.valueOf(paymentId == null ? "0" : paymentId))
                 .stream()
                 .peek(payment -> log.info(PAYMENT_FOUND_BY_ID.getLogMessage(), payment))
                 .map(this.paymentMapper::toResponse)

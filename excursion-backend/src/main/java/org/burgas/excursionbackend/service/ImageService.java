@@ -37,7 +37,7 @@ public class ImageService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<Image> findByIdAsync(final String imageId) {
-        return supplyAsync(() -> this.imageRepository.findById(Long.valueOf(imageId)))
+        return supplyAsync(() -> this.imageRepository.findById(Long.valueOf(imageId == null ? "0" : imageId)))
                 .thenApplyAsync(image -> image.orElseGet(Image::new));
     }
 
@@ -48,7 +48,7 @@ public class ImageService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<Image> findImageDataByIdAsync(final String imageId) {
-        return supplyAsync(() -> this.imageRepository.findById(Long.valueOf(imageId)))
+        return supplyAsync(() -> this.imageRepository.findById(Long.valueOf(imageId == null ? "0" : imageId)))
                 .thenApplyAsync(image -> image.orElseGet(Image::new));
     }
 
@@ -81,7 +81,7 @@ public class ImageService {
     }
 
     public Image changeImage(final String imageId, final Part part) {
-        return this.imageRepository.findById(Long.valueOf(imageId))
+        return this.imageRepository.findById(Long.valueOf(imageId == null ? "0" : imageId))
                 .map(
                         image -> {
                             try {
@@ -110,7 +110,7 @@ public class ImageService {
     }
 
     public String deleteImage(final String imageId) {
-        return this.imageRepository.findById(Long.valueOf(imageId))
+        return this.imageRepository.findById(Long.valueOf(imageId == null ? "0" : imageId))
                 .map(
                         image -> {
                             this.imageRepository.deleteById(image.getId());

@@ -98,7 +98,7 @@ public class FilialService {
     }
 
     public List<FilialResponse> findByCountryId(final String countryId) {
-        return this.filialRepository.findFilialsByCountryId(Long.valueOf(countryId))
+        return this.filialRepository.findFilialsByCountryId(Long.valueOf(countryId == null ? "0" : countryId))
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_BY_COUNTRY_ID.getLogMessage(), filial))
                 .map(this.filialMapper::toResponse)
@@ -107,7 +107,7 @@ public class FilialService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<List<FilialResponse>> findByCountryIdAsync(final String countryId) {
-        return supplyAsync(() -> this.filialRepository.findFilialsByCountryId(Long.parseLong(countryId)))
+        return supplyAsync(() -> this.filialRepository.findFilialsByCountryId(Long.parseLong(countryId == null ? "0" : countryId)))
                 .thenApplyAsync(
                         filials -> filials.stream()
                                 .peek(filial -> log.info(FILIAL_FOUND_BY_COUNTRY_ID_ASYNC.getLogMessage(), filial))
@@ -117,7 +117,7 @@ public class FilialService {
     }
 
     public List<FilialResponse> findByCityId(final String cityId) {
-        return this.filialRepository.findFilialsByCityId(Long.valueOf(cityId))
+        return this.filialRepository.findFilialsByCityId(Long.valueOf(cityId == null ? "0" : cityId))
                 .stream()
                 .peek(filial -> log.info(FILIAL_FOUND_BY_CITY_ID.getLogMessage(), filial))
                 .map(this.filialMapper::toResponse)
@@ -126,7 +126,7 @@ public class FilialService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<List<FilialResponse>> findByCityIdAsync(final String cityId) {
-        return supplyAsync(() -> this.filialRepository.findFilialsByCityId(Long.parseLong(cityId)))
+        return supplyAsync(() -> this.filialRepository.findFilialsByCityId(Long.parseLong(cityId == null ? "0" : cityId)))
                 .thenApplyAsync(
                         filials -> filials.stream()
                                 .peek(filial -> log.info(FILIAL_FOUND_BY_CITY_ID_ASYNC.getLogMessage(), filial))
@@ -187,7 +187,7 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String filialId) {
-        return this.filialRepository.findById(Long.parseLong(filialId))
+        return this.filialRepository.findById(Long.parseLong(filialId == null ? "0" : filialId))
                 .map(
                         filial -> {
                             this.filialRepository.deleteById(filial.getId());
@@ -205,7 +205,7 @@ public class FilialService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String filialId) {
-        return supplyAsync(() -> this.filialRepository.findById(Long.parseLong(filialId)))
+        return supplyAsync(() -> this.filialRepository.findById(Long.parseLong(filialId == null ? "0" : filialId)))
                 .thenApplyAsync(
                         filial -> filial.stream()
                                 .peek(foundFilial -> log.info(FILIAL_FOUND_BEFORE_DELETE.getLogMessage(), foundFilial))

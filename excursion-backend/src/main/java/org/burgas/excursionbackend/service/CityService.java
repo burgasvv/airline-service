@@ -73,7 +73,7 @@ public class CityService {
     }
 
     public CityResponse findById(final String cityId) {
-        return this.cityRepository.findById(Long.valueOf(cityId))
+        return this.cityRepository.findById(Long.valueOf(cityId == null ? "0" : cityId))
                 .stream()
                 .peek(city -> log.info(CITY_FOUND_BY_ID.getLogMessage(), city))
                 .map(this.cityMapper::toResponse)
@@ -83,7 +83,7 @@ public class CityService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<CityResponse> findByIdAsync(final String cityId) {
-        return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId)))
+        return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId == null ? "0" : cityId)))
                 .thenApplyAsync(
                         city -> city.stream()
                                 .peek(foundCity -> log.info(CITY_FOUND_BY_ID_ASYNC.getLogMessage(), foundCity))
@@ -122,7 +122,7 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String cityId) {
-        return this.cityRepository.findById(Long.valueOf(cityId))
+        return this.cityRepository.findById(Long.valueOf(cityId == null ? "0" : cityId))
                 .map(
                         city -> {
                             log.info(CITY_FOUND_BEFORE_DELETING.getLogMessage(), city);
@@ -139,7 +139,7 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String cityId) {
-        return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId)))
+        return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId == null ? "0" : cityId)))
                 .thenApplyAsync(
                         city -> city.map(
                                 foundCity -> {
@@ -157,7 +157,7 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public String uploadImage(final String cityId, final Part part) {
-        return this.cityRepository.findById(Long.valueOf(cityId))
+        return this.cityRepository.findById(Long.valueOf(cityId == null ? "0" : cityId))
                 .map(
                         city -> {
                             Image image = this.imageService.uploadImage(part);
@@ -174,7 +174,7 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadImageAsync(final String cityId, final Part part) {
-        return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId)))
+        return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId == null ? "0" : cityId)))
                 .thenApplyAsync(
                         city -> city.map(
                                 foundCity -> {
@@ -198,7 +198,7 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public String changeImage(final String cityId, final Part part) {
-        return this.cityRepository.findById(Long.valueOf(cityId))
+        return this.cityRepository.findById(Long.valueOf(cityId == null ? "0" : cityId))
                 .map(
                         city -> of(city.getImageId())
                                 .map(
@@ -218,7 +218,7 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeImageAsync(final String cityId, final Part part) {
-        return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId)))
+        return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId == null ? "0" : cityId)))
                 .thenApplyAsync(
                         city -> city.map(
                                 foundCity -> of(foundCity.getImageId())
@@ -244,7 +244,7 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public String deleteImage(final String cityId) {
-        return this.cityRepository.findById(Long.valueOf(cityId))
+        return this.cityRepository.findById(Long.valueOf(cityId == null ? "0" : cityId))
                 .map(
                         city -> of(city.getImageId())
                                 .map(
@@ -263,7 +263,7 @@ public class CityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteImageAsync(final String cityId) {
-        return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId)))
+        return supplyAsync(() -> this.cityRepository.findById(Long.valueOf(cityId == null ? "0" : cityId)))
                 .thenApplyAsync(
                         city -> city.map(
                                 foundCity -> of(foundCity.getImageId())

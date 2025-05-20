@@ -60,7 +60,7 @@ public class RequireAnswerService {
     }
 
     public List<RequireAnswerResponse> findByAdminId(final String adminId) {
-        return this.requireAnswerRepository.findRequireAnswersByAdminId(Long.valueOf(adminId))
+        return this.requireAnswerRepository.findRequireAnswersByAdminId(Long.valueOf(adminId == null ? "0" : adminId))
                 .stream()
                 .peek(requireAnswer -> log.info(REQUIRE_ANSWER_FOUND_ALL_BY_ADMIN_ID.getLogMessage(), requireAnswer))
                 .map(this.requireAnswerMapper::toResponse)
@@ -72,7 +72,7 @@ public class RequireAnswerService {
             rollbackFor = Exception.class
     )
     public Object sendAnswerOrToken(final RequireAnswerRequest requireAnswerRequest) {
-        return this.requireRepository.findById(requireAnswerRequest.getRequireId())
+        return this.requireRepository.findById(requireAnswerRequest.getRequireId() == null ? 0L : requireAnswerRequest.getRequireId())
                 .map(
                         require -> {
                             if (!require.getClosed()) {

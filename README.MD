@@ -4,15 +4,14 @@
 ## Микросервисная архитектура
 
 ##  Версии
-* JDK 24
-* SpringBoot 3.3.5
+- [X]JDK 17
+- [X]SpringBoot 3.3.5
 
 ## Основной стек зависимостей
-* Apache Kafka
-* Spring Security
-* Spring Web
-* Spring Data JPA
-* Postgresql
+- [X]Spring Security
+- [X]Spring Web
+- [X]Spring Data JPA
+- [X]Postgresql
 
 ## Описание
          Архитектура из двух микросервисоав:

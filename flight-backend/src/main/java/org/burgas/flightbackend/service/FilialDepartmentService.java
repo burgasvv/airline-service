@@ -74,7 +74,9 @@ public class FilialDepartmentService {
     }
 
     public FilialDepartmentResponse findByFilialIdAndDepartmentId(final String filialId, final String departmentId) {
-        return this.filialDepartmentRepository.findFilialDepartmentByFilialIdAndDepartmentId(Long.valueOf(filialId), Long.valueOf(departmentId))
+        return this.filialDepartmentRepository.findFilialDepartmentByFilialIdAndDepartmentId(
+                        Long.valueOf(filialId == null ? "0" : filialId), Long.valueOf(departmentId == null ? "0" : departmentId)
+                )
                 .stream()
                 .peek(filialDepartment -> log.info(FILIAL_DEPARTMENT_FOUND_BY_FILIAL_AND_DEPARTMENT_ID.getLogMessage(), filialDepartment))
                 .map(this.filialDepartmentMapper::toResponse)
@@ -85,7 +87,9 @@ public class FilialDepartmentService {
     @Async(value = "taskExecutor")
     public CompletableFuture<FilialDepartmentResponse> findByFilialIdAndDepartmentIdAsync(final String filialId, final String departmentId) {
         return supplyAsync(
-                () -> this.filialDepartmentRepository.findFilialDepartmentByFilialIdAndDepartmentId(Long.valueOf(filialId), Long.valueOf(departmentId))
+                () -> this.filialDepartmentRepository.findFilialDepartmentByFilialIdAndDepartmentId(
+                        Long.valueOf(filialId == null ? "0" : filialId), Long.valueOf(departmentId == null ? "0" : departmentId)
+                )
         )
                 .thenApplyAsync(
                         filialDepartment -> filialDepartment.stream()
@@ -142,7 +146,9 @@ public class FilialDepartmentService {
     )
     public String deleteFilialDepartment(final String filialId, final String departmentId) {
         return this.filialDepartmentRepository
-                .findFilialDepartmentByFilialIdAndDepartmentId(Long.valueOf(filialId), Long.valueOf(departmentId))
+                .findFilialDepartmentByFilialIdAndDepartmentId(
+                        Long.valueOf(filialId == null ? "0" : filialId), Long.valueOf(departmentId == null ? "0" : departmentId)
+                )
                 .map(
                         filialDepartment -> {
                             this.filialDepartmentRepository.deleteFilialDepartmentByFilialIdAndDepartmentId(
@@ -163,7 +169,10 @@ public class FilialDepartmentService {
     )
     public CompletableFuture<String> deleteFilialDepartmentAsync(final String filialId, final String departmentId) {
         return supplyAsync(() -> this.filialDepartmentRepository
-                .findFilialDepartmentByFilialIdAndDepartmentId(Long.valueOf(filialId), Long.valueOf(departmentId)))
+                .findFilialDepartmentByFilialIdAndDepartmentId(
+                        Long.valueOf(filialId == null ? "0" : filialId), Long.valueOf(departmentId == null ? "0" : departmentId)
+                )
+        )
                 .thenApplyAsync(
                         filialDepartment -> filialDepartment.stream()
                                 .peek(foundFilialDepartment -> log.info(

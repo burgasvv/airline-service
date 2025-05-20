@@ -4,7 +4,6 @@ import org.burgas.flightbackend.dto.FlightRequest;
 import org.burgas.flightbackend.dto.FlightResponse;
 import org.burgas.flightbackend.entity.*;
 import org.burgas.flightbackend.exception.*;
-import org.burgas.flightbackend.log.FlightLogs;
 import org.burgas.flightbackend.mapper.FlightMapper;
 import org.burgas.flightbackend.repository.*;
 import org.slf4j.Logger;
@@ -19,8 +18,7 @@ import java.util.stream.IntStream;
 
 import static java.lang.String.format;
 import static java.util.Optional.of;
-import static org.burgas.flightbackend.log.FlightLogs.FLIGHT_FOUND_ALL;
-import static org.burgas.flightbackend.log.FlightLogs.FLIGHT_FOUND_BY_DEPARTURE_AND_ARRIVAL;
+import static org.burgas.flightbackend.log.FlightLogs.*;
 import static org.burgas.flightbackend.message.EmployeeMessages.EMPLOYEE_NOT_FOUND;
 import static org.burgas.flightbackend.message.FlightMessages.*;
 import static org.burgas.flightbackend.message.PlaneMessages.PLANE_NOT_FOUND;
@@ -67,7 +65,7 @@ public class FlightService {
             final String departureCityId, final String arrivalCityId, final String departureDate
     ) {
         return this.flightRepository.findFlightsByDepartureCityAndArrivalCityAndDepartureDate(
-                Long.parseLong(departureCityId), Long.parseLong(arrivalCityId),
+                Long.parseLong(departureCityId == null ? "0" : departureCityId), Long.parseLong(arrivalCityId == null ? "0" : arrivalCityId),
                         departureDate != null && !departureDate.isBlank() ? LocalDate.parse(departureDate) : null)
                 .stream()
                 .peek(flight -> log.info(FLIGHT_FOUND_BY_DEPARTURE_AND_ARRIVAL.getLogMessage(), flight))
@@ -76,7 +74,9 @@ public class FlightService {
     }
 
     public List<FlightResponse> findAllByDepartureCityAndArrivalCity(final String departureCityId, final String arrivalCityId) {
-        return this.flightRepository.findFlightsByDepartureCityIdAndArrivalCityId(Long.parseLong(departureCityId), Long.parseLong(arrivalCityId))
+        return this.flightRepository.findFlightsByDepartureCityIdAndArrivalCityId(
+                        Long.parseLong(departureCityId == null ? "0" : departureCityId), Long.parseLong(arrivalCityId == null ? "0" : arrivalCityId)
+                )
                 .stream()
                 .peek(flight -> log.info(FLIGHT_FOUND_BY_DEPARTURE_AND_ARRIVAL.getLogMessage(),flight))
                 .map(this.flightMapper::toResponse)
@@ -84,7 +84,7 @@ public class FlightService {
     }
 
     public List<FlightResponse> findAllByDepartureCityAndArrivalCityBack(final String flightId) {
-        return this.flightRepository.findById(Long.parseLong(flightId))
+        return this.flightRepository.findById(Long.parseLong(flightId == null ? "0" : flightId))
                 .map(
                         flight -> of(this.flightMapper.toResponse(flight))
                                 .map(
@@ -107,9 +107,9 @@ public class FlightService {
     }
 
     public FlightResponse findById(final String flightId) {
-        return this.flightRepository.findById(Long.parseLong(flightId))
+        return this.flightRepository.findById(Long.parseLong(flightId == null ? "0" : flightId))
                 .stream()
-                .peek(flight -> log.info(FlightLogs.FLIGHT_FOUND_BY_ID.getLogMessage(), flight))
+                .peek(flight -> log.info(FLIGHT_FOUND_BY_ID.getLogMessage(), flight))
                 .map(this.flightMapper::toResponse)
                 .findFirst()
                 .orElseGet(FlightResponse::new);
@@ -210,7 +210,7 @@ public class FlightService {
             rollbackFor = Exception.class
     )
     public String removeEmployeeFromFlight(final String flightId, final String employeeId) {
-        Flight flight = this.flightRepository.findById(Long.parseLong(flightId))
+        Flight flight = this.flightRepository.findById(Long.parseLong(flightId == null ? "0" : flightId))
                 .orElseThrow(
                         () -> new FlightNotFoundException(FLIGHT_NOT_FOUND.getMessage())
                 );
@@ -229,7 +229,7 @@ public class FlightService {
             rollbackFor = Exception.class
     )
     public String startFlight(final String flightId) {
-        return this.flightRepository.findById(Long.parseLong(flightId))
+        return this.flightRepository.findById(Long.parseLong(flightId == null ? "0" : flightId))
                 .map(
                         flight -> {
                             flight.setInProgress(true);
@@ -261,7 +261,7 @@ public class FlightService {
             rollbackFor = Exception.class
     )
     public String completeFlight(final String flightId) {
-        return this.flightRepository.findById(Long.parseLong(flightId))
+        return this.flightRepository.findById(Long.parseLong(flightId == null ? "0" : flightId))
                 .map(
                         flight -> {
                             flight.setInProgress(false);

@@ -85,7 +85,7 @@ public class PlaneService {
     }
 
     public PlaneResponse findById(final String planeId) {
-        return this.planeRepository.findById(Long.parseLong(planeId))
+        return this.planeRepository.findById(Long.parseLong(planeId == null ? "0" : planeId))
                 .stream()
                 .peek(plane -> log.info(PlaneLogs.PLANE_FOUND_BY_ID.getLogMessage(), plane))
                 .map(this.planeMapper::toResponse)
@@ -95,7 +95,7 @@ public class PlaneService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<PlaneResponse> findByIdAsync(final String planeId) {
-        return supplyAsync(() -> this.planeRepository.findById(Long.parseLong(planeId)))
+        return supplyAsync(() -> this.planeRepository.findById(Long.parseLong(planeId == null ? "0" : planeId)))
                 .thenApplyAsync(
                         plane -> plane.stream()
                                 .peek(foundPlane -> log.info(PLANE_FOUND_BY_ID_ASYNC.getLogMessage(), foundPlane))
@@ -134,7 +134,7 @@ public class PlaneService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String planeId) {
-        return this.planeRepository.findById(Long.parseLong(planeId))
+        return this.planeRepository.findById(Long.parseLong(planeId == null ? "0" : planeId))
                 .map(
                         plane -> {
                             this.planeRepository.deleteById(plane.getId());
@@ -150,7 +150,7 @@ public class PlaneService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String planeId) {
-        return supplyAsync(() -> this.planeRepository.findById(Long.parseLong(planeId)))
+        return supplyAsync(() -> this.planeRepository.findById(Long.parseLong(planeId == null ? "0" : planeId)))
                 .thenApplyAsync(
                         plane -> plane.stream()
                                 .peek(foundPlane -> log.info(PlaneLogs.PLANE_FOUND_BEFORE_DELETE.getLogMessage(), foundPlane))

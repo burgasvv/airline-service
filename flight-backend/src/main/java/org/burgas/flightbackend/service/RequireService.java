@@ -43,7 +43,7 @@ public class RequireService {
     }
 
     public List<RequireResponse> findByUserId(final String userId) {
-        return this.requireRepository.findRequiresByUserId(Long.valueOf(userId))
+        return this.requireRepository.findRequiresByUserId(Long.valueOf(userId == null ? "0" : userId))
                 .stream()
                 .peek(require -> log.info(RequireLogs.REQUIRE_FOUND_BY_USER_ID.getLogMessage(), require))
                 .map(this.requireMapper::toResponse)
@@ -51,7 +51,7 @@ public class RequireService {
     }
 
     public List<RequireResponse> findByAdminId(final String adminId) {
-        return this.requireRepository.findRequiresByAdminId(Long.valueOf(adminId))
+        return this.requireRepository.findRequiresByAdminId(Long.valueOf(adminId == null ? "0" : adminId))
                 .stream()
                 .peek(require -> log.info(RequireLogs.REQUIRE_FOUND_BY_ADMIN_ID.getLogMessage(), require))
                 .map(this.requireMapper::toResponse)
@@ -59,7 +59,7 @@ public class RequireService {
     }
 
     public RequireResponse findById(final String requireId) {
-        return this.requireRepository.findById(Long.valueOf(requireId))
+        return this.requireRepository.findById(Long.valueOf(requireId == null ? "0" : requireId))
                 .stream()
                 .peek(require -> log.info(RequireLogs.REQUIRE_FOUND_BY_ID.getLogMessage(), require))
                 .map(this.requireMapper::toResponse)
@@ -85,7 +85,7 @@ public class RequireService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String requireId) {
-        return this.requireRepository.findById(Long.parseLong(requireId))
+        return this.requireRepository.findById(Long.parseLong(requireId == null ? "0" : requireId))
                 .map(
                         require -> {
                             this.requireRepository.deleteById(require.getId());

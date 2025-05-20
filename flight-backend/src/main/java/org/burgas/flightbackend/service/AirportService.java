@@ -75,7 +75,7 @@ public class AirportService {
     }
 
     public List<AirportResponse> findByCountryId(final String countryId) {
-        return this.airportRepository.findAirportsByCountryId(Long.valueOf(countryId))
+        return this.airportRepository.findAirportsByCountryId(Long.valueOf(countryId == null ? "0" : countryId))
                 .stream()
                 .peek(airport -> log.info(AIRPORT_FOUND_BY_COUNTRY_ID.getLogMessage(), airport))
                 .map(this.airportMapper::toResponse)
@@ -84,7 +84,7 @@ public class AirportService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<List<AirportResponse>> findByCountryIdAsync(final String countryId) {
-        return supplyAsync(() -> this.airportRepository.findAirportsByCountryId(Long.parseLong(countryId)))
+        return supplyAsync(() -> this.airportRepository.findAirportsByCountryId(Long.parseLong(countryId == null ? "0" : countryId)))
                 .thenApplyAsync(
                         airports -> airports.stream()
                                 .peek(airport -> log.info(AIRPORT_FOUND_BY_COUNTRY_ID_ASYNC.getLogMessage(), airport))
@@ -94,7 +94,7 @@ public class AirportService {
     }
 
     public List<AirportResponse> findByCityId(final String cityId) {
-        return this.airportRepository.findAirportsByCityId(Long.valueOf(cityId))
+        return this.airportRepository.findAirportsByCityId(Long.valueOf(cityId == null ? "0" : cityId))
                 .stream()
                 .peek(airport -> log.info(AIRPORT_FOUND_BY_CITY_ID.getLogMessage(), airport))
                 .map(this.airportMapper::toResponse)
@@ -103,7 +103,7 @@ public class AirportService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<List<AirportResponse>> findByCityIdAsync(final String cityId) {
-        return supplyAsync(() -> this.airportRepository.findAirportsByCityId(Long.parseLong(cityId)))
+        return supplyAsync(() -> this.airportRepository.findAirportsByCityId(Long.parseLong(cityId == null ? "0" : cityId)))
                 .thenApplyAsync(
                         airports -> airports.stream()
                                 .peek(airport -> log.info(AIRPORT_FOUND_BY_CITY_ID_ASYNC.getLogMessage(), airport))
@@ -153,7 +153,7 @@ public class AirportService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String airportId) {
-        return this.airportRepository.findById(Long.parseLong(airportId))
+        return this.airportRepository.findById(Long.parseLong(airportId == null ? "0" : airportId))
                 .map(
                         airport -> {
                             this.airportRepository.deleteById(airport.getId());
@@ -164,7 +164,7 @@ public class AirportService {
     }
 
     public CompletableFuture<String> deleteByIdAsync(final String airportId) {
-        return supplyAsync(() -> this.airportRepository.findById(Long.parseLong(airportId)))
+        return supplyAsync(() -> this.airportRepository.findById(Long.parseLong(airportId == null ? "0" : airportId)))
                 .thenApplyAsync(
                         airport -> airport.stream()
                                 .peek(foundAirport -> log.info(AIRPORT_FOUND_BEFORE_DELETE.getLogMessage(), foundAirport))

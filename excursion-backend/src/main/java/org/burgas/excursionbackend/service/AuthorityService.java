@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -21,6 +20,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.excursionbackend.log.AuthorityLogs.*;
 import static org.burgas.excursionbackend.message.AuthorityMessages.*;
+import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -60,7 +60,7 @@ public class AuthorityService {
     }
 
     public AuthorityResponse findById(final String authorityId) {
-        return this.authorityRepository.findById(Long.valueOf(authorityId))
+        return this.authorityRepository.findById(Long.valueOf(authorityId == null ? "0" : authorityId))
                 .stream()
                 .peek(authority -> log.info(AUTHORITY_FOUND_BY_ID.getLogMessage(), authority))
                 .findFirst()
@@ -70,13 +70,13 @@ public class AuthorityService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<AuthorityResponse> findByIdAsync(final String authorityId) {
-        return supplyAsync(() -> this.authorityRepository.findById(Long.valueOf(authorityId)))
+        return supplyAsync(() -> this.authorityRepository.findById(Long.valueOf(authorityId == null ? "0" : authorityId)))
                 .thenApplyAsync(authority -> authority.map(this.authorityMapper::toResponse))
                 .thenApplyAsync(authorityResponse -> authorityResponse.orElseGet(AuthorityResponse::new));
     }
 
     @Transactional(
-            isolation = Isolation.SERIALIZABLE, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public AuthorityResponse createOrUpdate(final AuthorityRequest authorityRequest) {
@@ -90,7 +90,7 @@ public class AuthorityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = Isolation.SERIALIZABLE, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<AuthorityResponse> createOrUpdateAsync(final AuthorityRequest authorityRequest) {
@@ -100,11 +100,11 @@ public class AuthorityService {
     }
 
     @Transactional(
-            isolation = Isolation.SERIALIZABLE, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteById(final String authorityId) {
-        return this.authorityRepository.findById(Long.valueOf(authorityId))
+        return this.authorityRepository.findById(Long.valueOf(authorityId == null ? "0" : authorityId))
                 .map(
                         authority -> {
                             this.authorityRepository.deleteById(authority.getId());
@@ -117,11 +117,11 @@ public class AuthorityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = Isolation.SERIALIZABLE, propagation = REQUIRED,
+            isolation = SERIALIZABLE, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String authorityId) {
-        return supplyAsync(() -> this.authorityRepository.findById(Long.valueOf(authorityId)))
+        return supplyAsync(() -> this.authorityRepository.findById(Long.valueOf(authorityId == null ? "0" : authorityId)))
                 .thenApplyAsync(
                         authority -> authority
                                 .map(

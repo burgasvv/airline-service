@@ -73,7 +73,7 @@ public class SightService {
     }
 
     public SightResponse findById(final String sightId) {
-        return this.sightRepository.findById(Long.valueOf(sightId))
+        return this.sightRepository.findById(Long.valueOf(sightId == null ? "0" : sightId))
                 .stream()
                 .peek(sight -> log.info(SIGHT_FOUND_BY_ID.getLogMessage(), sight))
                 .map(this.sightMapper::toResponse)
@@ -83,7 +83,7 @@ public class SightService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<SightResponse> findByIdAsync(final String sightId) {
-        return supplyAsync(() -> this.sightRepository.findById(Long.valueOf(sightId)))
+        return supplyAsync(() -> this.sightRepository.findById(Long.valueOf(sightId == null ? "0" : sightId)))
                 .thenApplyAsync(
                         sight -> sight.stream()
                                 .peek(foundSight -> log.info(SIGHT_FOUND_BY_ID_ASYNC.getLogMessage(), foundSight))
@@ -120,7 +120,7 @@ public class SightService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String sightId) {
-        return this.sightRepository.findById(Long.valueOf(sightId))
+        return this.sightRepository.findById(Long.valueOf(sightId == null ? "0" : sightId))
                 .map(
                         sight -> {
                             this.sightRepository.deleteById(sight.getId());
@@ -136,7 +136,7 @@ public class SightService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String sightId) {
-        return supplyAsync(() -> this.sightRepository.findById(Long.valueOf(sightId)))
+        return supplyAsync(() -> this.sightRepository.findById(Long.valueOf(sightId == null ? "0" : sightId)))
                 .thenApplyAsync(
                         sight -> sight.map(
                                 foundSight -> {
@@ -153,7 +153,7 @@ public class SightService {
             rollbackFor = Exception.class
     )
     public String uploadImage(final String sightId, final Part part) {
-        return this.sightRepository.findById(Long.valueOf(sightId))
+        return this.sightRepository.findById(Long.valueOf(sightId == null ? "0" : sightId))
                 .map(
                         sight -> {
                             Image image = this.imageService.uploadImage(part);
@@ -171,7 +171,7 @@ public class SightService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadImageAsync(final String sightId, final Part part) {
-        return supplyAsync(() -> this.sightRepository.findById(Long.valueOf(sightId)))
+        return supplyAsync(() -> this.sightRepository.findById(Long.valueOf(sightId == null ? "0" : sightId)))
                 .thenApplyAsync(sight -> sight.map(
                         foundSight -> {
                             try {
@@ -193,7 +193,7 @@ public class SightService {
             rollbackFor = Exception.class
     )
     public String changeImage(final String sightId, final Part part) {
-        return this.sightRepository.findById(Long.valueOf(sightId))
+        return this.sightRepository.findById(Long.valueOf(sightId == null ? "0" : sightId))
                 .map(
                         sight -> of(sight.getImageId())
                                 .map(imageId -> {
@@ -211,7 +211,7 @@ public class SightService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeImageAsync(final String sightId, final Part part) {
-        return supplyAsync(() -> this.sightRepository.findById(Long.valueOf(sightId)))
+        return supplyAsync(() -> this.sightRepository.findById(Long.valueOf(sightId == null ? "0" : sightId)))
                 .thenApplyAsync(
                         sight -> sight.map(
                                 foundSight -> of(foundSight.getImageId())
@@ -237,7 +237,7 @@ public class SightService {
             rollbackFor = Exception.class
     )
     public String deleteImage(final String sightId) {
-        return this.sightRepository.findById(Long.valueOf(sightId))
+        return this.sightRepository.findById(Long.valueOf(sightId == null ? "0" : sightId))
                 .map(
                         sight -> of(sight.getImageId())
                                 .map(
@@ -256,7 +256,7 @@ public class SightService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteImageAsync(final String sightId) {
-        return supplyAsync(() -> this.sightRepository.findById(Long.valueOf(sightId)))
+        return supplyAsync(() -> this.sightRepository.findById(Long.valueOf(sightId == null ? "0" : sightId)))
                 .thenApplyAsync(
                         sight -> sight.map(
                                 foundSight -> of(foundSight.getImageId())

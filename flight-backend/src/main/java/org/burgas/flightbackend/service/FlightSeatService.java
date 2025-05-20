@@ -42,7 +42,7 @@ public class FlightSeatService {
     }
 
     public List<FlightSeatResponse> findAllByFlightId(final String flightId) {
-        return this.flightSeatRepository.findFlightSeatsByFlightId(Long.parseLong(flightId))
+        return this.flightSeatRepository.findFlightSeatsByFlightId(Long.parseLong(flightId == null ? "0" : flightId))
                 .stream()
                 .peek(flightSeat -> log.info(FLIGHT_SEAT_FOUND_BY_FLIGHT_ID.getLogMessage(), flightSeat))
                 .map(this.flightSeatMapper::toFlightSeatResponse)

@@ -119,7 +119,7 @@ public class ExcursionService {
     }
 
     public List<ExcursionResponse> findAllByGuideId(final String guideId) {
-        return this.excursionRepository.findExcursionsByGuideId(Long.valueOf(guideId))
+        return this.excursionRepository.findExcursionsByGuideId(Long.valueOf(guideId == null ? "0" : guideId))
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_GUIDE_ID.getLogMessage(), excursion))
                 .map(this.excursionMapper::toResponse)
@@ -128,7 +128,7 @@ public class ExcursionService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<List<ExcursionResponse>> findAllByGuideIdAsync(final String guideId) {
-        return supplyAsync(() -> this.excursionRepository.findExcursionsByGuideId(Long.valueOf(guideId)))
+        return supplyAsync(() -> this.excursionRepository.findExcursionsByGuideId(Long.valueOf(guideId == null ? "0" : guideId)))
                 .thenApplyAsync(
                         excursions -> excursions.stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_GUIDE_ID_ASYNC.getLogMessage(), excursion))
@@ -138,7 +138,7 @@ public class ExcursionService {
     }
 
     public List<ExcursionResponse> findAllByIdentityId(final String identityId) {
-        return this.excursionRepository.findExcursionsByIdentityId(Long.valueOf(identityId))
+        return this.excursionRepository.findExcursionsByIdentityId(Long.valueOf(identityId == null ? "0" : identityId))
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_IDENTITY_ID.getLogMessage(), excursion))
                 .map(this.excursionMapper::toResponse)
@@ -147,7 +147,7 @@ public class ExcursionService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<List<ExcursionResponse>> findAllByIdentityIdAsync(final String identityId) {
-        return supplyAsync(() -> this.excursionRepository.findExcursionsByIdentityId(Long.valueOf(identityId)))
+        return supplyAsync(() -> this.excursionRepository.findExcursionsByIdentityId(Long.valueOf(identityId == null ? "0" : identityId)))
                 .thenApplyAsync(
                         excursions -> excursions.stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_ALL_IDENTITY_ID_ASYNC.getLogMessage(), excursion))
@@ -172,7 +172,7 @@ public class ExcursionService {
     }
 
     public ExcursionResponse findById(final String excursionId) {
-        return this.excursionRepository.findById(Long.valueOf(excursionId))
+        return this.excursionRepository.findById(Long.valueOf(excursionId == null ? "0" : excursionId))
                 .stream()
                 .peek(excursion -> log.info(EXCURSION_BY_ID.getLogMessage(), excursion))
                 .map(this.excursionMapper::toResponse)
@@ -182,7 +182,7 @@ public class ExcursionService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<ExcursionResponse> findByIdAsync(final String excursionId) {
-        return supplyAsync(() -> excursionRepository.findById(Long.valueOf(excursionId)))
+        return supplyAsync(() -> excursionRepository.findById(Long.valueOf(excursionId == null ? "0" : excursionId)))
                 .thenApplyAsync(
                         excursion -> excursion.stream()
                                 .peek(logExcursion -> log.info(EXCURSION_BY_ID_ASYNC.getLogMessage(), logExcursion))
@@ -199,11 +199,13 @@ public class ExcursionService {
     public String addExcursionByIdentityId(final String excursionId, final String identityId) {
         return ofNullable(
                 this.excursionIdentityRepository
-                        .existsExcursionIdentityByExcursionIdAndIdentityId(Long.valueOf(excursionId), Long.valueOf(identityId))
+                        .existsExcursionIdentityByExcursionIdAndIdentityId(
+                                Long.valueOf(excursionId == null ? "0" : excursionId), Long.valueOf(identityId == null ? "0" : identityId)
+                        )
         )
                 .filter(exists -> !exists)
                 .map(
-                        aBoolean -> this.excursionRepository.findExcursionByIdAndPassed(Long.valueOf(excursionId), false)
+                        aBoolean -> this.excursionRepository.findExcursionByIdAndPassed(Long.valueOf(excursionId == null ? "0" : excursionId), false)
                                 .stream()
                                 .peek(excursion -> log.info(EXCURSION_FOUND_BEFORE_ADDING_BY_IDENTITY.getLogMessage(), excursion))
                                 .filter(excursion -> !excursion.getPassed())
@@ -212,7 +214,7 @@ public class ExcursionService {
                                             this.excursionIdentityRepository.save(
                                                     ExcursionIdentity.builder()
                                                             .excursionId(excursion.getId())
-                                                            .identityId(Long.valueOf(identityId))
+                                                            .identityId(Long.valueOf(identityId == null ? "0" : identityId))
                                                             .build()
                                             );
                                             return EXCURSION_ADDED_BY_IDENTITY.getMessage();

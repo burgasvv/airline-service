@@ -67,7 +67,7 @@ public class DepartmentService {
     }
 
     public DepartmentResponse findById(final String departmentId) {
-        return this.departmentRepository.findById(Long.valueOf(departmentId))
+        return this.departmentRepository.findById(Long.valueOf(departmentId == null ? "0" : departmentId))
                 .stream()
                 .peek(department -> log.info(DEPARTMENT_FOUND_BY_ID.getLogMessage(), department))
                 .map(this.departmentMapper::toResponse)
@@ -77,7 +77,7 @@ public class DepartmentService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<DepartmentResponse> findByIdAsync(final String departmentId) {
-        return supplyAsync(() -> this.departmentRepository.findById(Long.parseLong(departmentId)))
+        return supplyAsync(() -> this.departmentRepository.findById(Long.parseLong(departmentId == null ? "0" : departmentId)))
                 .thenApplyAsync(
                         department -> department.stream()
                                 .peek(foundDepartment -> log.info(DEPARTMENT_FOUND_BY_ID_ASYNC.getLogMessage(), foundDepartment))
@@ -114,7 +114,7 @@ public class DepartmentService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String departmentId) {
-        return this.departmentRepository.findById(Long.valueOf(departmentId))
+        return this.departmentRepository.findById(Long.valueOf(departmentId == null ? "0" : departmentId))
                 .map(
                         department -> {
                             this.departmentRepository.deleteById(department.getId());
@@ -132,7 +132,7 @@ public class DepartmentService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String departmentId) {
-        return supplyAsync(() -> this.departmentRepository.findById(Long.parseLong(departmentId)))
+        return supplyAsync(() -> this.departmentRepository.findById(Long.parseLong(departmentId == null ? "0" : departmentId)))
                 .thenApplyAsync(
                         department -> department.stream()
                                 .peek(foundDepartment -> log.info(DEPARTMENT_FOUND_BEFORE_DELETE.getLogMessage(), foundDepartment))

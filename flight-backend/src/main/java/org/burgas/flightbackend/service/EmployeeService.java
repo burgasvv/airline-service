@@ -90,7 +90,7 @@ public class EmployeeService {
     }
 
     public EmployeeResponse findById(final String employeeId) {
-        return this.employeeRepository.findById(Long.valueOf(employeeId))
+        return this.employeeRepository.findById(Long.valueOf(employeeId == null ? "0" : employeeId))
                 .stream()
                 .peek(employee -> log.info(EMPLOYEE_FOUND_BY_ID.getLogMessage(), employee))
                 .map(this.employeeMapper::toResponse)
@@ -100,7 +100,7 @@ public class EmployeeService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<EmployeeResponse> findByIdAsync(final String employeeId) {
-        return supplyAsync(() -> this.employeeRepository.findById(Long.parseLong(employeeId)))
+        return supplyAsync(() -> this.employeeRepository.findById(Long.parseLong(employeeId == null ? "0" : employeeId)))
                 .thenApplyAsync(
                         employee -> employee.stream()
                                 .peek(foundEmployee -> log.info(EMPLOYEE_FOUND_BY_ID_ASYNC.getLogMessage(), foundEmployee))
@@ -202,7 +202,7 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String employeeId) {
-        return this.employeeRepository.findById(Long.parseLong(employeeId))
+        return this.employeeRepository.findById(Long.parseLong(employeeId == null ? "0" : employeeId))
                 .map(
                         employee -> {
                             this.employeeRepository.deleteById(employee.getId());
@@ -218,7 +218,7 @@ public class EmployeeService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String employeeId) {
-        return supplyAsync(() -> this.employeeRepository.findById(Long.parseLong(employeeId)))
+        return supplyAsync(() -> this.employeeRepository.findById(Long.parseLong(employeeId == null ? "0" : employeeId)))
                 .thenApplyAsync(
                         employee -> employee.stream()
                                 .peek(foundEmployee -> log.info(EmployeeLogs.EMPLOYEE_FOUND_BEFORE_DELETE.getLogMessage(), foundEmployee))

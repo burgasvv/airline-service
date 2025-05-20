@@ -27,7 +27,7 @@ public class RestoreTokenService {
     )
     public RestoreToken createOrUpdateByIdentityId(final Long identityId) {
         return this.restoreTokenRepository
-                .findRestoreTokenByIdentityId(identityId)
+                .findRestoreTokenByIdentityId(identityId == null ? 0L : identityId)
                 .map(
                         restoreToken -> this.restoreTokenRepository.save(
                                 RestoreToken.builder()

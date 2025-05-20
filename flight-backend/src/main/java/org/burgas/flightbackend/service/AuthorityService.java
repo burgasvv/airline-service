@@ -57,7 +57,7 @@ public class AuthorityService {
     }
 
     public AuthorityResponse findById(final String authorityId) {
-        return this.authorityRepository.findById(Long.valueOf(authorityId))
+        return this.authorityRepository.findById(Long.valueOf(authorityId == null ? "0" : authorityId))
                 .stream()
                 .peek(authority -> log.info(AUTHORITY_FOUND_BY_ID.getLogMessage(), authority))
                 .map(this.authorityMapper::toResponse)
@@ -67,7 +67,7 @@ public class AuthorityService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<AuthorityResponse> findByIdAsync(final String authorityId) {
-        return supplyAsync(() -> this.authorityRepository.findById(Long.parseLong(authorityId)))
+        return supplyAsync(() -> this.authorityRepository.findById(Long.parseLong(authorityId == null ? "0" : authorityId)))
                 .thenApplyAsync(
                         authority -> authority.stream()
                                 .peek(foundAuthority -> log.info(AUTHORITY_FOUND_BY_ID.getLogMessage(), foundAuthority))
@@ -106,7 +106,7 @@ public class AuthorityService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String authorityId) {
-        return this.authorityRepository.findById(Long.valueOf(authorityId))
+        return this.authorityRepository.findById(Long.valueOf(authorityId == null ? "0" : authorityId))
                 .map(
                         authority -> {
                             this.authorityRepository.deleteById(authority.getId());
@@ -123,7 +123,7 @@ public class AuthorityService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String authorityId) {
-        return supplyAsync(() -> this.authorityRepository.findById(Long.parseLong(authorityId)))
+        return supplyAsync(() -> this.authorityRepository.findById(Long.parseLong(authorityId == null ? "0" : authorityId)))
                 .thenApplyAsync(
                         authority -> authority.stream()
                                 .peek(foundAuthority -> log.info(AUTHORITY_FOUND_BEFORE_DELETE.getLogMessage(), foundAuthority))

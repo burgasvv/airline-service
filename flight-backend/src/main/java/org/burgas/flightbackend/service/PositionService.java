@@ -66,7 +66,7 @@ public class PositionService {
     }
 
     public PositionResponse findById(final String positionId) {
-        return this.positionRepository.findById(Long.valueOf(positionId))
+        return this.positionRepository.findById(Long.valueOf(positionId == null ? "0" : positionId))
                 .stream()
                 .peek(position -> log.info(POSITION_FOUND_BY_ID.getLogMessage(), position))
                 .map(this.positionMapper::toResponse)
@@ -76,7 +76,7 @@ public class PositionService {
 
     @Async(value = "taskExecutor")
     public CompletableFuture<PositionResponse> findByIdAsync(final String positionId) {
-        return supplyAsync(() -> this.positionRepository.findById(Long.parseLong(positionId)))
+        return supplyAsync(() -> this.positionRepository.findById(Long.parseLong(positionId == null ? "0" : positionId)))
                 .thenApplyAsync(
                         position -> position.stream()
                                 .peek(foundPosition -> log.info(POSITION_FOUND_BY_ID_ASYNC.getLogMessage(), foundPosition))
@@ -115,7 +115,7 @@ public class PositionService {
             rollbackFor = Exception.class
     )
     public String deleteById(final String positionId) {
-        return this.positionRepository.findById(Long.valueOf(positionId))
+        return this.positionRepository.findById(Long.valueOf(positionId == null ? "0" : positionId))
                 .stream()
                 .peek(position -> log.info(POSITION_FOUND_BEFORE_DELETE.getLogMessage(), position))
                 .map(
@@ -137,7 +137,7 @@ public class PositionService {
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final String positionId) {
-        return supplyAsync(() -> this.positionRepository.findById(Long.parseLong(positionId)))
+        return supplyAsync(() -> this.positionRepository.findById(Long.parseLong(positionId == null ? "0" : positionId)))
                 .thenApplyAsync(
                         position -> position.stream()
                                 .peek(foundPosition -> log.info(POSITION_FOUND_ALL_ASYNC.getLogMessage(), foundPosition))

@@ -35,7 +35,7 @@ public class ImageService {
     }
 
     public Image findById(final String imageId) {
-        return this.imageRepository.findById(Long.parseLong(imageId))
+        return this.imageRepository.findById(Long.parseLong(imageId == null ? "0" : imageId))
                 .stream()
                 .peek(image -> log.info(IMAGE_FOUND_BY_ID.getLogMessage(), image))
                 .findFirst()
@@ -68,7 +68,7 @@ public class ImageService {
             rollbackFor = Exception.class
     )
     public Image changeImage(final Long imageId, final Part part) {
-        return this.imageRepository.findById(imageId)
+        return this.imageRepository.findById(imageId == null ? 0L : imageId)
                 .map(
                         image -> of(part)
                                 .map(
@@ -94,7 +94,7 @@ public class ImageService {
             rollbackFor = Exception.class
     )
     public String deleteImage(final Long imageId) {
-        return this.imageRepository.findById(imageId)
+        return this.imageRepository.findById(imageId == null ? 0L : imageId)
                 .map(
                         image -> {
                             this.imageRepository.deleteById(image.getId());
