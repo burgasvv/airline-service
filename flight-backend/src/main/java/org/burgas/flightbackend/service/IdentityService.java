@@ -131,16 +131,17 @@ public class IdentityService {
             rollbackFor = Exception.class
     )
     public IdentityResponse setPassword(final String identityId, final String token, final String password) {
+        String identityIdParam = identityId == null ? "0" : identityId;
         return this.restoreTokenRepository
-                .existsRestoreTokenByValueAndIdentityId(UUID.fromString(token), Long.valueOf(identityId == null ? "0" : identityId))
+                .existsRestoreTokenByValueAndIdentityId(UUID.fromString(token), Long.valueOf(identityIdParam))
                 .map(
-                        aBoolean -> this.identityRepository.findById(Long.valueOf(identityId))
+                        aBoolean -> this.identityRepository.findById(Long.valueOf(identityIdParam))
                                 .map(
                                         identity -> {
                                             identity.setPassword(this.passwordEncoder.encode(password));
                                             Identity saved = this.identityRepository.save(identity);
                                             this.restoreTokenRepository
-                                                    .deleteRestoreTokenByValueAndIdentityId(UUID.fromString(token), Long.valueOf(identityId));
+                                                    .deleteRestoreTokenByValueAndIdentityId(UUID.fromString(token), Long.valueOf(identityIdParam));
                                             return of(saved)
                                                     .map(this.identityMapper::toResponse)
                                                     .orElseGet(IdentityResponse::new);
