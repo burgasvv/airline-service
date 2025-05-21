@@ -22,6 +22,15 @@
         <module name="excursion-backend" />
         <module name="flight-backend" />
       </profile>
+      <profile name="Annotation profile for gateway-server" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-configuration-processor/3.4.5/spring-boot-configuration-processor-3.4.5.jar" />
+        </processorPath>
+        <module name="gateway-server" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="database-server" target="24" />
@@ -34,6 +43,7 @@
       <module name="database-server" options="-parameters" />
       <module name="excursion-backend" options="-parameters" />
       <module name="flight-backend" options="-parameters" />
+      <module name="gateway-server" options="-parameters" />
       <module name="hotel-backend" options="-parameters" />
     </option>
   </component>

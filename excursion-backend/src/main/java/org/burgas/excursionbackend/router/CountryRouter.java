@@ -27,13 +27,13 @@ public class CountryRouter {
     public RouterFunction<ServerResponse> countryRoutes(final CountryService countryService) {
         return route()
                 .GET(
-                        "/countries", request -> ServerResponse
+                        "/excursion-service/countries", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(countryService.findAll())
                 )
                 .GET(
-                        "/countries/sse", request -> ServerResponse
+                        "/excursion-service/countries/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             countryService.findAll().forEach(
@@ -52,13 +52,13 @@ public class CountryRouter {
                                 )
                 )
                 .GET(
-                        "/countries/async", request -> ServerResponse
+                        "/excursion-service/countries/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(countryService.findAllAsync().get())
                 )
                 .GET(
-                        "/countries/pages/{page}", request -> ServerResponse
+                        "/excursion-service/countries/pages/{page}", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -70,51 +70,51 @@ public class CountryRouter {
                                 )
                 )
                 .GET(
-                        "/countries/by-id", request -> ServerResponse
+                        "/excursion-service/countries/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(countryService.findById(request.param("countryId").orElseThrow()))
                 )
                 .GET(
-                        "/countries/by-id/async", request -> ServerResponse
+                        "/excursion-service/countries/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(countryService.findByIdAsync(request.param("countryId").orElseThrow()).get())
                 )
                 .POST(
-                        "/countries/create-update", request -> {
+                        "/excursion-service/countries/create-update", request -> {
                             CountryResponse countryResponse = countryService.createOrUpdate(request.body(CountryRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/countries/by-id?countryId=" + countryResponse.getId()))
+                                    .location(create("/excursion-service/countries/by-id?countryId=" + countryResponse.getId()))
                                     .body(countryResponse);
                         }
                 )
                 .POST(
-                        "/countries/create-update/async", request -> {
+                        "/excursion-service/countries/create-update/async", request -> {
                             CountryResponse countryResponse = countryService.createOrUpdateAsync(request.body(CountryRequest.class)).get();
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/countries/by-id/async?countryId=" + countryResponse.getId()))
+                                    .location(create("/excursion-service/countries/by-id/async?countryId=" + countryResponse.getId()))
                                     .body(countryResponse);
                         }
                 )
                 .DELETE(
-                        "/countries/delete", request -> ServerResponse
+                        "/excursion-service/countries/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(countryService.deleteById(request.param("countryId").orElseThrow()))
                 )
                 .DELETE(
-                        "/countries/delete/async", request -> ServerResponse
+                        "/excursion-service/countries/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(countryService.deleteByIdAsync(request.param("countryId").orElseThrow()).get())
                 )
                 .POST(
-                        "/countries/upload-image", request -> ServerResponse
+                        "/excursion-service/countries/upload-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -125,7 +125,7 @@ public class CountryRouter {
                                 )
                 )
                 .POST(
-                        "/countries/upload-image/async", request -> ServerResponse
+                        "/excursion-service/countries/upload-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -137,7 +137,7 @@ public class CountryRouter {
                                 )
                 )
                 .POST(
-                        "/countries/change-image", request -> ServerResponse
+                        "/excursion-service/countries/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -148,7 +148,7 @@ public class CountryRouter {
                                 )
                 )
                 .POST(
-                        "/countries/change-image/async", request -> ServerResponse
+                        "/excursion-service/countries/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -160,13 +160,13 @@ public class CountryRouter {
                                 )
                 )
                 .DELETE(
-                        "/countries/delete-image", request -> ServerResponse
+                        "/excursion-service/countries/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(countryService.deleteImage(request.param("countryId").orElseThrow()))
                 )
                 .DELETE(
-                        "/countries/delete-image/async", request -> ServerResponse
+                        "/excursion-service/countries/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(countryService.deleteImageAsync(request.param("countryId").orElseThrow()).get())

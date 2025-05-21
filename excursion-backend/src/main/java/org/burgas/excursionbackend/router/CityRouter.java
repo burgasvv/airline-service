@@ -27,13 +27,13 @@ public class CityRouter {
     public RouterFunction<ServerResponse> cityRoutes(final CityService cityService) {
         return route()
                 .GET(
-                        "/cities", request -> ServerResponse
+                        "/excursion-service/cities", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(cityService.findAll())
                 )
                 .GET(
-                        "/cities/sse", request -> ServerResponse
+                        "/excursion-service/cities/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             cityService.findAll().forEach(
@@ -52,13 +52,13 @@ public class CityRouter {
                                 )
                 )
                 .GET(
-                        "/cities/async", request -> ServerResponse
+                        "/excursion-service/cities/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(cityService.findAllAsync().get())
                 )
                 .GET(
-                        "/cities/pages/{page}", request -> ServerResponse
+                        "/excursion-service/cities/pages/{page}", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -70,51 +70,51 @@ public class CityRouter {
                                 )
                 )
                 .GET(
-                        "/cities/by-id", request -> ServerResponse
+                        "/excursion-service/cities/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(cityService.findById(request.param("cityId").orElseThrow()))
                 )
                 .GET(
-                        "/cities/by-id/async", request -> ServerResponse
+                        "/excursion-service/cities/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(cityService.findByIdAsync(request.param("cityId").orElseThrow()).get())
                 )
                 .POST(
-                        "/cities/create-update", request -> {
+                        "/excursion-service/cities/create-update", request -> {
                             CityResponse cityResponse = cityService.createOrUpdate(request.body(CityRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/cities/by-id?cityId=" + cityResponse.getId()))
+                                    .location(create("/excursion-service/cities/by-id?cityId=" + cityResponse.getId()))
                                     .body(cityResponse);
                         }
                 )
                 .POST(
-                        "/cities/create-update/async", request -> {
+                        "/excursion-service/cities/create-update/async", request -> {
                             CityResponse cityResponse = cityService.createOrUpdateAsync(request.body(CityRequest.class)).get();
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/cities/by-id/async?cityId=" + cityResponse.getId()))
+                                    .location(create("/excursion-service/cities/by-id/async?cityId=" + cityResponse.getId()))
                                     .body(cityResponse);
                         }
                 )
                 .DELETE(
-                        "/cities/delete", request -> ServerResponse
+                        "/excursion-service/cities/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(cityService.deleteById(request.param("cityId").orElseThrow()))
                 )
                 .DELETE(
-                        "/cities/delete/async", request -> ServerResponse
+                        "/excursion-service/cities/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(cityService.deleteByIdAsync(request.param("cityId").orElseThrow()).get())
                 )
                 .POST(
-                        "/cities/upload-image", request -> ServerResponse
+                        "/excursion-service/cities/upload-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -125,7 +125,7 @@ public class CityRouter {
                                 )
                 )
                 .POST(
-                        "/cities/upload-image/async", request -> ServerResponse
+                        "/excursion-service/cities/upload-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -137,7 +137,7 @@ public class CityRouter {
                                 )
                 )
                 .POST(
-                        "/cities/change-image", request -> ServerResponse
+                        "/excursion-service/cities/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -148,7 +148,7 @@ public class CityRouter {
                                 )
                 )
                 .POST(
-                        "/cities/change-image/async", request -> ServerResponse
+                        "/excursion-service/cities/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -160,13 +160,13 @@ public class CityRouter {
                                 )
                 )
                 .DELETE(
-                        "/cities/delete-image", request -> ServerResponse
+                        "/excursion-service/cities/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(cityService.deleteImage(request.param("cityId").orElseThrow()))
                 )
                 .DELETE(
-                        "/cities/delete-image/async", request -> ServerResponse
+                        "/excursion-service/cities/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(cityService.deleteImageAsync(request.param("cityId").orElseThrow()).get())

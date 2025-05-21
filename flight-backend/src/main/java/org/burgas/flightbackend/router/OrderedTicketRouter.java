@@ -26,43 +26,43 @@ public class OrderedTicketRouter {
         return route()
                 .filter(new IdentityFilterFunction())
                 .GET(
-                        "/ordered-tickets", request -> ServerResponse
+                        "/flight-service/ordered-tickets", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(orderedTicketService.findAll())
                 )
                 .GET(
-                        "/ordered-tickets/by-identity", request -> ServerResponse
+                        "/flight-service/ordered-tickets/by-identity", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(orderedTicketService.findAllByIdentityId(request.param("identityId").orElseThrow()))
                 )
                 .GET(
-                        "/ordered-tickets/in-session", request -> ServerResponse
+                        "/flight-service/ordered-tickets/in-session", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(orderedTicketService.findAllInSession(request.servletRequest()))
                 )
                 .GET(
-                        "/ordered-tickets/by-id", request -> ServerResponse
+                        "/flight-service/ordered-tickets/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(orderedTicketService.findById(request.param("orderedTicketId").orElseThrow()))
                 )
                 .POST(
-                        "/ordered-tickets/order-ticket-identity", request -> {
+                        "/flight-service/ordered-tickets/order-ticket-identity", request -> {
                             OrderedTicketRequest orderedTicketRequest = request.body(OrderedTicketRequest.class);
                             orderedTicketRequest.setIdentityId(Long.valueOf(request.param("identityId").orElseThrow()));
                             OrderedTicketResponse orderedTicketResponse = orderedTicketService.orderTicketByIdentity(orderedTicketRequest);
                             return ServerResponse
                                     .status(OK)
                                     .contentType(APPLICATION_JSON)
-                                    .location(URI.create("/ordered-tickets/by-id?orderedTicketId=" + orderedTicketResponse.getId()))
+                                    .location(URI.create("/flight-service/ordered-tickets/by-id?orderedTicketId=" + orderedTicketResponse.getId()))
                                     .body(orderedTicketResponse);
                         }
                 )
                 .POST(
-                        "/ordered-tickets/order-ticket-session", request -> ServerResponse
+                        "/flight-service/ordered-tickets/order-ticket-session", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(orderedTicketService.orderTicketBySession(
@@ -70,7 +70,7 @@ public class OrderedTicketRouter {
                                 ))
                 )
                 .DELETE(
-                        "/ordered-tickets/cancel-ordered-ticket", request -> ServerResponse
+                        "/flight-service/ordered-tickets/cancel-ordered-ticket", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(orderedTicketService.cancelOrderedTicket(request.param("orderedTicketId").orElseThrow()))

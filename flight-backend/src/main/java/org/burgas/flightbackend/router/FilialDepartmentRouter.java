@@ -25,20 +25,20 @@ public class FilialDepartmentRouter {
     public RouterFunction<ServerResponse> filialDepartmentRoutes(final FilialDepartmentService filialDepartmentService) {
         return RouterFunctions
                 .route(
-                        GET("/filial-departments"), request ->
+                        GET("/flight-service/filial-departments"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(filialDepartmentService.findAll())
                 )
                 .andRoute(
-                        GET("/filial-departments/async"), request -> ServerResponse
+                        GET("/flight-service/filial-departments/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(filialDepartmentService.findAllAsync())
                 )
                 .andRoute(
-                        GET("/filial-departments/pages/{page}"), request -> ServerResponse
+                        GET("/flight-service/filial-departments/pages/{page}"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -50,7 +50,7 @@ public class FilialDepartmentRouter {
                                 )
                 )
                 .andRoute(
-                        GET("/filial-departments/by-filial-department"), request ->
+                        GET("/flight-service/filial-departments/by-filial-department"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
@@ -62,7 +62,7 @@ public class FilialDepartmentRouter {
                                         )
                 )
                 .andRoute(
-                        GET("/filial-departments/by-filial-department/async"), request -> ServerResponse
+                        GET("/flight-service/filial-departments/by-filial-department/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -73,13 +73,13 @@ public class FilialDepartmentRouter {
                                 )
                 )
                 .andRoute(
-                        POST("/filial-departments/create-update"), request -> {
+                        POST("/flight-service/filial-departments/create-update"), request -> {
                             FilialDepartmentResponse filialDepartmentResponse = filialDepartmentService
                                     .createOrUpdate(request.body(FilialDepartmentRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/filial-departments/by-filial-department?filialId="
+                                    .location(create("/flight-service/filial-departments/by-filial-department?filialId="
                                                      + filialDepartmentResponse.getFilial().getId() + "&departmentId="
                                                      + filialDepartmentResponse.getDepartment().getId())
                                     )
@@ -88,21 +88,22 @@ public class FilialDepartmentRouter {
                         }
                 )
                 .andRoute(
-                        POST("/filial-departments/create-update/async"), request -> {
+                        POST("/flight-service/filial-departments/create-update/async"), request -> {
                             FilialDepartmentResponse filialDepartmentResponse = filialDepartmentService
                                     .createOrUpdateAsync(request.body(FilialDepartmentRequest.class)).get();
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
                                     .location(create(
-                                            "/filial-departments/by-filial-department/async?filialId=" + filialDepartmentResponse.getFilial().getId() +
+                                            "/flight-service/filial-departments/by-filial-department/async?filialId=" +
+                                            filialDepartmentResponse.getFilial().getId() +
                                             "&departmentId=" + filialDepartmentResponse.getDepartment().getId()
                                     ))
                                     .body(filialDepartmentResponse);
                         }
                 )
                 .andRoute(
-                        DELETE("/filial-departments/delete"),request ->
+                        DELETE("/flight-service/filial-departments/delete"),request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(new MediaType(TEXT_PLAIN, UTF_8))
@@ -112,7 +113,7 @@ public class FilialDepartmentRouter {
                                         )
                 )
                 .andRoute(
-                        DELETE("/filial-departments/delete/async"), request -> ServerResponse
+                        DELETE("/flight-service/filial-departments/delete/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(

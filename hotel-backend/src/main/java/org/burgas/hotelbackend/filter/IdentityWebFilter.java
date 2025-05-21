@@ -19,12 +19,12 @@ import static org.burgas.hotelbackend.message.IdentityMessages.*;
 
 @WebFilter(
         urlPatterns = {
-                "/identities/by-id", "/identities/by-id/async",
-                "/identities/update", "/identities/update/async",
-                "/identities/upload-image", "/identities/upload-image/async",
-                "/identities/change-image", "/identities/change-image/async",
-                "/identities/delete-image", "/identities/delete-image/async",
-                "/identities/activate-deactivate", "/identities/activate-deactivate/async"
+                "/hotel-service/identities/by-id", "/hotel-service/identities/by-id/async",
+                "/hotel-service/identities/update", "/hotel-service/identities/update/async",
+                "/hotel-service/identities/upload-image", "/hotel-service/identities/upload-image/async",
+                "/hotel-service/identities/change-image", "/hotel-service/identities/change-image/async",
+                "/hotel-service/identities/delete-image", "/hotel-service/identities/delete-image/async",
+                "/hotel-service/identities/activate-deactivate", "/hotel-service/identities/activate-deactivate/async"
         }
 )
 public class IdentityWebFilter extends OncePerRequestFilter {
@@ -35,11 +35,11 @@ public class IdentityWebFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         if (
-                request.getRequestURI().equals("/identities/by-id") || request.getRequestURI().equals("/identities/by-id/async") ||
-                request.getRequestURI().equals("/identities/update") || request.getRequestURI().equals("/identities/update/async") ||
-                request.getRequestURI().equals("/identities/upload-image") || request.getRequestURI().equals("/identities/upload-image/async") ||
-                request.getRequestURI().equals("/identities/change-image") || request.getRequestURI().equals("/identities/change-image/async") ||
-                request.getRequestURI().equals("/identities/delete-image") || request.getRequestURI().equals("/identities/delete-image/async")
+                request.getRequestURI().equals("/hotel-service/identities/by-id") || request.getRequestURI().equals("/hotel-service/identities/by-id/async") ||
+                request.getRequestURI().equals("/hotel-service/identities/update") || request.getRequestURI().equals("/hotel-service/identities/update/async") ||
+                request.getRequestURI().equals("/hotel-service/identities/upload-image") || request.getRequestURI().equals("/hotel-service/identities/upload-image/async") ||
+                request.getRequestURI().equals("/hotel-service/identities/change-image") || request.getRequestURI().equals("/hotel-service/identities/change-image/async") ||
+                request.getRequestURI().equals("/hotel-service/identities/delete-image") || request.getRequestURI().equals("/hotel-service/identities/delete-image/async")
         ) {
 
             String identityIdParam = request.getParameter("identityId");
@@ -61,8 +61,8 @@ public class IdentityWebFilter extends OncePerRequestFilter {
             }
 
         } else if (
-                request.getRequestURI().equals("/identities/activate-deactivate") ||
-                request.getRequestURI().equals("/identities/activate-deactivate/async")
+                request.getRequestURI().equals("/hotel-service/identities/activate-deactivate") ||
+                request.getRequestURI().equals("/hotel-service/identities/activate-deactivate/async")
         ) {
 
             String identityIdParam = request.getParameter("identityId");

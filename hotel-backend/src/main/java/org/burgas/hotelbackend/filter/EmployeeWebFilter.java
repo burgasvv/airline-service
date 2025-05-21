@@ -23,9 +23,9 @@ import static org.burgas.hotelbackend.message.IdentityMessages.IDENTITY_NOT_AUTH
 
 @WebFilter(
         urlPatterns = {
-                "/employees/upload-image", "/employees/upload-image/async",
-                "/employees/change-image", "/employees/change-image/async",
-                "/employees/delete-image", "/employees/delete-image/async"
+                "/hotel-service/employees/upload-image", "/hotel-service/employees/upload-image/async",
+                "/hotel-service/employees/change-image", "/hotel-service/employees/change-image/async",
+                "/hotel-service/employees/delete-image", "/hotel-service/employees/delete-image/async"
         }
 )
 public class EmployeeWebFilter extends OncePerRequestFilter {

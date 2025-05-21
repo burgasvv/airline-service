@@ -41,108 +41,110 @@ public class SecurityConfig {
                         httpRequest -> httpRequest
 
                                 .requestMatchers(
-                                        "/authentication/csrf-token",
+                                        "/hotel-service/authentication/csrf-token",
 
-                                        "/identities/create", "/identities/create/async",
+                                        "/hotel-service/identities/create", "/hotel-service/identities/create/async",
 
-                                        "/images/by-id", "/images/by-id/async",
+                                        "/hotel-service/images/by-id", "/hotel-service/images/by-id/async",
 
-                                        "/countries", "/countries/async", "/countries/pages/{page}",
-                                        "/countries/by-id", "/countries/by-id/async",
-                                        "/countries/by-name", "/countries/by-name/async",
+                                        "/hotel-service/countries", "/hotel-service/countries/async", "/hotel-service/countries/pages/{page}",
+                                        "/hotel-service/countries/by-id", "/hotel-service/countries/by-id/async",
+                                        "/hotel-service/countries/by-name", "/hotel-service/countries/by-name/async",
 
-                                        "/cities", "/cities/async", "/cities/pages/{page}",
-                                        "/cities/by-id", "/cities/by-id/async",
-                                        "/cities/by-name", "/cities/by-name/async",
+                                        "/hotel-service/cities", "/hotel-service/cities/async", "/hotel-service/cities/pages/{page}",
+                                        "/hotel-service/cities/by-id", "/hotel-service/cities/by-id/async",
+                                        "/hotel-service/cities/by-name", "/hotel-service/cities/by-name/async",
 
-                                        "/hotels", "/hotels/async", "/hotels/pages/{page}",
-                                        "/hotels/by-id", "/hotels/by-id/async",
-                                        "/hotels/by-name", "/hotels/by-name/async",
+                                        "/hotel-service/hotels", "/hotel-service/hotels/async", "/hotel-service/hotels/pages/{page}",
+                                        "/hotel-service/hotels/by-id", "/hotel-service/hotels/by-id/async",
+                                        "/hotel-service/hotels/by-name", "/hotel-service/hotels/by-name/async",
 
-                                        "/filials", "/filials/async", "/filials/pages/{page}",
-                                        "/filials/by-id", "/filials/by-id/async",
+                                        "/hotel-service/filials", "/hotel-service/filials/async", "/hotel-service/filials/pages/{page}",
+                                        "/hotel-service/filials/by-id", "/hotel-service/filials/by-id/async",
 
-                                        "/rooms/by-filial", "/rooms/by-filial/async", "/rooms/by-filial/pages/{page}",
-                                        "/rooms/by-id", "/rooms/by-id/async", "/rooms/rent-room"
+                                        "/hotel-service/rooms/by-filial", "/hotel-service/rooms/by-filial/async",
+                                        "/hotel-service/rooms/by-filial/pages/{page}",
+                                        "/hotel-service/rooms/by-id", "/hotel-service/rooms/by-id/async", "/hotel-service/rooms/rent-room"
                                 )
                                 .permitAll()
 
                                 .requestMatchers(
-                                        "/identities/by-id", "/identities/by-id/async",
-                                        "/identities/update", "/identities/update/async",
-                                        "/identities/upload-image", "/identities/upload-image/async",
-                                        "/identities/change-image", "/identities/change-image/async",
-                                        "/identities/delete-image", "/identities/delete-image/async"
+                                        "/hotel-service/identities/by-id", "/hotel-service/identities/by-id/async",
+                                        "/hotel-service/identities/update", "/hotel-service/identities/update/async",
+                                        "/hotel-service/identities/upload-image", "/hotel-service/identities/upload-image/async",
+                                        "/hotel-service/identities/change-image", "/hotel-service/identities/change-image/async",
+                                        "/hotel-service/identities/delete-image", "/hotel-service/identities/delete-image/async"
                                 )
                                 .hasAnyAuthority(ADMIN, EMPLOYEE, CLIENT)
 
                                 .requestMatchers(
-                                        "/employees/upload-image", "/employees/upload-image/async",
-                                        "/employees/change-image", "/employees/change-image/async",
-                                        "/employees/delete-image", "/employees/delete-image/async"
+                                        "/hotel-service/employees/upload-image", "/hotel-service/employees/upload-image/async",
+                                        "/hotel-service/employees/change-image", "/hotel-service/employees/change-image/async",
+                                        "/hotel-service/employees/delete-image", "/hotel-service/employees/delete-image/async"
                                 )
                                 .hasAnyAuthority(EMPLOYEE)
 
                                 .requestMatchers(
-                                        "/authorities", "/authorities/async",
-                                        "/authorities/by-id", "/authorities/by-id/async",
-                                        "/authorities/create-update", "/authorities/create-update/async",
-                                        "/authorities/delete", "/authorities/delete/async",
+                                        "/hotel-service/authorities", "/hotel-service/authorities/async",
+                                        "/hotel-service/authorities/by-id", "/hotel-service/authorities/by-id/async",
+                                        "/hotel-service/authorities/create-update", "/hotel-service/authorities/create-update/async",
+                                        "/hotel-service/authorities/delete", "/hotel-service/authorities/delete/async",
 
-                                        "/identities", "/identities/async", "/identities/pages/{page}",
-                                        "/identities/activate-deactivate", "/identities/activate-deactivate/async",
+                                        "/hotel-service/identities", "/hotel-service/identities/async", "/hotel-service/identities/pages/{page}",
+                                        "/hotel-service/identities/activate-deactivate", "/hotel-service/identities/activate-deactivate/async",
 
-                                        "/countries/create-update", "/countries/create-update/async",
-                                        "/countries/delete", "/countries/delete/async",
+                                        "/hotel-service/countries/create-update", "/hotel-service/countries/create-update/async",
+                                        "/hotel-service/countries/delete", "/hotel-service/countries/delete/async",
 
-                                        "/cities/create-update", "/cities/create-update/async",
-                                        "/cities/delete", "/cities/delete/async",
+                                        "/hotel-service/cities/create-update", "/hotel-service/cities/create-update/async",
+                                        "/hotel-service/cities/delete", "/hotel-service/cities/delete/async",
 
-                                        "/addresses", "/addresses/async", "/addresses/pages/{page}",
-                                        "/addresses/by-id", "/addresses/by-id/async",
-                                        "/addresses/create-update", "/addresses/create-update/async",
-                                        "/addresses/delete", "/addresses/delete/async",
+                                        "/hotel-service/addresses", "/hotel-service/addresses/async", "/hotel-service/addresses/pages/{page}",
+                                        "/hotel-service/addresses/by-id", "/hotel-service/addresses/by-id/async",
+                                        "/hotel-service/addresses/create-update", "/hotel-service/addresses/create-update/async",
+                                        "/hotel-service/addresses/delete", "/hotel-service/addresses/delete/async",
 
-                                        "/hotels/create-update", "/hotels/create-update/async",
-                                        "/hotels/delete", "/hotels/delete/async",
-                                        "/hotels/upload-image", "/hotels/upload-image/async",
-                                        "/hotels/change-image", "/hotels/change-image/async",
-                                        "/hotels/delete-image", "/hotels/delete-image/async",
+                                        "/hotel-service/hotels/create-update", "/hotel-service/hotels/create-update/async",
+                                        "/hotel-service/hotels/delete", "/hotel-service/hotels/delete/async",
+                                        "/hotel-service/hotels/upload-image", "/hotel-service/hotels/upload-image/async",
+                                        "/hotel-service/hotels/change-image", "/hotel-service/hotels/change-image/async",
+                                        "/hotel-service/hotels/delete-image", "/hotel-service/hotels/delete-image/async",
 
-                                        "/filials/create-update", "/filials/create-update/async",
-                                        "/filials/delete", "/filials/delete/async",
-                                        "/filials/upload-image", "/filials/upload-image/async",
-                                        "/filials/change-image", "/filials/change-image/async",
-                                        "/filials/delete-image", "/filials/delete-image/async",
+                                        "/hotel-service/filials/create-update", "/hotel-service/filials/create-update/async",
+                                        "/hotel-service/filials/delete", "/hotel-service/filials/delete/async",
+                                        "/hotel-service/filials/upload-image", "/hotel-service/filials/upload-image/async",
+                                        "/hotel-service/filials/change-image", "/hotel-service/filials/change-image/async",
+                                        "/hotel-service/filials/delete-image", "/hotel-service/filials/delete-image/async",
 
-                                        "/departments", "/departments/async", "/departments/pages/{page}",
-                                        "/departments/by-filial", "/departments/by-filial/async",
-                                        "/departments/by-id", "/departments/by-id/async",
-                                        "/departments/by-name", "/departments/by-name/async",
-                                        "/departments/create-update", "/departments/create-update/async",
-                                        "/departments/delete", "/departments/delete/async",
+                                        "/hotel-service/departments", "/hotel-service/departments/async",
+                                        "/hotel-service/departments/pages/{page}",
+                                        "/hotel-service/departments/by-filial", "/hotel-service/departments/by-filial/async",
+                                        "/hotel-service/departments/by-id", "/hotel-service/departments/by-id/async",
+                                        "/hotel-service/departments/by-name", "/hotel-service/departments/by-name/async",
+                                        "/hotel-service/departments/create-update", "/hotel-service/departments/create-update/async",
+                                        "/hotel-service/departments/delete", "/hotel-service/departments/delete/async",
 
-                                        "/positions", "/positions/async", "/positions/pages/{page}",
-                                        "/positions/by-id", "/positions/by-id/async",
-                                        "/positions/create-update", "/positions/create-update/async",
-                                        "/positions/delete", "/positions/delete/async",
+                                        "/hotel-service/positions", "/hotel-service/positions/async", "/hotel-service/positions/pages/{page}",
+                                        "/hotel-service/positions/by-id", "/hotel-service/positions/by-id/async",
+                                        "/hotel-service/positions/create-update", "/hotel-service/positions/create-update/async",
+                                        "/hotel-service/positions/delete", "/hotel-service/positions/delete/async",
 
-                                        "/employees", "/employees/async", "/employees/pages/{page}",
-                                        "/employees/by-id", "/employees/by-id/async",
-                                        "/employees/create-update", "/employees/create-update/async",
-                                        "/employees/delete", "/employees/delete/async",
+                                        "/hotel-service/employees", "/hotel-service/employees/async", "/hotel-service/employees/pages/{page}",
+                                        "/hotel-service/employees/by-id", "/hotel-service/employees/by-id/async",
+                                        "/hotel-service/employees/create-update", "/hotel-service/employees/create-update/async",
+                                        "/hotel-service/employees/delete", "/hotel-service/employees/delete/async",
 
-                                        "/rooms/create-update", "/rooms/create-update/async",
-                                        "/rooms/delete", "/rooms/delete/async",
-                                        "/rooms/upload-images", "/rooms/upload-images/async",
+                                        "/hotel-service/rooms/create-update", "/hotel-service/rooms/create-update/async",
+                                        "/hotel-service/rooms/delete", "/hotel-service/rooms/delete/async",
+                                        "/hotel-service/rooms/upload-images", "/hotel-service/rooms/upload-images/async",
 
-                                        "/clients", "/clients/async", "/clients/pages/{page}",
-                                        "/clients/by-id", "/clients/by-id/async",
-                                        "/clients/create-update", "/clients/create-update/async",
+                                        "/hotel-service/clients", "/hotel-service/clients/async", "/hotel-service/clients/pages/{page}",
+                                        "/hotel-service/clients/by-id", "/hotel-service/clients/by-id/async",
+                                        "/hotel-service/clients/create-update", "/hotel-service/clients/create-update/async",
 
-                                        "/payments/by-client", "/payments/by-client/async",
-                                        "/payments/close-payment", "/payments/cancel-payment",
-                                        "/payments/early-payment"
+                                        "/hotel-service/payments/by-client", "/hotel-service/payments/by-client/async",
+                                        "/hotel-service/payments/close-payment", "/hotel-service/payments/cancel-payment",
+                                        "/hotel-service/payments/early-payment"
                                 )
                                 .hasAnyAuthority(ADMIN)
                 )

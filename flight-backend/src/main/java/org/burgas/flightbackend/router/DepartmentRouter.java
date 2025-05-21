@@ -27,20 +27,20 @@ public class DepartmentRouter {
     public RouterFunction<ServerResponse> departmentRoutes(final DepartmentService departmentService) {
         return RouterFunctions
                 .route(
-                        GET("/departments"), request ->
+                        GET("/flight-service/departments"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(departmentService.findAll())
                 )
                 .andRoute(
-                        GET("/departments/async"), request -> ServerResponse
+                        GET("/flight-service/departments/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(departmentService.findAllAsync())
                 )
                 .andRoute(
-                        GET("/departments/pages/{page}"), request -> ServerResponse
+                        GET("/flight-service/departments/pages/{page}"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -52,14 +52,14 @@ public class DepartmentRouter {
                                 )
                 )
                 .andRoute(
-                        GET("/departments/by-id"), request ->
+                        GET("/flight-service/departments/by-id"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(departmentService.findById(request.param("departmentId").orElseThrow()))
                 )
                 .andRoute(
-                        GET("/departments/by-id/async"), request -> ServerResponse
+                        GET("/flight-service/departments/by-id/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -68,34 +68,34 @@ public class DepartmentRouter {
                                 )
                 )
                 .andRoute(
-                        POST("/departments/create-update"), request -> {
+                        POST("/flight-service/departments/create-update"), request -> {
                             DepartmentResponse departmentResponse = departmentService.createOrUpdate(request.body(DepartmentRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/departments/by-id?departmentId=" + departmentResponse.getId()))
+                                    .location(create("/flight-service/departments/by-id?departmentId=" + departmentResponse.getId()))
                                     .body(departmentResponse);
                         }
                 )
                 .andRoute(
-                        POST("/departments/create-update/async"), request -> {
+                        POST("/flight-service/departments/create-update/async"), request -> {
                             DepartmentResponse departmentResponse = departmentService.createOrUpdateAsync(request.body(DepartmentRequest.class)).get();
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(URI.create("/departments/by-id/async?departmentId=" + departmentResponse.getId()))
+                                    .location(URI.create("/flight-service/departments/by-id/async?departmentId=" + departmentResponse.getId()))
                                     .body(departmentResponse);
                         }
                 )
                 .andRoute(
-                        DELETE("/departments/delete"), request ->
+                        DELETE("/flight-service/departments/delete"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                         .body(departmentService.deleteById(request.param("departmentId").orElseThrow()))
                 )
                 .andRoute(
-                        DELETE("/departments/delete/async"), request -> ServerResponse
+                        DELETE("/flight-service/departments/delete/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(

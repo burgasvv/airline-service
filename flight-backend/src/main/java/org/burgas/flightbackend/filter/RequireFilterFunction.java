@@ -23,8 +23,8 @@ public class RequireFilterFunction implements HandlerFilterFunction<ServerRespon
     public @NotNull ServerResponse filter(@NotNull ServerRequest request, @NotNull HandlerFunction<ServerResponse> next) throws Exception {
 
         if (
-                request.path().equals("/requires/create-update") || request.path().equals("/requires/by-user") ||
-                request.path().equals("/requires/delete/by-user")
+                request.path().equals("/flight-service/requires/create-update") || request.path().equals("/flight-service/requires/by-user") ||
+                request.path().equals("/flight-service/requires/delete/by-user")
         ) {
 
             SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -47,7 +47,7 @@ public class RequireFilterFunction implements HandlerFilterFunction<ServerRespon
             }
 
         } else if (
-                request.path().equals("/requires/by-admin") || request.path().equals("/requires/delete/by-admin")
+                request.path().equals("/flight-service/requires/by-admin") || request.path().equals("/flight-service/requires/delete/by-admin")
         ) {
 
             SecurityContext securityContext = SecurityContextHolder.getContext();

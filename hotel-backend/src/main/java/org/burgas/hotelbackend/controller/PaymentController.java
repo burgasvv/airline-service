@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.*;
 
 @Controller
-@RequestMapping(value = "/payments")
+@RequestMapping(value = "/hotel-service/payments")
 public class PaymentController {
 
     private final PaymentService paymentService;

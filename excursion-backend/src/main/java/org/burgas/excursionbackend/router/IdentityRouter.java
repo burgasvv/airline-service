@@ -28,13 +28,13 @@ public class IdentityRouter {
         return route()
                 .filter(new IdentityFilterFunction())
                 .GET(
-                        "/identities", request -> ServerResponse
+                        "/excursion-service/identities", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findAll())
                 )
                 .GET(
-                        "/identities/sse", request -> ServerResponse
+                        "/excursion-service/identities/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             identityService.findAll().forEach(
@@ -53,13 +53,13 @@ public class IdentityRouter {
                                 )
                 )
                 .GET(
-                        "/identities/async", request -> ServerResponse
+                        "/excursion-service/identities/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findAllAsync().get())
                 )
                 .GET(
-                        "/identities/pages/{page}", request -> ServerResponse
+                        "/excursion-service/identities/pages/{page}", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -71,13 +71,13 @@ public class IdentityRouter {
                                 )
                 )
                 .GET(
-                        "/identities/by-excursion", request -> ServerResponse
+                        "/excursion-service/identities/by-excursion", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findAllByExcursionId(request.param("excursionId").orElse(null)))
                 )
                 .GET(
-                        "/identities/by-excursion/sse", request -> ServerResponse
+                        "/excursion-service/identities/by-excursion/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             identityService.findAllByExcursionId(request.param("excursionId").orElse(null))
@@ -97,37 +97,37 @@ public class IdentityRouter {
                                 )
                 )
                 .GET(
-                        "/identities/by-excursion/async", request -> ServerResponse
+                        "/excursion-service/identities/by-excursion/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findAllByExcursionIdAsync(request.param("excursionId").orElse(null)).get())
                 )
                 .GET(
-                        "/identities/by-id", request -> ServerResponse
+                        "/excursion-service/identities/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findById(request.param("identityId").orElse(null)))
                 )
                 .GET(
-                        "/identities/by-id/async", request -> ServerResponse
+                        "/excursion-service/identities/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findByIdAsync(request.param("identityId").orElse(null)).get())
                 )
                 .POST(
-                        "/identities/create", request -> ServerResponse
+                        "/excursion-service/identities/create", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.createOrUpdate(request.body(IdentityRequest.class)))
                 )
                 .POST(
-                        "/identities/create/async", request -> ServerResponse
+                        "/excursion-service/identities/create/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.createOrUpdateAsync(request.body(IdentityRequest.class)).get())
                 )
                 .POST(
-                        "/identities/update", request -> {
+                        "/excursion-service/identities/update", request -> {
                             IdentityRequest identityRequest = request.body(IdentityRequest.class);
                             String identityId = request.param("identityId").orElseThrow();
                             identityRequest.setId(Long.valueOf(requireNonNull(identityId)));
@@ -139,7 +139,7 @@ public class IdentityRouter {
                         }
                 )
                 .POST(
-                        "/identities/update/async", request -> {
+                        "/excursion-service/identities/update/async", request -> {
                             IdentityRequest identityRequest = request.body(IdentityRequest.class);
                             String identityId = request.param("identityId").orElse(null);
                             identityRequest.setId(Long.valueOf(requireNonNull(identityId)));
@@ -151,19 +151,19 @@ public class IdentityRouter {
                         }
                 )
                 .DELETE(
-                        "/identities/delete", request -> ServerResponse
+                        "/excursion-service/identities/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.deleteById(request.param("identityId").orElse(null)))
                 )
                 .DELETE(
-                        "/identities/delete/async", request -> ServerResponse
+                        "/excursion-service/identities/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.deleteByIdAsync(request.param("identityId").orElse(null)).get())
                 )
                 .PUT(
-                        "/identities/control", request -> ServerResponse
+                        "/excursion-service/identities/control", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(identityService.accountControl(
@@ -172,7 +172,7 @@ public class IdentityRouter {
                                 ))
                 )
                 .PUT(
-                        "/identities/control/async", request -> ServerResponse
+                        "/excursion-service/identities/control/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(identityService.accountControlAsync(
@@ -181,7 +181,7 @@ public class IdentityRouter {
                                 ))
                 )
                 .POST(
-                        "/identities/upload-image", request -> ServerResponse
+                        "/excursion-service/identities/upload-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -192,7 +192,7 @@ public class IdentityRouter {
                                 )
                 )
                 .POST(
-                        "/identities/upload-image/async", request -> ServerResponse
+                        "/excursion-service/identities/upload-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -204,7 +204,7 @@ public class IdentityRouter {
                                 )
                 )
                 .PUT(
-                        "/identities/change-image", request -> ServerResponse
+                        "/excursion-service/identities/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -215,7 +215,7 @@ public class IdentityRouter {
                                 )
                 )
                 .PUT(
-                        "/identities/change-image/async", request -> ServerResponse
+                        "/excursion-service/identities/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -227,13 +227,13 @@ public class IdentityRouter {
                                 )
                 )
                 .DELETE(
-                        "/identities/delete-image", request -> ServerResponse
+                        "/excursion-service/identities/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(identityService.deleteImage(request.param("identityId").orElse(null)))
                 )
                 .DELETE(
-                        "/identities/delete-image/async", request -> ServerResponse
+                        "/excursion-service/identities/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(identityService.deleteImageAsync(request.param("identityId").orElse(null)).get())

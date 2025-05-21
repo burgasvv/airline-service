@@ -20,31 +20,31 @@ public class RequireRouter {
         return route()
                 .filter(new RequireFilterFunction())
                 .GET(
-                        "/requires/by-closed", request -> ServerResponse
+                        "/flight-service/requires/by-closed", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(requireService.findAllByClosed(request.param("closed").orElseThrow()))
                 )
                 .GET(
-                        "/requires/by-user", request -> ServerResponse
+                        "/flight-service/requires/by-user", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(requireService.findByUserId(request.param("userId").orElseThrow()))
                 )
                 .GET(
-                        "/requires/by-admin", request -> ServerResponse
+                        "/flight-service/requires/by-admin", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(requireService.findByAdminId(request.param("adminId").orElseThrow()))
                 )
                 .GET(
-                        "/requires/by-id", request -> ServerResponse
+                        "/flight-service/requires/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(requireService.findById(request.param("requireId").orElseThrow()))
                 )
                 .POST(
-                        "/requires/create-update", request -> {
+                        "/flight-service/requires/create-update", request -> {
                             RequireRequest requireRequest = request.body(RequireRequest.class);
                             requireRequest.setUserId(Long.valueOf(request.param("userId").orElseThrow()));
                             return ServerResponse
@@ -54,13 +54,13 @@ public class RequireRouter {
                         }
                 )
                 .DELETE(
-                        "/requires/delete/by-user", request -> ServerResponse
+                        "/flight-service/requires/delete/by-user", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(requireService.deleteById(request.param("requireId").orElseThrow()))
                 )
                 .DELETE(
-                        "/requires/delete/by-admin", request -> ServerResponse
+                        "/flight-service/requires/delete/by-admin", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(requireService.deleteById(request.param("requireId").orElseThrow()))

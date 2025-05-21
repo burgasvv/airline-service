@@ -26,7 +26,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.*;
 
 @Controller
-@RequestMapping(value = "/filials")
+@RequestMapping(value = "/hotel-service/filials")
 public class FilialController {
 
     private final FilialService filialService;
@@ -82,7 +82,7 @@ public class FilialController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/filials/by-id?filialId=" + filialResponse.getId()))
+                .location(URI.create("/hotel-service/filials/by-id?filialId=" + filialResponse.getId()))
                 .body(filialResponse);
     }
 
@@ -93,7 +93,7 @@ public class FilialController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/filials/by-id/async?filialId=" + filialResponse.getId()))
+                .location(URI.create("/hotel-service/filials/by-id/async?filialId=" + filialResponse.getId()))
                 .body(filialResponse);
     }
 

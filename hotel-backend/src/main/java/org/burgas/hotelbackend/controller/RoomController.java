@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.*;
 
 @Controller
-@RequestMapping(value = "/rooms")
+@RequestMapping(value = "/hotel-service/rooms")
 public class RoomController {
 
     private final RoomService roomService;
@@ -87,7 +87,7 @@ public class RoomController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/rooms/by-id?roomId=" + roomResponse.getId()))
+                .location(URI.create("/hotel-service/rooms/by-id?roomId=" + roomResponse.getId()))
                 .body(roomResponse);
     }
 
@@ -98,7 +98,7 @@ public class RoomController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/rooms/by-id/async?roomId=" + roomResponse.getId()))
+                .location(URI.create("/hotel-service/rooms/by-id/async?roomId=" + roomResponse.getId()))
                 .body(roomResponse);
     }
 

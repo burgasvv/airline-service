@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.*;
 
 @Controller
-@RequestMapping(value = "/cities")
+@RequestMapping(value = "/hotel-service/cities")
 public class CityController {
 
     private final CityService cityService;
@@ -95,7 +95,7 @@ public class CityController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/cities/by-id?cityId=" + cityResponse.getId()))
+                .location(URI.create("/hotel-service/cities/by-id?cityId=" + cityResponse.getId()))
                 .body(cityResponse);
     }
 

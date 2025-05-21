@@ -10,6 +10,7 @@
 ## Основной стек зависимостей
 -[X] Spring Security
 -[X] Spring Web
+-[X] Spring Cloud
 -[X] Spring Data JPA
 -[X] Postgresql
 

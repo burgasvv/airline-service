@@ -27,13 +27,13 @@ public class GuideRouter {
     public RouterFunction<ServerResponse> guideRoutes(final GuideService guideService) {
         return route()
                 .GET(
-                        "/guides", request -> ServerResponse
+                        "/excursion-service/guides", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(guideService.findAll())
                 )
                 .GET(
-                        "/guides/sse", request -> ServerResponse
+                        "/excursion-service/guides/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             guideService.findAll().forEach(
@@ -52,13 +52,13 @@ public class GuideRouter {
                                 )
                 )
                 .GET(
-                        "/guides/async", request -> ServerResponse
+                        "/excursion-service/guides/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(guideService.findAllAsync().get())
                 )
                 .GET(
-                        "/guides/pages/{page}", request -> ServerResponse
+                        "/excursion-service/guides/pages/{page}", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -70,51 +70,51 @@ public class GuideRouter {
                                 )
                 )
                 .GET(
-                        "/guides/by-id", request -> ServerResponse
+                        "/excursion-service/guides/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(guideService.findById(request.param("guideId").orElseThrow()))
                 )
                 .GET(
-                        "/guides/by-id/async", request -> ServerResponse
+                        "/excursion-service/guides/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(guideService.findByIdAsync(request.param("guideId").orElseThrow()).get())
                 )
                 .POST(
-                        "/guides/create-update", request -> {
+                        "/excursion-service/guides/create-update", request -> {
                             GuideResponse guideResponse = guideService.createOrUpdate(request.body(GuideRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/guides/by-id?guideId=" + guideResponse.getId()))
+                                    .location(create("/excursion-service/guides/by-id?guideId=" + guideResponse.getId()))
                                     .body(guideResponse);
                         }
                 )
                 .POST(
-                        "/guides/create-update/async", request -> {
+                        "/excursion-service/guides/create-update/async", request -> {
                             GuideResponse guideResponse = guideService.createOrUpdateAsync(request.body(GuideRequest.class)).get();
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/guides/by-id/async?guideId=" + guideResponse.getId()))
+                                    .location(create("/excursion-service/guides/by-id/async?guideId=" + guideResponse.getId()))
                                     .body(guideResponse);
                         }
                 )
                 .DELETE(
-                        "/guides/delete", request -> ServerResponse
+                        "/excursion-service/guides/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(guideService.deleteById(request.param("guideId").orElseThrow()))
                 )
                 .DELETE(
-                        "/guides/delete/async", request -> ServerResponse
+                        "/excursion-service/guides/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(guideService.deleteByIdAsync(request.param("guideId").orElseThrow()).get())
                 )
                 .POST(
-                        "/guides/upload-image", request -> ServerResponse
+                        "/excursion-service/guides/upload-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -125,7 +125,7 @@ public class GuideRouter {
                                 )
                 )
                 .POST(
-                        "/guides/upload-image/async", request -> ServerResponse
+                        "/excursion-service/guides/upload-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -137,7 +137,7 @@ public class GuideRouter {
                                 )
                 )
                 .POST(
-                        "/guides/change-image", request -> ServerResponse
+                        "/excursion-service/guides/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -148,7 +148,7 @@ public class GuideRouter {
                                 )
                 )
                 .POST(
-                        "/guides/change-image/async", request -> ServerResponse
+                        "/excursion-service/guides/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -160,13 +160,13 @@ public class GuideRouter {
                                 )
                 )
                 .DELETE(
-                        "/guides/delete-image", request -> ServerResponse
+                        "/excursion-service/guides/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(guideService.deleteImage(request.param("guideId").orElseThrow()))
                 )
                 .DELETE(
-                        "/guides/delete-image/async", request -> ServerResponse
+                        "/excursion-service/guides/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(guideService.deleteImageAsync(request.param("guideId").orElseThrow()).get())

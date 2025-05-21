@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.*;
 
 @Controller
-@RequestMapping(value = "/positions")
+@RequestMapping(value = "/hotel-service/positions")
 public class PositionController {
 
     private final PositionService positionService;
@@ -79,7 +79,7 @@ public class PositionController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/positions/by-id?positionId=" + positionResponse.getId()))
+                .location(URI.create("/hotel-service/positions/by-id?positionId=" + positionResponse.getId()))
                 .body(positionResponse);
     }
 
@@ -90,7 +90,7 @@ public class PositionController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/positions/by-id/async?positionId=" + positionResponse.getId()))
+                .location(URI.create("/hotel-service/positions/by-id/async?positionId=" + positionResponse.getId()))
                 .body(positionResponse);
     }
 

@@ -22,31 +22,31 @@ public class PaymentRouter {
         return route()
                 .filter(new IdentityFilterFunction())
                 .GET(
-                        "/payments/by-identity", request -> ServerResponse
+                        "/excursion-service/payments/by-identity", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(paymentService.findAllByIdentityId(request.param("identityId").orElseThrow()))
                 )
                 .GET(
-                        "/payments/by-identity/async", request -> ServerResponse
+                        "/excursion-service/payments/by-identity/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(paymentService.findAllByIdentityIdAsync(request.param("identityId").orElseThrow()).get())
                 )
                 .GET(
-                        "/payments/by-id", request -> ServerResponse
+                        "/excursion-service/payments/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(paymentService.findById(request.param("paymentId").orElseThrow()))
                 )
                 .GET(
-                        "/payments/by-id/async", request -> ServerResponse
+                        "/excursion-service/payments/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(paymentService.findByIdAsync(request.param("paymentId").orElseThrow()).get())
                 )
                 .POST(
-                        "/payments/make-identity-payment", request -> {
+                        "/excursion-service/payments/make-identity-payment", request -> {
                             String identityId = request.param("identityId").orElseThrow();
                             PaymentRequest paymentRequest = request.body(PaymentRequest.class);
                             paymentRequest.setIdentityId(Long.valueOf(requireNonNull(identityId)));
@@ -58,7 +58,7 @@ public class PaymentRouter {
                         }
                 )
                 .POST(
-                        "/payments/make-identity-payment-id", request -> {
+                        "/excursion-service/payments/make-identity-payment-id", request -> {
                             String identityId = request.param("identityId").orElseThrow();
                             PaymentRequest paymentRequest = request.body(PaymentRequest.class);
                             paymentRequest.setIdentityId(Long.valueOf(requireNonNull(identityId)));

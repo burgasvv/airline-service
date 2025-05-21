@@ -22,8 +22,8 @@ public class RequireAnswerFilterFunction implements HandlerFilterFunction<Server
     @Override
     public @NotNull ServerResponse filter(@NotNull ServerRequest request, @NotNull HandlerFunction<ServerResponse> next) throws Exception {
         if (
-                request.path().equals("/require-answers/send-answer-or-token") ||
-                request.path().equals("/require-answers/by-admin")
+                request.path().equals("/flight-service/require-answers/send-answer-or-token") ||
+                request.path().equals("/flight-service/require-answers/by-admin")
         ) {
 
             SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -45,7 +45,7 @@ public class RequireAnswerFilterFunction implements HandlerFilterFunction<Server
                 throw new IdentityNotAuthenticatedException(NOT_AUTHENTICATED.getMessage());
             }
 
-        } else if (request.path().equals("/require-answers/by-user")) {
+        } else if (request.path().equals("/flight-service/require-answers/by-user")) {
 
             SecurityContext securityContext = SecurityContextHolder.getContext();
             String userIdParam = request.param("userId").orElse(null);

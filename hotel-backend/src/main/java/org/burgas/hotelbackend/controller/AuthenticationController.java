@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Controller
-@RequestMapping(value = "/authentication")
+@RequestMapping(value = "/hotel-service/authentication")
 public class AuthenticationController {
 
     @GetMapping(value = "/csrf-token")

@@ -22,30 +22,30 @@ public class TicketRouter {
     public RouterFunction<ServerResponse> ticketRoutes(final TicketService ticketService) {
         return route()
                 .GET(
-                        "/tickets", request -> ServerResponse
+                        "/flight-service/tickets", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(ticketService.findAll())
                 )
                 .GET(
-                        "/tickets/by-flight", request -> ServerResponse
+                        "/flight-service/tickets/by-flight", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(ticketService.findAllByFlightId(request.param("flightId").orElseThrow()))
                 )
                 .GET(
-                        "/tickets/by-id", request -> ServerResponse
+                        "/flight-service/tickets/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(ticketService.findById(request.param("ticketId").orElseThrow()))
                 )
                 .GET(
-                        "/tickets/create-update", request -> {
+                        "/flight-service/tickets/create-update", request -> {
                             TicketResponse ticketResponse = ticketService.createOrUpdate(request.body(TicketRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(URI.create("/tickets/by-id?ticketId=" + ticketResponse.getId()))
+                                    .location(URI.create("/flight-service/tickets/by-id?ticketId=" + ticketResponse.getId()))
                                     .body(ticketResponse);
                         }
                 )

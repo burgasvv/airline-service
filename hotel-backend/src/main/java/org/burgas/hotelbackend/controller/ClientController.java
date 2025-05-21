@@ -21,7 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Controller
-@RequestMapping(value = "/clients")
+@RequestMapping(value = "/hotel-service/clients")
 public class ClientController {
 
     private final ClientService clientService;
@@ -77,7 +77,7 @@ public class ClientController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/clients/by-id?clientId=" + clientResponse.getId()))
+                .location(URI.create("/hotel-service/clients/by-id?clientId=" + clientResponse.getId()))
                 .body(clientResponse);
     }
 

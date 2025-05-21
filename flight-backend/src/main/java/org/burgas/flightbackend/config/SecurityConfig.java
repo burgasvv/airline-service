@@ -42,120 +42,124 @@ public class SecurityConfig {
                         httpRequest -> httpRequest
 
                                 .requestMatchers(
-                                        "/authentication/csrf-token",
+                                        "/flight-service/authentication/csrf-token",
 
-                                        "/identities/create",
+                                        "/flight-service/identities/create",
 
-                                        "/images/by-id",
+                                        "/flight-service/images/by-id",
 
-                                        "/airports", "/airports/async", "/airports/pages/{page}",
-                                        "/airports/by-country", "/airports/by-country/async",
-                                        "/airports/by-city", "/airports/by-city/async",
+                                        "/flight-service/airports", "/flight-service/airports/async", "/flight-service/airports/pages/{page}",
+                                        "/flight-service/airports/by-country", "/flight-service/airports/by-country/async",
+                                        "/flight-service/airports/by-city", "/flight-service/airports/by-city/async",
 
-                                        "/filials", "/filials/async", "/filials/pages/{page}",
-                                        "/filials/by-country", "/filials/by-country/async",
-                                        "/filials/by-city", "/filials/by-city/async",
+                                        "/flight-service/filials", "/flight-service/filials/async", "/flight-service/filials/pages/{page}",
+                                        "/flight-service/filials/by-country", "/flight-service/filials/by-country/async",
+                                        "/flight-service/filials/by-city", "/flight-service/filials/by-city/async",
 
-                                        "/departments", "/departments/async", "/departments/pages/{page}",
-                                        "/departments/by-id", "/departments/by-id/async",
+                                        "/flight-service/departments", "/flight-service/departments/async", "/flight-service/departments/pages/{page}",
+                                        "/flight-service/departments/by-id", "/flight-service/departments/by-id/async",
 
-                                        "/filial-departments", "/filial-departments/async", "/filial-departments/pages/{page}",
-                                        "/filial-departments/by-filial-department", "/filial-departments/by-filial-department/async",
+                                        "/flight-service/filial-departments", "/flight-service/filial-departments/async", "/flight-service/filial-departments/pages/{page}",
+                                        "/flight-service/filial-departments/by-filial-department", "/flight-service/filial-departments/by-filial-department/async",
 
-                                        "/planes", "/planes/async", "/planes/pages/{page}",
-                                        "/planes/by-free", "/planes/by-free/async",
-                                        "/planes/by-id","/planes/by-id/async",
+                                        "/flight-service/planes", "/flight-service/planes/async", "/flight-service/planes/pages/{page}",
+                                        "/flight-service/planes/by-free", "//flight-serviceplanes/by-free/async",
+                                        "/flight-service/planes/by-id","/flight-service/planes/by-id/async",
 
-                                        "/flights", "/flights/by-departure-city-arrival-city-by-departure-date",
-                                        "/flights/by-departure-city-by-arrival-city", "/flights/by-departure-city-by-arrival-city-back",
-                                        "/flights/by-id",
+                                        "/flight-service/flights", "/flight-service/flights/by-departure-city-arrival-city-by-departure-date",
+                                        "/flight-service/flights/by-departure-city-by-arrival-city", "/flight-service/flights/by-departure-city-by-arrival-city-back",
+                                        "/flight-service/flights/by-id",
 
-                                        "/tickets", "/tickets/by-flight", "/tickets/by-id", "/tickets/create-update",
+                                        "/flight-service/tickets", "/flight-service/tickets/by-flight",
+                                        "/flight-service/tickets/by-id", "/flight-service/tickets/create-update",
 
-                                        "/flight-seats/by-flight-id",
+                                        "/flight-service/flight-seats/by-flight-id",
 
-                                        "/ordered-tickets/in-session", "/ordered-tickets/order-ticket-session"
+                                        "/flight-service/ordered-tickets/in-session", "/flight-service/ordered-tickets/order-ticket-session"
                                 )
                                 .permitAll()
 
                                 .requestMatchers(
-                                        "/identities/by-id", "/identities/by-username", "/identities/update",
-                                        "/identities/change-password", "/identities/set-password",
-                                        "/identities/upload-image", "/identities/change-image", "/identities/delete-image",
+                                        "/flight-service/identities/by-id", "/flight-service/identities/by-username", "/flight-service/identities/update",
+                                        "/flight-service/identities/change-password", "/flight-service/identities/set-password",
+                                        "/flight-service/identities/upload-image", "/flight-service/identities/change-image", "/flight-service/identities/delete-image",
 
-                                        "/positions", "/positions/async", "/positions/pages/{page}",
-                                        "/positions/by-id", "/positions/by-id/async",
+                                        "/flight-service/positions", "/flight-service/positions/async", "/flight-service/positions/pages/{page}",
+                                        "/flight-service/positions/by-id", "/flight-service/positions/by-id/async",
 
-                                        "/ordered-tickets/by-identity", "/ordered-tickets/order-ticket-identity"
+                                        "/flight-service/ordered-tickets/by-identity", "/flight-service/ordered-tickets/order-ticket-identity"
                                 )
                                 .hasAnyAuthority(ADMIN, EMPLOYEE, USER)
 
                                 .requestMatchers(
-                                        "/employees", "/employees/async", "/employees/pages/{page}",
+                                        "/flight-service/employees", "/flight-service/employees/async", "/flight-service/employees/pages/{page}",
 
-                                        "/ordered-tickets"
+                                        "/flight-service/ordered-tickets"
                                 )
                                 .hasAnyAuthority(ADMIN, EMPLOYEE)
 
                                 .requestMatchers(
-                                        "/requires/by-user", "/requires/delete/by-user",
+                                        "/flight-service/requires/by-user", "/flight-service/requires/delete/by-user",
 
-                                        "/employees/by-id", "/employees/by-id/async",
+                                        "/flight-service/employees/by-id", "/flight-service/employees/by-id/async",
 
-                                        "/flights/start-flight", "/flights/complete-flight"
+                                        "/flight-service/flights/start-flight", "/flight-service/flights/complete-flight"
                                 )
                                 .hasAnyAuthority(EMPLOYEE)
 
                                 .requestMatchers(
-                                        "/requires/by-user", "/requires/create-update", "/requires/delete/by-user",
+                                        "/flight-service/requires/by-user",
+                                        "/flight-service/requires/create-update", "/flight-service/requires/delete/by-user",
 
-                                        "/require-answers/by-user",
+                                        "/flight-service/require-answers/by-user",
 
-                                        "/employees/create", "/employees/create/async"
+                                        "/flight-service/employees/create", "/flight-service/employees/create/async"
                                 )
                                 .hasAnyAuthority(USER)
 
                                 .requestMatchers(
-                                        "/identities", "/identities/enable-disable",
+                                        "/flight-service/identities", "/flight-service/identities/enable-disable",
 
-                                        "/authorities", "/authorities/async",
-                                        "/authorities/by-id", "/authorities/by-id/async",
-                                        "/authorities/create-update", "/authorities/create-update/async",
-                                        "/authorities/delete", "/authorities/delete/async",
+                                        "/flight-service/authorities", "/flight-service/authorities/async",
+                                        "/flight-service/authorities/by-id", "/flight-service/authorities/by-id/async",
+                                        "/flight-service/authorities/create-update", "/flight-service/authorities/create-update/async",
+                                        "/flight-service/authorities/delete", "/flight-service/authorities/delete/async",
 
-                                        "/addresses", "/addresses/async", "/addresses/pages/{page}",
-                                        "/addresses/create-update-secured", "/addresses/create-update-secured/async",
-                                        "/addresses/delete", "/addresses/delete/async",
+                                        "/flight-service/addresses", "/flight-service/addresses/async", "/flight-service/addresses/pages/{page}",
+                                        "/flight-service/addresses/create-update-secured", "/flight-service/addresses/create-update-secured/async",
+                                        "/flight-service/addresses/delete", "/flight-service/addresses/delete/async",
 
-                                        "/airports/create-update",
+                                        "/flight-service/airports/create-update",
 
-                                        "/departments/create-update", "/departments/create-update/async",
-                                        "/departments/delete", "/departments/delete/async",
+                                        "/flight-service/departments/create-update", "/flight-service/departments/create-update/async",
+                                        "/flight-service/departments/delete", "/flight-service/departments/delete/async",
 
-                                        "/employees/update", "/employees/update/async",
-                                        "/employees/delete", "/employees/delete/async",
+                                        "/flight-service/employees/update", "/flight-service/employees/update/async",
+                                        "/flight-service/employees/delete", "/flight-service/employees/delete/async",
 
-                                        "/filials/create-update", "/filials/create-update/async",
-                                        "/filials/delete", "/filials/delete/async",
+                                        "/flight-service/filials/create-update", "/flight-service/filials/create-update/async",
+                                        "/flight-service/filials/delete", "/flight-service/filials/delete/async",
 
-                                        "/airports/create-update/async",
+                                        "/flight-service/airports/create-update/async",
 
-                                        "/filial-departments/create-update", "/filial-departments/create-update/async",
-                                        "/filial-departments/delete", "/filial-departments/delete/async",
+                                        "/flight-service/filial-departments/create-update", "/flight-service/filial-departments/create-update/async",
+                                        "/flight-service/filial-departments/delete", "/flight-service/filial-departments/delete/async",
 
-                                        "/positions/create-update", "/positions/create-update/async",
-                                        "/positions/delete", "/positions/delete/async",
+                                        "/flight-service/positions/create-update", "/flight-service/positions/create-update/async",
+                                        "/flight-service/positions/delete", "/flight-service/positions/delete/async",
 
-                                        "/planes/create-update", "/planes/create-update/async",
-                                        "/planes/delete", "/planes/delete/async",
+                                        "/flight-service/planes/create-update", "/flight-service/planes/create-update/async",
+                                        "/flight-service/planes/delete", "/flight-service/planes/delete/async",
 
-                                        "/requires/by-closed", "/requires/by-admin", "/requires/delete/by-admin",
+                                        "/flight-service/requires/by-closed", "/flight-service/requires/by-admin",
+                                        "/flight-service/requires/delete/by-admin",
 
-                                        "/require-answers/by-admin", "/require-answers/send-answer-or-token",
+                                        "/flight-service/require-answers/by-admin", "/flight-service/require-answers/send-answer-or-token",
 
-                                        "/flights/create-update", "/flights/add-employee", "/flights/remove-employee",
+                                        "/flight-service/flights/create-update", "/flight-service/flights/add-employee",
+                                        "/flight-service/flights/remove-employee",
 
-                                        "/ordered-tickets/cancel-ordered-ticket"
+                                        "/flight-service/ordered-tickets/cancel-ordered-ticket"
                                 )
                                 .hasAnyAuthority(ADMIN)
                 )

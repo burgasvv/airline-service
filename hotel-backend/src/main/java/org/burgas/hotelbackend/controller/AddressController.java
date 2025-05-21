@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.*;
 
 @Controller
-@RequestMapping(value = "/addresses")
+@RequestMapping(value = "/hotel-service/addresses")
 public class AddressController {
 
     private final AddressService addressService;
