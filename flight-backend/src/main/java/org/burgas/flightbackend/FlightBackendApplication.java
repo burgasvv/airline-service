@@ -21,13 +21,4 @@ public class FlightBackendApplication {
         SpringApplication.run(FlightBackendApplication.class, args);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AsyncTaskExecutor taskExecutor() {
-        return new TaskExecutorAdapter(Executors.newCachedThreadPool());
-    }
 }

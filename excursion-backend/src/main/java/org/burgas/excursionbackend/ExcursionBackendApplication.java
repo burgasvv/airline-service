@@ -21,13 +21,4 @@ public class ExcursionBackendApplication {
         SpringApplication.run(ExcursionBackendApplication.class, args);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AsyncTaskExecutor taskExecutor() {
-        return new TaskExecutorAdapter(Executors.newCachedThreadPool());
-    }
 }
