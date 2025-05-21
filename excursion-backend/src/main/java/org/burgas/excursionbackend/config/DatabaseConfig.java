@@ -17,6 +17,7 @@ public class DatabaseConfig {
         CompositeDatabasePopulator compositeDatabasePopulator = new CompositeDatabasePopulator();
         compositeDatabasePopulator.addPopulators(
                 new ResourceDatabasePopulator(new ClassPathResource("database/clean.sql")),
+                new ResourceDatabasePopulator(new ClassPathResource("database/init.sql")),
                 new ResourceDatabasePopulator(new ClassPathResource("database/populate.sql"))
         );
         return compositeDatabasePopulator;
