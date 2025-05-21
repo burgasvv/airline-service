@@ -25,19 +25,19 @@ public class PlaneRouter {
     public RouterFunction<ServerResponse> planeRoutes(final PlaneService planeService) {
         return route()
                 .GET(
-                        "/planes", request -> ServerResponse
+                        "/flight-service/planes", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(planeService.findAll())
                 )
                 .GET(
-                        "/planes/async", request -> ServerResponse
+                        "/flight-service/planes/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(planeService.findAllAsync().get())
                 )
                 .GET(
-                        "/planes/pages/{page}", request -> ServerResponse
+                        "/flight-service/planes/pages/{page}", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -49,57 +49,57 @@ public class PlaneRouter {
                                 )
                 )
                 .GET(
-                        "/planes/by-free", request -> ServerResponse
+                        "/flight-service/planes/by-free", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(planeService.findAllByFree(request.param("free").orElseThrow()))
                 )
                 .GET(
-                        "/planes/by-free/async", request -> ServerResponse
+                        "/flight-service/planes/by-free/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(planeService.findAllByFreeAsync(request.param("free").orElseThrow()).get())
                 )
                 .GET(
-                        "/planes/by-id", request -> ServerResponse
+                        "/flight-service/planes/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(planeService.findById(request.param("planeId").orElseThrow()))
                 )
                 .GET(
-                        "/planes/by-id/async", request -> ServerResponse
+                        "/flight-service/planes/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(planeService.findByIdAsync(request.param("planeId").orElseThrow()).get())
                 )
                 .POST(
-                        "/planes/create-update", request -> {
+                        "/flight-service/planes/create-update", request -> {
                             PlaneResponse planeResponse = planeService.createOrUpdate(request.body(PlaneRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(URI.create("/planes/by-id?planeId=" + planeResponse.getId()))
+                                    .location(URI.create("/flight-service/planes/by-id?planeId=" + planeResponse.getId()))
                                     .body(planeResponse);
                         }
                 )
                 .POST(
-                        "/planes/create-update/async", request -> {
+                        "/flight-service/planes/create-update/async", request -> {
                             PlaneResponse planeResponse = planeService.createOrUpdateAsync(request.body(PlaneRequest.class)).get();
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(URI.create("/planes/by-id/async?planeId=" + planeResponse.getId()))
+                                    .location(URI.create("/flight-service/planes/by-id/async?planeId=" + planeResponse.getId()))
                                     .body(planeResponse);
                         }
                 )
                 .DELETE(
-                        "/planes/delete", request -> ServerResponse
+                        "/flight-service/planes/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(planeService.deleteById(request.param("planeId").orElseThrow()))
                 )
                 .DELETE(
-                        "/planes/delete/async", request -> ServerResponse
+                        "/flight-service/planes/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(planeService.deleteByIdAsync(request.param("planeId").orElseThrow()).get())

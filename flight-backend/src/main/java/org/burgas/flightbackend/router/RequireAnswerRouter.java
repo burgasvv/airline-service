@@ -20,19 +20,19 @@ public class RequireAnswerRouter {
         return RouterFunctions.route()
                 .filter(new RequireAnswerFilterFunction())
                 .GET(
-                        "/require-answers/by-user", request -> ServerResponse
+                        "/flight-service/require-answers/by-user", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(requireAnswerService.findByUserId(request.param("userId").orElse(null)))
                 )
                 .GET(
-                        "/require-answers/by-admin", request -> ServerResponse
+                        "/flight-service/require-answers/by-admin", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(requireAnswerService.findByAdminId(request.param("adminId").orElse(null)))
                 )
                 .POST(
-                        "/require-answers/send-answer-or-token", request -> ServerResponse
+                        "/flight-service/require-answers/send-answer-or-token", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(requireAnswerService.sendAnswerOrToken(request.body(RequireAnswerRequest.class)))

@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.*;
 
 @Controller
-@RequestMapping(value = "/countries")
+@RequestMapping(value = "/hotel-service/countries")
 public class CountryController {
 
     private final CountryService countryService;
@@ -95,7 +95,7 @@ public class CountryController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/countries/by-id?countryId=" + countryResponse.getId()))
+                .location(URI.create("/hotel-service/countries/by-id?countryId=" + countryResponse.getId()))
                 .body(countryResponse);
     }
 
@@ -106,7 +106,7 @@ public class CountryController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/countries/by-id/async?countryId=" + countryResponse.getId()))
+                .location(URI.create("/hotel-service/countries/by-id/async?countryId=" + countryResponse.getId()))
                 .body(countryResponse);
     }
 

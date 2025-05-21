@@ -17,7 +17,7 @@ public class AuthenticationRouter {
     public RouterFunction<ServerResponse> authenticationRoutes() {
         return route()
                 .GET(
-                        "/authentication/csrf-token", request -> ServerResponse
+                        "/excursion-service/authentication/csrf-token", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(request.attribute("_csrf").orElseGet(CsrfTokenRequestAttributeHandler::new))

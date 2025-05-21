@@ -22,7 +22,7 @@ public class ImageRouter {
     public RouterFunction<ServerResponse> imageRoutes(final ImageService imageService) {
         return RouterFunctions
                 .route(
-                        GET("/images/by-id"), request -> {
+                        GET("/flight-service/images/by-id"), request -> {
                             Image image = imageService.findById(request.param("imageId").orElseThrow());
                             return ServerResponse
                                     .status(OK)

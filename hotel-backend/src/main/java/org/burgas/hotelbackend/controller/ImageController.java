@@ -19,7 +19,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.parseMediaType;
 
 @Controller
-@RequestMapping(value = "/images")
+@RequestMapping(value = "/hotel-service/images")
 public class ImageController {
 
     private final ImageService imageService;

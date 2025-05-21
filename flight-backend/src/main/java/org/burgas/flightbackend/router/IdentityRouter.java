@@ -24,31 +24,31 @@ public class IdentityRouter {
         return route()
                 .filter(new IdentityFilterFunction())
                 .GET(
-                        "/identities", request -> ServerResponse
+                        "/flight-service/identities", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findAll())
                 )
                 .GET(
-                        "/identities/by-id", request -> ServerResponse
+                        "/flight-service/identities/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findById(request.param("identityId").orElse(null)))
                 )
                 .GET(
-                        "/identities/by-username", request -> ServerResponse
+                        "/flight-service/identities/by-username", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.findByUsername(request.param("username").orElse(null)))
                 )
                 .POST(
-                        "/identities/create", request -> ServerResponse
+                        "/flight-service/identities/create", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(identityService.createOrUpdate(request.body(IdentityRequest.class)))
                 )
                 .POST(
-                        "/identities/update", request -> {
+                        "/flight-service/identities/update", request -> {
                             IdentityRequest identityRequest = request.body(IdentityRequest.class);
                             identityRequest.setId(
                                     Long.valueOf(requireNonNull(
@@ -62,7 +62,7 @@ public class IdentityRouter {
                         }
                 )
                 .PUT(
-                        "/identities/enable-disable", request -> ServerResponse
+                        "/flight-service/identities/enable-disable", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -73,13 +73,13 @@ public class IdentityRouter {
                                 )
                 )
                 .POST(
-                        "/identities/change-password", request -> ServerResponse
+                        "/flight-service/identities/change-password", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(identityService.changePassword(request.param("identityId").orElseThrow()))
                 )
                 .PUT(
-                        "/identities/set-password", request -> ServerResponse
+                        "/flight-service/identities/set-password", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -91,7 +91,7 @@ public class IdentityRouter {
                                 )
                 )
                 .POST(
-                        "/identities/upload-image", request -> ServerResponse
+                        "/flight-service/identities/upload-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -102,7 +102,7 @@ public class IdentityRouter {
                                 )
                 )
                 .POST(
-                        "/identities/change-image", request -> ServerResponse
+                        "/flight-service/identities/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -113,7 +113,7 @@ public class IdentityRouter {
                                 )
                 )
                 .DELETE(
-                        "/identities/delete-image", request -> ServerResponse
+                        "/flight-service/identities/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(identityService.deleteImage(request.param("identityId").orElseThrow()))

@@ -24,19 +24,19 @@ public class ImageRouter {
     public RouterFunction<ServerResponse> imageRoutes(final ImageService imageService) {
         return route()
                 .GET(
-                        "/images/by-id", request -> ServerResponse
+                        "/excursion-service/images/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(imageService.findById(request.param("imageId").orElse(null)))
                 )
                 .GET(
-                        "/images/by-id/async", request -> ServerResponse
+                        "/excursion-service/images/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(imageService.findByIdAsync(request.param("imageId").orElse(null)).get())
                 )
                 .GET(
-                        "/images/by-id/data", request -> {
+                        "/excursion-service/images/by-id/data", request -> {
                             Image image = imageService.findImageDataById(request.param("imageId").orElse(null));
                             return ServerResponse
                                     .status(OK)
@@ -47,7 +47,7 @@ public class ImageRouter {
                         }
                 )
                 .GET(
-                        "/images/by-id/data/async", request -> {
+                        "/excursion-service/images/by-id/data/async", request -> {
                             Image image = imageService.findImageDataByIdAsync(request.param("imageId").orElse(null)).get();
                             return ServerResponse
                                     .status(OK)
@@ -58,7 +58,7 @@ public class ImageRouter {
                         }
                 )
                 .POST(
-                        "/images/upload", request -> {
+                        "/excursion-service/images/upload", request -> {
                             Part part = request.multipartData().asSingleValueMap().get("file");
                             return ServerResponse
                                     .status(OK)
@@ -67,7 +67,7 @@ public class ImageRouter {
                         }
                 )
                 .POST(
-                        "/images/upload/async", request -> {
+                        "/excursion-service/images/upload/async", request -> {
                             Part part = request.multipartData().asSingleValueMap().get("file");
                             return ServerResponse
                                     .status(OK)
@@ -76,7 +76,7 @@ public class ImageRouter {
                         }
                 )
                 .PUT(
-                        "/images/change", request -> {
+                        "/excursion-service/images/change", request -> {
                             Part part = request.multipartData().asSingleValueMap().get("file");
                             return ServerResponse
                                     .status(OK)
@@ -85,7 +85,7 @@ public class ImageRouter {
                         }
                 )
                 .PUT(
-                        "/images/change/async", request -> {
+                        "/excursion-service/images/change/async", request -> {
                             Part part = request.multipartData().asSingleValueMap().get("file");
                             return ServerResponse
                                     .status(OK)
@@ -94,13 +94,13 @@ public class ImageRouter {
                         }
                 )
                 .DELETE(
-                        "/images/delete", request -> ServerResponse
+                        "/excursion-service/images/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(imageService.deleteImage(request.param("imageId").orElse(null)))
                 )
                 .DELETE(
-                        "/images/delete/async", request -> ServerResponse
+                        "/excursion-service/images/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(imageService.deleteImageAsync(request.param("imageId").orElse(null)).get())

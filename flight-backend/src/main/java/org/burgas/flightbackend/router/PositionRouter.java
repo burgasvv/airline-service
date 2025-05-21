@@ -27,19 +27,19 @@ public class PositionRouter {
     public RouterFunction<ServerResponse> positionRoutes(final PositionService positionService) {
         return RouterFunctions
                 .route(
-                        GET("/positions"), request -> ServerResponse
+                        GET("/flight-service/positions"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(positionService.findAll())
                 )
                 .andRoute(
-                        GET("/positions/async"), request -> ServerResponse
+                        GET("/flight-service/positions/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(positionService.findAllAsync().get())
                 )
                 .andRoute(
-                        GET("/positions/pages/{page}"), request -> ServerResponse
+                        GET("/flight-service/positions/pages/{page}"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -51,45 +51,45 @@ public class PositionRouter {
                                 )
                 )
                 .andRoute(
-                        GET("/positions/by-id"), request -> ServerResponse
+                        GET("/flight-service/positions/by-id"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(positionService.findById(request.param("positionId").orElseThrow()))
                 )
                 .andRoute(
-                        GET("/positions/by-id/async"), request -> ServerResponse
+                        GET("/flight-service/positions/by-id/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(positionService.findByIdAsync(request.param("positionId").orElseThrow()).get())
                 )
                 .andRoute(
-                        POST("/positions/create-update"), request -> {
+                        POST("/flight-service/positions/create-update"), request -> {
                             PositionResponse positionResponse = positionService.createOrUpdate(request.body(PositionRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/positions/by-id?positionId=" + positionResponse.getId()))
+                                    .location(create("/flight-service/positions/by-id?positionId=" + positionResponse.getId()))
                                     .body(positionResponse);
                         }
                 )
                 .andRoute(
-                        POST("/positions/create-update/async"), request -> {
+                        POST("/flight-service/positions/create-update/async"), request -> {
                             PositionResponse positionResponse = positionService.createOrUpdateAsync(request.body(PositionRequest.class)).get();
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(URI.create("/positions/by-id/async/positionId=" + positionResponse.getId()))
+                                    .location(URI.create("/flight-service/positions/by-id/async/positionId=" + positionResponse.getId()))
                                     .body(positionResponse);
                         }
                 )
                 .andRoute(
-                        DELETE("/positions/delete"), request -> ServerResponse
+                        DELETE("/flight-service/positions/delete"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(positionService.deleteById(request.param("positionId").orElseThrow()))
                 )
                 .andRoute(
-                        DELETE("/positions/delete/async"), request -> ServerResponse
+                        DELETE("/flight-service/positions/delete/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(positionService.deleteByIdAsync(request.param("positionId").orElseThrow()).get())

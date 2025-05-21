@@ -23,11 +23,11 @@ public class IdentityFilterFunction implements HandlerFilterFunction<ServerRespo
     public @NotNull ServerResponse filter(@NotNull ServerRequest request, @NotNull HandlerFunction<ServerResponse> next) throws Exception {
 
         if (
-                request.path().equals("/identities/by-id") || request.path().equals("/identities/update") ||
-                request.path().equals("/identities/change-password") || request.path().equals("/identities/set-password") ||
-                request.path().equals("/identities/upload-image") || request.path().equals("/identities/change-image") ||
-                request.path().equals("/identities/delete-image") ||
-                request.path().equals("/ordered-tickets/by-identity") || request.path().equals("/ordered-tickets/order-ticket-identity")
+                request.path().equals("/flight-service/identities/by-id") || request.path().equals("/flight-service/identities/update") ||
+                request.path().equals("/flight-service/identities/change-password") || request.path().equals("/flight-service/identities/set-password") ||
+                request.path().equals("/flight-service/identities/upload-image") || request.path().equals("/flight-service/identities/change-image") ||
+                request.path().equals("/flight-service/identities/delete-image") ||
+                request.path().equals("/flight-service/ordered-tickets/by-identity") || request.path().equals("/flight-service/ordered-tickets/order-ticket-identity")
         ) {
             SecurityContext securityContext = SecurityContextHolder.getContext();
             String identityIdParam = request.param("identityId").orElse(null);
@@ -49,7 +49,7 @@ public class IdentityFilterFunction implements HandlerFilterFunction<ServerRespo
                 throw new IdentityNotAuthenticatedException(NOT_AUTHENTICATED.getMessage());
             }
 
-        } else if (request.path().equals("/identities/by-username")) {
+        } else if (request.path().equals("/flight-service/identities/by-username")) {
 
             SecurityContext securityContext = SecurityContextHolder.getContext();
             String username = request.param("username").orElse(null);

@@ -20,19 +20,19 @@ public class EmployeeRouter {
         return RouterFunctions
                 .route()
                 .GET(
-                        "/employees", request -> ServerResponse
+                        "/flight-service/employees", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(employeeService.finaAll())
                 )
                 .GET(
-                        "/employees/async", request -> ServerResponse
+                        "/flight-service/employees/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(employeeService.findAllAsync())
                 )
                 .GET(
-                        "/employees/pages/{page}", request -> ServerResponse
+                        "/flight-service/employees/pages/{page}", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -44,13 +44,13 @@ public class EmployeeRouter {
                                 )
                 )
                 .GET(
-                        "/employees/by-id", request -> ServerResponse
+                        "/flight-service/employees/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(employeeService.findById(request.param("employeeId").orElse(null)))
                 )
                 .GET(
-                        "/employees/by-id/async", request -> ServerResponse
+                        "/flight-service/employees/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -59,7 +59,7 @@ public class EmployeeRouter {
                                 )
                 )
                 .POST(
-                        "/employees/create", request -> {
+                        "/flight-service/employees/create", request -> {
                             EmployeeResponse employeeResponse = employeeService.createEmployee(
                                     request.body(EmployeeRequest.class), request.param("token").orElse(null)
                             );
@@ -70,7 +70,7 @@ public class EmployeeRouter {
                         }
                 )
                 .POST(
-                        "/employees/create/async", request -> {
+                        "/flight-service/employees/create/async", request -> {
                             EmployeeResponse employeeResponse = employeeService.createEmployeeAsync(
                                             request.body(EmployeeRequest.class), request.param("token").orElse(null)
                                     )
@@ -82,25 +82,25 @@ public class EmployeeRouter {
                         }
                 )
                 .PUT(
-                        "/employees/update", request -> ServerResponse
+                        "/flight-service/employees/update", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(employeeService.updateEmployee(request.body(EmployeeRequest.class)))
                 )
                 .PUT(
-                        "/employees/update/async", request -> ServerResponse
+                        "/flight-service/employees/update/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(employeeService.updateEmployeeAsync(request.body(EmployeeRequest.class)).get())
                 )
                 .DELETE(
-                        "/employees/delete", request -> ServerResponse
+                        "/flight-service/employees/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(employeeService.deleteById(request.param("employeeId").orElseThrow()))
                 )
                 .DELETE(
-                        "/employees/delete/async", request -> ServerResponse
+                        "/flight-service/employees/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(

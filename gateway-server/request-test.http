@@ -1,0 +1,84 @@
+
+
+### Flight Service
+
+
+###
+GET /flight-service/authentication/csrf-token
+Host: localhost:9050
+
+###
+GET /flight-service/authorities
+Host: localhost:9050
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /flight-service/identities
+Host: localhost:9050
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /flight-service/authorities/create-update
+Host: localhost:9050
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "MODERATOR"
+}
+
+
+### Excursion Service
+
+
+###
+GET /excursion-service/authentication/csrf-token
+Host: localhost:9050
+
+###
+GET /excursion-service/authorities
+Host: localhost:9050
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /excursion-service/identities
+Host: localhost:9050
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /excursion-service/authorities/create-update
+Host: localhost:9050
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "MODERATOR-ADMIN"
+}
+
+
+### Hotel Service
+
+
+###
+GET /hotel-service/authentication/csrf-token
+Host: localhost:9050
+
+###
+GET /hotel-service/authorities
+Host: localhost:9050
+Authorization: Basic admin@gmail.com admin
+
+###
+GET /hotel-service/identities
+Host: localhost:9050
+Authorization: Basic admin@gmail.com admin
+
+###
+POST /hotel-service/authorities/create-update
+Host: localhost:9050
+Authorization: Basic admin@gmail.com admin
+Content-Type: application/json
+
+{
+    "name": "MODERATOR"
+}

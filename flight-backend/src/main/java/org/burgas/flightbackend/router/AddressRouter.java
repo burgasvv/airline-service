@@ -22,19 +22,19 @@ public class AddressRouter {
     public RouterFunction<ServerResponse> addressRoutes(final AddressService addressService) {
         return RouterFunctions
                 .route(
-                        GET("/addresses"), request -> ServerResponse
+                        GET("/flight-service/addresses"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(addressService.findAll())
                 )
                 .andRoute(
-                        GET("/addresses/async"), request -> ServerResponse
+                        GET("/flight-service/addresses/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(addressService.findAllAsync().get())
                 )
                 .andRoute(
-                        GET("/addresses/pages/{page}"), request -> ServerResponse
+                        GET("/flight-service/addresses/pages/{page}"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -46,25 +46,25 @@ public class AddressRouter {
                                 )
                 )
                 .andRoute(
-                        POST("/addresses/create-update-secured"), request -> ServerResponse
+                        POST("/flight-service/addresses/create-update-secured"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(addressService.createOrUpdateSecured(request.body(AddressRequest.class)))
                 )
                 .andRoute(
-                        POST("/addresses/create-update-secured/async"), request -> ServerResponse
+                        POST("/flight-service/addresses/create-update-secured/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(addressService.createOrUpdateSecuresAsync(request.body(AddressRequest.class)))
                 )
                 .andRoute(
-                        DELETE("/addresses/delete"), request -> ServerResponse
+                        DELETE("/flight-service/addresses/delete"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(addressService.deleteById(request.param("addressId").orElseThrow()))
                 )
                 .andRoute(
-                        DELETE("/addresses/delete/async"), request -> ServerResponse
+                        DELETE("/flight-service/addresses/delete/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(addressService.deleteByIdAsync(request.param("addressId").orElseThrow()))

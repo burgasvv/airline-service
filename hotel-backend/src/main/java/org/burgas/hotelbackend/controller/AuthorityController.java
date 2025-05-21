@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.*;
 
 @Controller
-@RequestMapping(value = "/authorities")
+@RequestMapping(value = "/hotel-service/authorities")
 public class AuthorityController {
 
     private final AuthorityService authorityService;
@@ -71,7 +71,7 @@ public class AuthorityController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/authorities/by-id?authorityId=" + authorityResponse.getId()))
+                .location(URI.create("/hotel-service/authorities/by-id?authorityId=" + authorityResponse.getId()))
                 .body(authorityResponse);
     }
 
@@ -82,7 +82,7 @@ public class AuthorityController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/authorities/by-id/async?authorityId=" + authorityResponse.getId()))
+                .location(URI.create("/hotel-service/authorities/by-id/async?authorityId=" + authorityResponse.getId()))
                 .body(authorityResponse);
     }
 

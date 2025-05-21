@@ -21,17 +21,17 @@ public class IdentityFilterFunction implements HandlerFilterFunction<ServerRespo
     @Override
     public @NotNull ServerResponse filter(@NotNull ServerRequest request, @NotNull HandlerFunction<ServerResponse> next) throws Exception {
         if (
-                request.path().equals("/identities/by-id") || request.path().equals("/identities/by-id/async") ||
-                request.path().equals("/identities/update") || request.path().equals("/identities/update/async") ||
-                request.path().equals("/identities/delete") || request.path().equals("/identities/delete/async") ||
-                request.path().equals("/identities/upload-image") || request.path().equals("/identities/upload-image/async") ||
-                request.path().equals("/identities/change-image") || request.path().equals("/identities/change-image/async") ||
-                request.path().equals("/identities/delete-image") || request.path().equals("/identities/delete-image/async") ||
-                request.path().equals("/excursions/by-identity") || request.path().equals("/excursions/by-identity/sse") ||
-                request.path().equals("/excursions/by-identity/async") ||
-                request.path().equals("/excursions/add-by-identity") || request.path().equals("/excursions/add-by-identity/async") ||
-                request.path().equals("/payments/make-identity-payment") || request.path().equals("/payments/make-identity-payment-id") ||
-                request.path().equals("/payments/by-identity") || request.path().equals("/payments/by-identity/async")
+                request.path().equals("/excursion-service/identities/by-id") || request.path().equals("/excursion-service/identities/by-id/async") ||
+                request.path().equals("/excursion-service/identities/update") || request.path().equals("/excursion-service/identities/update/async") ||
+                request.path().equals("/excursion-service/identities/delete") || request.path().equals("/excursion-service/identities/delete/async") ||
+                request.path().equals("/excursion-service/identities/upload-image") || request.path().equals("/excursion-service/identities/upload-image/async") ||
+                request.path().equals("/excursion-service/identities/change-image") || request.path().equals("/excursion-service/identities/change-image/async") ||
+                request.path().equals("/excursion-service/identities/delete-image") || request.path().equals("/excursion-service/identities/delete-image/async") ||
+                request.path().equals("/excursion-service/excursions/by-identity") || request.path().equals("/excursion-service/excursions/by-identity/sse") ||
+                request.path().equals("/excursion-service/excursions/by-identity/async") ||
+                request.path().equals("/excursion-service/excursions/add-by-identity") || request.path().equals("/excursion-service/excursions/add-by-identity/async") ||
+                request.path().equals("/excursion-service/payments/make-identity-payment") || request.path().equals("/excursion-service/payments/make-identity-payment-id") ||
+                request.path().equals("/excursion-service/payments/by-identity") || request.path().equals("/excursion-service/payments/by-identity/async")
         ) {
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -52,7 +52,7 @@ public class IdentityFilterFunction implements HandlerFilterFunction<ServerRespo
                 throw new IdentityNotAuthenticatedException(IDENTITY_NOT_AUTHENTICATED.getMessage());
             }
 
-        } else if (request.path().equals("/identities/control") || request.path().equals("/identities/control/async")) {
+        } else if (request.path().equals("/excursion-service/identities/control") || request.path().equals("/excursion-service/identities/control/async")) {
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String identityIdParam = request.param("identityId").orElse(null);

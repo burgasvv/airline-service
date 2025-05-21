@@ -37,92 +37,104 @@ public class SecurityConfig {
                         httpRequests -> httpRequests
 
                                 .requestMatchers(
-                                        "/authentication/csrf-token",
+                                        "/excursion-service/authentication/csrf-token",
 
-                                        "/images/by-id", "/images/by-id/async", "/images/by-id/data", "/images/by-id/data/async",
+                                        "/excursion-service/images/by-id", "/excursion-service/images/by-id/async",
+                                        "/excursion-service/images/by-id/data", "/excursion-service/images/by-id/data/async",
 
-                                        "/identities/create", "/identities/create/async",
+                                        "/excursion-service/identities/create", "/excursion-service/identities/create/async",
 
-                                        "/countries", "/countries/sse", "/countries/async", "/countries/pages/{page}",
-                                        "/countries/by-id", "/countries/by-id/async",
+                                        "/excursion-service/countries", "/excursion-service/countries/sse",
+                                        "/excursion-service/countries/async", "/excursion-service/countries/pages/{page}",
+                                        "/excursion-service/countries/by-id", "/excursion-service/countries/by-id/async",
 
-                                        "/cities", "/cities/async", "/cities/sse", "/cities/pages/{page}",
-                                        "/cities/by-id", "/cities/by-id/async",
+                                        "/excursion-service/cities", "/excursion-service/cities/async",
+                                        "/excursion-service/cities/sse", "/excursion-service/cities/pages/{page}",
+                                        "/excursion-service/cities/by-id", "/excursion-service/cities/by-id/async",
 
-                                        "/sights", "/sights/sse", "/sights/async", "/sights/pages/{page}",
-                                        "/sights/by-id", "/sights/by-id/async",
+                                        "/excursion-service/sights", "/excursion-service/sights/sse",
+                                        "/excursion-service/sights/async", "/excursion-service/sights/pages/{page}",
+                                        "/excursion-service/sights/by-id", "/excursion-service/sights/by-id/async",
 
-                                        "/guides", "/guides/sse", "/guides/async", "/guides/pages/{page}",
-                                        "/guides/by-id", "/guides/by-id/async",
+                                        "/excursion-service/guides", "/excursion-service/guides/sse",
+                                        "/excursion-service/guides/async", "/excursion-service/guides/pages/{page}",
+                                        "/excursion-service/guides/by-id", "/excursion-service/guides/by-id/async",
 
-                                        "/excursions", "/excursions/sse", "/excursions/async", "/excursions/pages/{page}",
-                                        "/excursions/by-guide", "/excursions/by-guide/sse", "/excursions/by-guide/async",
-                                        "/excursions/by-session", "/excursions/by-session/async",
-                                        "/excursions/by-id", "/excursions/by-id/async",
-                                        "/excursions/add-to-session", "/excursions/add-to-session/async"
+                                        "/excursion-service/excursions", "/excursion-service/excursions/sse",
+                                        "/excursion-service/excursions/async", "/excursion-service/excursions/pages/{page}",
+                                        "/excursion-service/excursions/by-guide", "/excursion-service/excursions/by-guide/sse",
+                                        "/excursion-service/excursions/by-guide/async",
+                                        "/excursion-service/excursions/by-session", "/excursion-service/excursions/by-session/async",
+                                        "/excursion-service/excursions/by-id", "/excursion-service/excursions/by-id/async",
+                                        "/excursion-service/excursions/add-to-session", "/excursion-service/excursions/add-to-session/async"
                                 )
                                 .permitAll()
 
                                 .requestMatchers(
-                                        "/identities/by-id", "/identities/by-id/async",
-                                        "/identities/update", "/identities/update/async",
-                                        "/identities/delete", "/identities/delete/async",
-                                        "/identities/upload-image", "/identities/upload-image/async",
-                                        "/identities/change-image", "/identities/change-image/async",
-                                        "/identities/delete-image", "/identities/delete-image/async",
+                                        "/excursion-service/identities/by-id", "/excursion-service/identities/by-id/async",
+                                        "/excursion-service/identities/update", "/excursion-service/identities/update/async",
+                                        "/excursion-service/identities/delete", "/excursion-service/identities/delete/async",
+                                        "/excursion-service/identities/upload-image", "/excursion-service/identities/upload-image/async",
+                                        "/excursion-service/identities/change-image", "/excursion-service/identities/change-image/async",
+                                        "/excursion-service/identities/delete-image", "/excursion-service/identities/delete-image/async",
 
-                                        "/excursions/by-identity", "/excursions/by-identity/sse", "/excursions/by-identity/async",
-                                        "/excursions/add-by-identity", "/excursions/add-by-identity/async",
+                                        "/excursion-service/excursions/by-identity", "/excursion-service/excursions/by-identity/sse",
+                                        "/excursion-service/excursions/by-identity/async",
+                                        "/excursion-service/excursions/add-by-identity", "/excursion-service/excursions/add-by-identity/async",
 
-                                        "/payments/make-identity-payment", "/payments/make-identity-payment-id",
-                                        "/payments/by-identity", "/payments/by-identity/async"
+                                        "/excursion-service/payments/make-identity-payment", "/excursion-service/payments/make-identity-payment-id",
+                                        "/excursion-service/payments/by-identity", "/excursion-service/payments/by-identity/async"
                                 )
                                 .hasAnyAuthority("ADMIN", "USER")
 
                                 .requestMatchers(
-                                        "/images/upload", "/images/upload/async", "/images/change", "/images/change/async",
-                                        "/images/delete", "/images/delete/async",
+                                        "/excursion-service/images/upload", "/excursion-service/images/upload/async",
+                                        "/excursion-service/images/change", "/excursion-service/images/change/async",
+                                        "/excursion-service/images/delete", "/excursion-service/images/delete/async",
 
-                                        "/authorities", "/authorities/sse", "/authorities/async",
-                                        "/authorities/by-id", "/authorities/by-id/async",
-                                        "/authorities/create-update", "/authorities/create-update/async",
-                                        "/authorities/delete", "/authorities/delete/async",
+                                        "/excursion-service/authorities", "/excursion-service/authorities/sse",
+                                        "/excursion-service/authorities/async",
+                                        "/excursion-service/authorities/by-id", "/excursion-service/authorities/by-id/async",
+                                        "/excursion-service/authorities/create-update", "/excursion-service/authorities/create-update/async",
+                                        "/excursion-service/authorities/delete", "/excursion-service/authorities/delete/async",
 
-                                        "/identities", "/identities/sse", "/identities/async", "/identities/pages/{page}",
-                                        "/identities/by-excursion", "/identities/by-excursion/sse", "/identities/by-excursion/async",
-                                        "/identities/control", "/identities/control/async",
+                                        "/excursion-service/identities", "/excursion-service/identities/sse",
+                                        "/excursion-service/identities/async", "/excursion-service/identities/pages/{page}",
+                                        "/excursion-service/identities/by-excursion", "/excursion-service/identities/by-excursion/sse",
+                                        "/excursion-service/identities/by-excursion/async",
+                                        "/excursion-service/identities/control", "/excursion-service/identities/control/async",
 
-                                        "/countries/create-update", "/countries/create-update/async",
-                                        "/countries/delete", "/countries/delete/async",
-                                        "/countries/upload-image", "/countries/upload-image/async",
-                                        "/countries/change-image", "/countries/change-image/async",
-                                        "/countries/delete-image", "/countries/delete-image/async",
+                                        "/excursion-service/countries/create-update", "/excursion-service/countries/create-update/async",
+                                        "/excursion-service/countries/delete", "/excursion-service/countries/delete/async",
+                                        "/excursion-service/countries/upload-image", "/excursion-service/countries/upload-image/async",
+                                        "/excursion-service/countries/change-image", "/excursion-service/countries/change-image/async",
+                                        "/excursion-service/countries/delete-image", "/excursion-service/countries/delete-image/async",
 
-                                        "/cities/create-update", "/cities/create-update/async",
-                                        "/cities/delete", "/cities/delete/async",
-                                        "/cities/upload-image", "/cities/upload-image/async",
-                                        "/cities/change-image", "/cities/change-image/async",
-                                        "/cities/delete-image", "/cities/delete-image/async",
+                                        "/excursion-service/cities/create-update", "/excursion-service/cities/create-update/async",
+                                        "/excursion-service/cities/delete", "/excursion-service/cities/delete/async",
+                                        "/excursion-service/cities/upload-image", "/excursion-service/cities/upload-image/async",
+                                        "/excursion-service/cities/change-image", "/excursion-service/cities/change-image/async",
+                                        "/excursion-service/cities/delete-image", "/excursion-service/cities/delete-image/async",
 
-                                        "/sights/create-update", "/sights/create-update/async",
-                                        "/sights/delete", "/sights/delete/async",
-                                        "/sights/upload-image", "/sights/upload-image/async",
-                                        "/sights/change-image", "/sights/change-image/async",
-                                        "/sights/delete-image", "/sights/delete-image/async",
+                                        "/excursion-service/sights/create-update", "/excursion-service/sights/create-update/async",
+                                        "/excursion-service/sights/delete", "/excursion-service/sights/delete/async",
+                                        "/excursion-service/sights/upload-image", "/excursion-service/sights/upload-image/async",
+                                        "/excursion-service/sights/change-image", "/excursion-service/sights/change-image/async",
+                                        "/excursion-service/sights/delete-image", "/excursion-service/sights/delete-image/async",
 
-                                        "/guides/create-update", "/guides/create-update/async",
-                                        "/guides/delete", "/guides/delete/async",
-                                        "/guides/upload-image", "/guides/upload-image/async",
-                                        "/guides/change-image", "/guides/change-image/async",
-                                        "/guides/delete-image", "/guides/delete-image/async",
+                                        "/excursion-service/guides/create-update", "/excursion-service/guides/create-update/async",
+                                        "/excursion-service/guides/delete", "/excursion-service/guides/delete/async",
+                                        "/excursion-service/guides/upload-image", "/excursion-service/guides/upload-image/async",
+                                        "/excursion-service/guides/change-image", "/excursion-service/guides/change-image/async",
+                                        "/excursion-service/guides/delete-image", "/excursion-service/guides/delete-image/async",
 
-                                        "/excursions/create-update",
-                                        "/excursions/delete", "/excursions/delete/async",
-                                        "/excursions/upload-image", "/excursions/upload-image/async",
-                                        "/excursions/change-image", "/excursions/change-image/async",
-                                        "/excursions/delete-image", "/excursions/delete-image/async",
+                                        "/excursion-service/excursions/create-update",
+                                        "/excursion-service/excursions/delete", "/excursion-service/excursions/delete/async",
+                                        "/excursion-service/excursions/upload-image", "/excursion-service/excursions/upload-image/async",
+                                        "/excursion-service/excursions/change-image", "/excursion-service/excursions/change-image/async",
+                                        "/excursion-service/excursions/delete-image", "/excursion-service/excursions/delete-image/async",
 
-                                        "/payments/by-id", "/payments/by-id/async"
+                                        "/excursion-service/payments/by-id", "/excursion-service/payments/by-id/async"
                                 )
                                 .hasAnyAuthority("ADMIN")
                 )

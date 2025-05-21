@@ -27,13 +27,13 @@ public class SightRouter {
     public RouterFunction<ServerResponse> sightRoutes(final SightService sightService) {
         return route()
                 .GET(
-                        "/sights", request -> ServerResponse
+                        "/excursion-service/sights", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(sightService.findAll())
                 )
                 .GET(
-                        "/sights/sse", request -> ServerResponse
+                        "/excursion-service/sights/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             sightService.findAll().forEach(
@@ -52,13 +52,13 @@ public class SightRouter {
                                 )
                 )
                 .GET(
-                        "/sights/async", request -> ServerResponse
+                        "/excursion-service/sights/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(sightService.findAllAsync().get())
                 )
                 .GET(
-                        "/sights/pages/{page}", request -> ServerResponse
+                        "/excursion-service/sights/pages/{page}", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -70,51 +70,51 @@ public class SightRouter {
                                 )
                 )
                 .GET(
-                        "/sights/by-id", request -> ServerResponse
+                        "/excursion-service/sights/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(sightService.findById(request.param("sightId").orElse(null)))
                 )
                 .GET(
-                        "/sights/by-id/async", request -> ServerResponse
+                        "/excursion-service/sights/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(sightService.findByIdAsync(request.param("sightId").orElse(null)).get())
                 )
                 .POST(
-                        "/sights/create-update", request -> {
+                        "/excursion-service/sights/create-update", request -> {
                             SightResponse sightResponse = sightService.createOrUpdate(request.body(SightRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(URI.create("/sights/by-id?sightId=" + sightResponse.getId()))
+                                    .location(URI.create("/excursion-service/sights/by-id?sightId=" + sightResponse.getId()))
                                     .body(sightResponse);
                         }
                 )
                 .POST(
-                        "/sights/create-update/async", request -> {
+                        "/excursion-service/sights/create-update/async", request -> {
                             SightResponse sightResponse = sightService.createOrUpdateAsync(request.body(SightRequest.class)).get();
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(URI.create("/sights/by-id/async?sightId=" + sightResponse.getId()))
+                                    .location(URI.create("/excursion-service/sights/by-id/async?sightId=" + sightResponse.getId()))
                                     .body(sightResponse);
                         }
                 )
                 .DELETE(
-                        "/sights/delete", request -> ServerResponse
+                        "/excursion-service/sights/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(sightService.deleteById(request.param("sightId").orElse(null)))
                 )
                 .DELETE(
-                        "/sights/delete/async", request -> ServerResponse
+                        "/excursion-service/sights/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(sightService.deleteByIdAsync(request.param("sightId").orElse(null)).get())
                 )
                 .POST(
-                        "/sights/upload-image", request -> ServerResponse
+                        "/excursion-service/sights/upload-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, StandardCharsets.UTF_8))
                                 .body(
@@ -125,7 +125,7 @@ public class SightRouter {
                                 )
                 )
                 .POST(
-                        "/sights/upload-image/async", request -> ServerResponse
+                        "/excursion-service/sights/upload-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, StandardCharsets.UTF_8))
                                 .body(
@@ -137,7 +137,7 @@ public class SightRouter {
                                 )
                 )
                 .PUT(
-                        "/sights/change-image", request -> ServerResponse
+                        "/excursion-service/sights/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, StandardCharsets.UTF_8))
                                 .body(
@@ -148,7 +148,7 @@ public class SightRouter {
                                 )
                 )
                 .PUT(
-                        "/sights/change-image/async", request -> ServerResponse
+                        "/excursion-service/sights/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, StandardCharsets.UTF_8))
                                 .body(
@@ -160,13 +160,13 @@ public class SightRouter {
                                 )
                 )
                 .DELETE(
-                        "/sights/delete-image", request -> ServerResponse
+                        "/excursion-service/sights/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, StandardCharsets.UTF_8))
                                 .body(sightService.deleteImage(request.param("sightId").orElse(null)))
                 )
                 .DELETE(
-                        "/sights/delete-image/async", request -> ServerResponse
+                        "/excursion-service/sights/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, StandardCharsets.UTF_8))
                                 .body(sightService.deleteImageAsync(request.param("sightId").orElse(null)).get())

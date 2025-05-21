@@ -29,13 +29,13 @@ public class ExcursionRouter {
         return route()
                 .filter(new IdentityFilterFunction())
                 .GET(
-                        "/excursions", request -> ServerResponse
+                        "/excursion-service/excursions", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findAll())
                 )
                 .GET(
-                        "/excursions/sse", request -> ServerResponse
+                        "/excursion-service/excursions/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             excursionService.findAll().forEach(
@@ -54,13 +54,13 @@ public class ExcursionRouter {
                                 )
                 )
                 .GET(
-                        "/excursions/async", request -> ServerResponse
+                        "/excursion-service/excursions/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findAllAsync().get())
                 )
                 .GET(
-                        "/excursions/pages/{page}", request -> ServerResponse
+                        "/excursion-service/excursions/pages/{page}", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -72,13 +72,13 @@ public class ExcursionRouter {
                                 )
                 )
                 .GET(
-                        "/excursions/by-guide", request -> ServerResponse
+                        "/excursion-service/excursions/by-guide", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findAllByGuideId(request.param("guideId").orElseThrow()))
                 )
                 .GET(
-                        "/excursions/by-guide/sse", request -> ServerResponse
+                        "/excursion-service/excursions/by-guide/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             excursionService.findAllByGuideId(request.param("guideId").orElseThrow())
@@ -98,19 +98,19 @@ public class ExcursionRouter {
                                 )
                 )
                 .GET(
-                        "/excursions/by-guide/async", request -> ServerResponse
+                        "/excursion-service/excursions/by-guide/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findAllByGuideIdAsync(request.param("guideId").orElseThrow()).get())
                 )
                 .GET(
-                        "/excursions/by-identity", request -> ServerResponse
+                        "/excursion-service/excursions/by-identity", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findAllByIdentityId(request.param("identityId").orElseThrow()))
                 )
                 .GET(
-                        "/excursions/by-identity/sse", request -> ServerResponse
+                        "/excursion-service/excursions/by-identity/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             excursionService.findAllByIdentityId(request.param("identityId").orElseThrow())
@@ -130,37 +130,37 @@ public class ExcursionRouter {
                                 )
                 )
                 .GET(
-                        "/excursions/by-identity/async", request -> ServerResponse
+                        "/excursion-service/excursions/by-identity/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findAllByIdentityIdAsync(request.param("identityId").orElseThrow()).get())
                 )
                 .GET(
-                        "/excursions/by-session", request -> ServerResponse
+                        "/excursion-service/excursions/by-session", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findAllBySession(request.servletRequest()))
                 )
                 .GET(
-                        "/excursions/by-session/async", request -> ServerResponse
+                        "/excursion-service/excursions/by-session/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findAllBySessionAsync(request.servletRequest()).get())
                 )
                 .GET(
-                        "/excursions/by-id", request -> ServerResponse
+                        "/excursion-service/excursions/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findById(request.param("excursionId").orElseThrow()))
                 )
                 .GET(
-                        "/excursions/by-id/async", request -> ServerResponse
+                        "/excursion-service/excursions/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.findByIdAsync(request.param("excursionId").orElseThrow()).get())
                 )
                 .POST(
-                        "/excursions/add-by-identity", request -> ServerResponse
+                        "/excursion-service/excursions/add-by-identity", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -171,7 +171,7 @@ public class ExcursionRouter {
                                 )
                 )
                 .POST(
-                        "/excursions/add-by-identity/async", request -> ServerResponse
+                        "/excursion-service/excursions/add-by-identity/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -183,7 +183,7 @@ public class ExcursionRouter {
                                 )
                 )
                 .POST(
-                        "/excursions/add-to-session", request -> ServerResponse
+                        "/excursion-service/excursions/add-to-session", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(excursionService.addExcursionToSession(
@@ -192,7 +192,7 @@ public class ExcursionRouter {
                                 ))
                 )
                 .POST(
-                        "/excursions/add-to-session/async", request -> ServerResponse
+                        "/excursion-service/excursions/add-to-session/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -204,29 +204,29 @@ public class ExcursionRouter {
                                 )
                 )
                 .POST(
-                        "/excursions/create-update", request -> {
+                        "/excursion-service/excursions/create-update", request -> {
                             ExcursionResponse excursionResponse = excursionService.createOrUpdate(request.body(ExcursionRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(create("/excursions/by-id?excursionId=" + excursionResponse.getId()))
+                                    .location(create("/excursion-service/excursions/by-id?excursionId=" + excursionResponse.getId()))
                                     .body(excursionResponse);
                         }
                 )
                 .DELETE(
-                        "/excursions/delete", request -> ServerResponse
+                        "/excursion-service/excursions/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(excursionService.deleteById(request.param("excursionId").orElseThrow()))
                 )
                 .DELETE(
-                        "/excursions/delete/async", request -> ServerResponse
+                        "/excursion-service/excursions/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(excursionService.deleteByIdAsync(request.param("excursionId").orElseThrow()).get())
                 )
                 .POST(
-                        "/excursions/upload-image", request -> ServerResponse
+                        "/excursion-service/excursions/upload-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -237,7 +237,7 @@ public class ExcursionRouter {
                                 )
                 )
                 .POST(
-                        "/excursions/upload-image/async", request -> ServerResponse
+                        "/excursion-service/excursions/upload-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -249,7 +249,7 @@ public class ExcursionRouter {
                                 )
                 )
                 .POST(
-                        "/excursions/change-image", request -> ServerResponse
+                        "/excursion-service/excursions/change-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -260,7 +260,7 @@ public class ExcursionRouter {
                                 )
                 )
                 .POST(
-                        "/excursions/change-image/async", request -> ServerResponse
+                        "/excursion-service/excursions/change-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -272,13 +272,13 @@ public class ExcursionRouter {
                                 )
                 )
                 .DELETE(
-                        "/excursions/delete-image", request -> ServerResponse
+                        "/excursion-service/excursions/delete-image", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(excursionService.deleteImage(request.param("excursionId").orElseThrow()))
                 )
                 .DELETE(
-                        "/excursions/delete-image/async", request -> ServerResponse
+                        "/excursion-service/excursions/delete-image/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(excursionService.deleteImageAsync(request.param("excursionId").orElseThrow()).get())

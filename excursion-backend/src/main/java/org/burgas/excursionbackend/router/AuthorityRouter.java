@@ -27,13 +27,13 @@ public class AuthorityRouter {
     public RouterFunction<ServerResponse> authorityRoutes(final AuthorityService authorityService) {
         return route()
                 .GET(
-                        "/authorities", request -> ServerResponse
+                        "/excursion-service/authorities", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(authorityService.findAll())
                 )
                 .GET(
-                        "/authorities/sse", request -> ServerResponse
+                        "/excursion-service/authorities/sse", request -> ServerResponse
                                 .sse(
                                         sseBuilder -> {
                                             authorityService.findAll()
@@ -55,35 +55,35 @@ public class AuthorityRouter {
 
                 )
                 .GET(
-                        "/authorities/async", request -> ServerResponse
+                        "/excursion-service/authorities/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(authorityService.findAllAsync().get())
                 )
                 .GET(
-                        "/authorities/by-id", request -> ServerResponse
+                        "/excursion-service/authorities/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(authorityService.findById(request.param("authorityId").orElse(null)))
                 )
                 .GET(
-                        "/authorities/by-id/async", request -> ServerResponse
+                        "/excursion-service/authorities/by-id/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(authorityService.findByIdAsync(request.param("authorityId").orElse(null)).get())
                 )
                 .POST(
-                        "/authorities/create-update", request -> {
+                        "/excursion-service/authorities/create-update", request -> {
                             AuthorityResponse authorityResponse = authorityService.createOrUpdate(request.body(AuthorityRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(URI.create("/authorities/by-id?authorityId=" + authorityResponse.getId()))
+                                    .location(URI.create("/excursion-service/authorities/by-id?authorityId=" + authorityResponse.getId()))
                                     .body(authorityResponse);
                         }
                 )
                 .POST(
-                        "/authorities/create-update/async", request -> {
+                        "/excursion-service/authorities/create-update/async", request -> {
                             AuthorityResponse authorityResponse = authorityService.createOrUpdateAsync(request.body(AuthorityRequest.class)).get();
                             return ServerResponse
                                     .status(FOUND)
@@ -92,13 +92,13 @@ public class AuthorityRouter {
                         }
                 )
                 .DELETE(
-                        "/authorities/delete", request -> ServerResponse
+                        "/excursion-service/authorities/delete", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(authorityService.deleteById(request.param("authorityId").orElse(null)))
                 )
                 .DELETE(
-                        "/authorities/delete/async", request -> ServerResponse
+                        "/excursion-service/authorities/delete/async", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(authorityService.deleteByIdAsync(request.param("authorityId").orElse(null)).get())

@@ -22,20 +22,20 @@ public class AirportRouter {
     public RouterFunction<ServerResponse> airportRoutes(final AirportService airportService) {
         return RouterFunctions
                 .route(
-                        GET("/airports"), request ->
+                        GET("/flight-service/airports"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(airportService.findAll())
                 )
                 .andRoute(
-                        GET("/airports/async"), request -> ServerResponse
+                        GET("/flight-service/airports/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(airportService.findAllAsync().get())
                 )
                 .andRoute(
-                        GET("/airports/pages/{page}"), request -> ServerResponse
+                        GET("/flight-service/airports/pages/{page}"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -47,14 +47,14 @@ public class AirportRouter {
                                 )
                 )
                 .andRoute(
-                        GET("/airports/by-country"), request ->
+                        GET("/flight-service/airports/by-country"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(airportService.findByCountryId(request.param("countryId").orElseThrow()))
                 )
                 .andRoute(
-                        GET("/airports/by-country/async"), request -> ServerResponse
+                        GET("/flight-service/airports/by-country/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -63,14 +63,14 @@ public class AirportRouter {
                                 )
                 )
                 .andRoute(
-                        GET("/airports/by-city"), request ->
+                        GET("/flight-service/airports/by-city"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(airportService.findByCityId(request.param("cityId").orElseThrow()))
                 )
                 .andRoute(
-                        GET("/airports/by-city/async"), request -> ServerResponse
+                        GET("/flight-service/airports/by-city/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -79,26 +79,26 @@ public class AirportRouter {
                                 )
                 )
                 .andRoute(
-                        POST("/airports/create-update"), request ->
+                        POST("/flight-service/airports/create-update"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(airportService.createOrUpdate(request.body(AirportRequest.class)))
                 )
                 .andRoute(
-                        POST("/airports/create-update/async"), request -> ServerResponse
+                        POST("/flight-service/airports/create-update/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(airportService.createOrUpdateAsync(request.body(AirportRequest.class)).get())
                 )
                 .andRoute(
-                        DELETE("/airports/delete"), request -> ServerResponse
+                        DELETE("/flight-service/airports/delete"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(airportService.deleteById(request.param("airportId").orElseThrow()))
                 )
                 .andRoute(
-                        DELETE("/airports/delete/async"), request -> ServerResponse
+                        DELETE("/flight-service/airports/delete/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(airportService.deleteByIdAsync(request.param("airportId").orElseThrow()).get())

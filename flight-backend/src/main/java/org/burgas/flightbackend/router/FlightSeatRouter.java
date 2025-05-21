@@ -17,7 +17,7 @@ public class FlightSeatRouter {
     public RouterFunction<ServerResponse> flightSeatRoutes(final FlightSeatService flightSeatService) {
         return route()
                 .GET(
-                        "/flight-seats/by-flight-id", request -> ServerResponse
+                        "/flight-service/flight-seats/by-flight-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(flightSeatService.findAllByFlightId(request.param("flightId").orElseThrow()))

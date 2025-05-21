@@ -24,7 +24,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.*;
 
 @Controller
-@RequestMapping(value = "/identities")
+@RequestMapping(value = "/hotel-service/identities")
 public class IdentityController {
 
     private final IdentityService identityService;

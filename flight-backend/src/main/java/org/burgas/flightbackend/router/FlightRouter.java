@@ -25,13 +25,13 @@ public class FlightRouter {
     public RouterFunction<ServerResponse> flightRoutes(final FlightService flightService) {
         return route()
                 .GET(
-                        "/flights", request -> ServerResponse
+                        "/flight-service/flights", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(flightService.findAll())
                 )
                 .GET(
-                        "/flights/by-departure-city-arrival-city-by-departure-date", request -> ServerResponse
+                        "/flight-service/flights/by-departure-city-arrival-city-by-departure-date", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -43,7 +43,7 @@ public class FlightRouter {
                                 )
                 )
                 .GET(
-                        "/flights/by-departure-city-by-arrival-city", request -> ServerResponse
+                        "/flight-service/flights/by-departure-city-by-arrival-city", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -54,7 +54,7 @@ public class FlightRouter {
                                 )
                 )
                 .GET(
-                        "/flights/by-departure-city-by-arrival-city-back", request -> ServerResponse
+                        "/flight-service/flights/by-departure-city-by-arrival-city-back", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -62,23 +62,23 @@ public class FlightRouter {
                                 )
                 )
                 .GET(
-                        "/flights/by-id", request -> ServerResponse
+                        "/flight-service/flights/by-id", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(flightService.findById(request.param("flightId").orElseThrow()))
                 )
                 .POST(
-                        "/flights/create-update", request -> {
+                        "/flight-service/flights/create-update", request -> {
                             FlightResponse flightResponse = flightService.createOrUpdate(request.body(FlightRequest.class));
                             return ServerResponse
                                     .status(FOUND)
                                     .contentType(APPLICATION_JSON)
-                                    .location(URI.create("/flights/by-id?flightId=" + flightResponse.getId()))
+                                    .location(URI.create("/flight-service/flights/by-id?flightId=" + flightResponse.getId()))
                                     .body(flightResponse);
                         }
                 )
                 .POST(
-                        "/flights/add-employee", request -> ServerResponse
+                        "/flight-service/flights/add-employee", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -89,7 +89,7 @@ public class FlightRouter {
                                 )
                 )
                 .DELETE(
-                        "/flights/remove-employee", request -> ServerResponse
+                        "/flight-service/flights/remove-employee", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(
@@ -100,13 +100,13 @@ public class FlightRouter {
                                 )
                 )
                 .PUT(
-                        "/flights/start-flight", request -> ServerResponse
+                        "/flight-service/flights/start-flight", request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(flightService.startFlight(request.param("flightId").orElseThrow()))
                 )
                 .PUT(
-                        "/flights/complete-flight", request -> ServerResponse
+                        "/flight-service/flights/complete-flight", request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(flightService.completeFlight(request.param("flightId").orElseThrow()))

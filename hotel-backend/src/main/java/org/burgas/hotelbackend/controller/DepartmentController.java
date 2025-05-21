@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.*;
 
 @Controller
-@RequestMapping(value = "/departments")
+@RequestMapping(value = "/hotel-service/departments")
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -111,7 +111,7 @@ public class DepartmentController {
         return ResponseEntity
                 .status(FOUND)
                 .contentType(APPLICATION_JSON)
-                .location(URI.create("/departments/by-id?departmentId=" + departmentResponse.getId()))
+                .location(URI.create("/hotel-service/departments/by-id?departmentId=" + departmentResponse.getId()))
                 .body(departmentResponse);
     }
 

@@ -22,20 +22,20 @@ public class FilialRouter {
     public RouterFunction<ServerResponse> filialRoutes(final FilialService filialService) {
         return RouterFunctions
                 .route(
-                        GET("/filials"), request ->
+                        GET("/flight-service/filials"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(filialService.findAll())
                 )
                 .andRoute(
-                        GET("/filials/async"), request -> ServerResponse
+                        GET("/flight-service/filials/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(filialService.findAllAsync().get())
                 )
                 .andRoute(
-                        GET("/filials/pages/{page}"), request -> ServerResponse
+                        GET("/flight-service/filials/pages/{page}"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(
@@ -47,52 +47,52 @@ public class FilialRouter {
                                 )
                 )
                 .andRoute(
-                        GET("/filials/by-country"), request ->
+                        GET("/flight-service/filials/by-country"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(filialService.findByCountryId(request.param("countryId").orElseThrow()))
                 )
                 .andRoute(
-                        GET("/filials/by-country"), request -> ServerResponse
+                        GET("/flight-service/filials/by-country"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(filialService.findByCountryIdAsync(request.param("countryId").orElseThrow()).get())
                 )
                 .andRoute(
-                        GET("/filials/by-city"), request ->
+                        GET("/flight-service/filials/by-city"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(filialService.findByCityId(request.param("cityId").orElseThrow()))
                 )
                 .andRoute(
-                        GET("/filials/by-city/async"), request -> ServerResponse
+                        GET("/flight-service/filials/by-city/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(filialService.findByCityIdAsync(request.param("cityId").orElseThrow()).get())
                 )
                 .andRoute(
-                        POST("/filials/create-update"), request ->
+                        POST("/flight-service/filials/create-update"), request ->
                                 ServerResponse
                                         .status(OK)
                                         .contentType(APPLICATION_JSON)
                                         .body(filialService.createOrUpdate(request.body(FilialRequest.class)))
                 )
                 .andRoute(
-                        POST("/filials/create-update/async"), request -> ServerResponse
+                        POST("/flight-service/filials/create-update/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(filialService.createOrUpdateAsync(request.body(FilialRequest.class)).get())
                 )
                 .andRoute(
-                        DELETE("/filials/delete"), request -> ServerResponse
+                        DELETE("/flight-service/filials/delete"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(new MediaType(TEXT_PLAIN, UTF_8))
                                 .body(filialService.deleteById(request.param("filialId").orElseThrow()))
                 )
                 .andRoute(
-                        DELETE("/filials/delete/async"), request -> ServerResponse
+                        DELETE("/flight-service/filials/delete/async"), request -> ServerResponse
                                 .status(OK)
                                 .contentType(APPLICATION_JSON)
                                 .body(filialService.deleteByIdAsync(request.param("filialId").orElseThrow()).get())
