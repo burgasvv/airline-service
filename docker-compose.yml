@@ -1,0 +1,79 @@
+
+services:
+
+  flight-backend-postgres:
+    image: postgres:latest
+    container_name: flight_backend_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flight_backend_db
+      PGDATA: /var/lib/data/postgresql
+
+  flight-backend:
+    build:
+      context: flight-backend
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    depends_on:
+      - flight-backend-postgres
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://flight-backend-postgres:5432/flight_backend_db
+
+  excursion-backend-postgres:
+    image: postgres:latest
+    container_name: excursion_backend_postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: excursion_backend_db
+      PGDATA: /var/lib/data/postgresql
+
+  excursion-backend:
+    build:
+      context: excursion-backend
+      dockerfile: Dockerfile
+    ports:
+      - "9010:9010"
+    depends_on:
+      - excursion-backend-postgres
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://excursion-backend-postgres:5432/excursion_backend_db
+
+  hotel-backend-postgres:
+    image: postgres:latest
+    container_name: hotel_backend_postgres
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hotel_backend_db
+      PGDATA: /var/lib/data/postgresql
+
+  hotel-backend:
+    build:
+      context: hotel-backend
+      dockerfile: Dockerfile
+    ports:
+      - "9020:9020"
+    depends_on:
+      - hotel-backend-postgres
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://hotel-backend-postgres:5432/hotel_backend_db
+
+  gateway-server:
+    build:
+      context: gateway-server
+      dockerfile: Dockerfile
+    ports:
+      - "9050:9050"
+    restart: unless-stopped

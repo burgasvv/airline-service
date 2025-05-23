@@ -16,7 +16,7 @@ Host: localhost:9020
 
 
 ###
-GET /authorities
+GET /hotel-service/authorities
 Host: localhost:9020
 Authorization: Basic admin@gmail.com admin
 
