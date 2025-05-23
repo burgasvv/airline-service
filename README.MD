@@ -8,7 +8,7 @@
 -[X]SpringBoot 3.3.5
 
 ## Основной стек зависимостей
-- [X]Spring Security
+-[X]Spring Security
 -[X]Spring Web
 -[X]Spring Cloud
 -[X]Spring Data JPA
