@@ -4,15 +4,15 @@
 ## Микросервисная архитектура
 
 ##  Версии
--[X] JDK 17
--[X] SpringBoot 3.3.5
+-[X]JDK 17
+-[X]SpringBoot 3.3.5
 
 ## Основной стек зависимостей
--[X] Spring Security
--[X] Spring Web
--[X] Spring Cloud
--[X] Spring Data JPA
--[X] Postgresql
+-[X]Spring Security
+-[X]Spring Web
+-[X]Spring Cloud
+-[X]Spring Data JPA
+-[X]Postgresql
 
 ## Описание
          Архитектура из двух микросервисоав:
