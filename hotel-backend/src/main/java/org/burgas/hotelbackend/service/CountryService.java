@@ -23,6 +23,7 @@ import static java.util.Optional.of;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.hotelbackend.log.CountryLogs.*;
 import static org.burgas.hotelbackend.message.CountryMessages.*;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -107,7 +108,7 @@ public class CountryService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CountryResponse createOrUpdate(final CountryRequest countryRequest) {
@@ -124,7 +125,7 @@ public class CountryService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<CountryResponse> createOrUpdateAsync(final CountryRequest countryRequest) {

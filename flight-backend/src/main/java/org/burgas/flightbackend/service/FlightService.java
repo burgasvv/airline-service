@@ -22,7 +22,7 @@ import static org.burgas.flightbackend.log.FlightLogs.*;
 import static org.burgas.flightbackend.message.EmployeeMessages.EMPLOYEE_NOT_FOUND;
 import static org.burgas.flightbackend.message.FlightMessages.*;
 import static org.burgas.flightbackend.message.PlaneMessages.PLANE_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -116,7 +116,7 @@ public class FlightService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public FlightResponse createOrUpdate(final FlightRequest flightRequest) {
@@ -187,7 +187,7 @@ public class FlightService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String addEmployeeToFlight(final String flightId, final String employeeId) {
@@ -206,7 +206,7 @@ public class FlightService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String removeEmployeeFromFlight(final String flightId, final String employeeId) {
@@ -225,7 +225,7 @@ public class FlightService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String startFlight(final String flightId) {
@@ -257,7 +257,7 @@ public class FlightService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String completeFlight(final String flightId) {

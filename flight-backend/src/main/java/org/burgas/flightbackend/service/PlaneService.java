@@ -24,6 +24,7 @@ import static java.util.Optional.of;
 import static java.util.concurrent.CompletableFuture.*;
 import static org.burgas.flightbackend.log.PlaneLogs.*;
 import static org.burgas.flightbackend.message.PlaneMessages.*;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -106,7 +107,7 @@ public class PlaneService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public PlaneResponse createOrUpdate(final PlaneRequest planeRequest) {
@@ -120,7 +121,7 @@ public class PlaneService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<PlaneResponse> createOrUpdateAsync(final PlaneRequest planeRequest) {

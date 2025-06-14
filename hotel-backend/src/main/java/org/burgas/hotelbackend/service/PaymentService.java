@@ -28,7 +28,7 @@ import static org.burgas.hotelbackend.log.PaymentLogs.PAYMENT_FOUND_ALL;
 import static org.burgas.hotelbackend.log.PaymentLogs.PAYMENT_FOUND_ALL_ASYNC;
 import static org.burgas.hotelbackend.message.PaymentMessages.*;
 import static org.burgas.hotelbackend.message.RoomMessages.ROOM_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -72,7 +72,7 @@ public class PaymentService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String closePayment(final Long clientId) {
@@ -91,7 +91,7 @@ public class PaymentService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String cancelRentAndPayment(final Long paymentId) {
@@ -116,7 +116,7 @@ public class PaymentService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String earlyPaymentReservationReturn(final Long paymentId) {

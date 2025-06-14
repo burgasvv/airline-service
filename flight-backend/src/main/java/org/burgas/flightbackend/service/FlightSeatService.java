@@ -22,7 +22,7 @@ import static org.burgas.flightbackend.log.FlightSeatLogs.FLIGHT_SEAT_FOUND_BY_F
 import static org.burgas.flightbackend.message.FlightSeatMessages.FLIGHT_SEAT_NOT_FOUND;
 import static org.burgas.flightbackend.message.FlightSeatMessages.TICKET_FLIGHT_SEAT_NOT_MERGED;
 import static org.burgas.flightbackend.message.TicketMessages.TICKET_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -50,7 +50,7 @@ public class FlightSeatService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public void reserveFlightSeat(final OrderedTicket orderedTicket) {
@@ -69,7 +69,7 @@ public class FlightSeatService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public void cancelReserveFlightSeat(final OrderedTicket orderedTicket) {

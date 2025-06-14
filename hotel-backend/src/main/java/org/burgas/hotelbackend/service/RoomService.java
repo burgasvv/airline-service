@@ -32,8 +32,7 @@ import static org.burgas.hotelbackend.log.RoomLogs.*;
 import static org.burgas.hotelbackend.message.ClientMessages.*;
 import static org.burgas.hotelbackend.message.FilialMessages.FILIAL_NOT_FOUND;
 import static org.burgas.hotelbackend.message.RoomMessages.*;
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -140,7 +139,7 @@ public class RoomService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public RoomResponse createOrUpdate(final RoomRequest roomRequest) {
@@ -157,7 +156,7 @@ public class RoomService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<RoomResponse> createOrUpdateAsync(final RoomRequest roomRequest) {
@@ -175,7 +174,7 @@ public class RoomService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteById(final Long roomId) {
@@ -196,7 +195,7 @@ public class RoomService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long roomId) {
@@ -218,7 +217,7 @@ public class RoomService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String rentClientRoom(final RentRoom rentRoom) {
@@ -308,7 +307,7 @@ public class RoomService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String uploadRoomImages(final Long roomId, final List<MultipartFile> multipartFiles) {
@@ -337,7 +336,7 @@ public class RoomService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadRoomImagesAsync(final Long roomId, final List<MultipartFile> multipartFiles) {

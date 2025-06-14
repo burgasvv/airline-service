@@ -31,7 +31,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.hotelbackend.log.EmployeeLogs.*;
 import static org.burgas.hotelbackend.message.EmployeeMessages.*;
 import static org.burgas.hotelbackend.message.ImageMessages.IMAGE_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -99,7 +99,7 @@ public class EmployeeService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public EmployeeResponse createOrUpdate(final EmployeeRequest employeeRequest) {
@@ -114,7 +114,7 @@ public class EmployeeService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<EmployeeResponse> createOrUpdateAsync(final EmployeeRequest employeeRequest) {
@@ -130,7 +130,7 @@ public class EmployeeService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteById(final Long employeeId) {
@@ -149,7 +149,7 @@ public class EmployeeService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long employeeId) {
@@ -169,7 +169,7 @@ public class EmployeeService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String uploadEmployeeImage(final Long employeeId, final MultipartFile multipartFile) {
@@ -192,7 +192,7 @@ public class EmployeeService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadEmployeeImageAsync(final Long employeeId, final MultipartFile multipartFile) {
@@ -221,7 +221,7 @@ public class EmployeeService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String changeEmployeeImage(final Long employeeId, final MultipartFile multipartFile) {
@@ -248,7 +248,7 @@ public class EmployeeService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeEmployeeImageAsync(final Long employeeId, final MultipartFile multipartFile) {
@@ -281,7 +281,7 @@ public class EmployeeService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteEmployeeImage(final Long employeeId) {
@@ -308,7 +308,7 @@ public class EmployeeService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteEmployeeImageAsync(final Long employeeId) {

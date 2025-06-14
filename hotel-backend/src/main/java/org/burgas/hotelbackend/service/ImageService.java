@@ -20,7 +20,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.hotelbackend.log.ImageLogs.IMAGE_FOUND_BY_ID;
 import static org.burgas.hotelbackend.log.ImageLogs.IMAGE_FOUND_BY_ID_ASYNC;
 import static org.burgas.hotelbackend.message.ImageMessages.*;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -55,7 +55,7 @@ public class ImageService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Image uploadImage(final MultipartFile multipartFile) {
@@ -86,7 +86,7 @@ public class ImageService {
 
     @Async(value = "TaskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<Image> uploadImageAsync(final MultipartFile multipartFile) {
@@ -132,7 +132,7 @@ public class ImageService {
 
     @Async(value = "TaskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<Image> changeImageAsync(final Long imageId, final MultipartFile multipartFile) {
@@ -140,7 +140,7 @@ public class ImageService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteImage(final Long imageId) {

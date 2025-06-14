@@ -31,8 +31,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.burgas.flightbackend.log.FilialLogs.*;
 import static org.burgas.flightbackend.message.AddressMessages.ADDRESS_NOT_CREATED;
 import static org.burgas.flightbackend.message.FilialMessages.*;
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -136,7 +135,7 @@ public class FilialService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public FilialResponse createOrUpdate(final FilialRequest filialRequest) {
@@ -160,7 +159,7 @@ public class FilialService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<FilialResponse> createOrUpdateAsync(final FilialRequest filialRequest) {

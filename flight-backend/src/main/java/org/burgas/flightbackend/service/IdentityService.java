@@ -26,7 +26,7 @@ import static java.util.Optional.of;
 import static org.burgas.flightbackend.log.IdentityLogs.*;
 import static org.burgas.flightbackend.message.IdentityMessages.*;
 import static org.burgas.flightbackend.message.RestoreTokenMessages.WRONG_RESTORE_TOKEN;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -83,7 +83,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public IdentityResponse createOrUpdate(final IdentityRequest identityRequest) {
@@ -96,7 +96,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String accountEnableOrDisable(final String identityId, final String enabled) {
@@ -119,7 +119,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String changePassword(final String identityId) {
@@ -127,7 +127,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public IdentityResponse setPassword(final String identityId, final String token, final String password) {
@@ -155,7 +155,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String uploadImage(final String identityId, final Part part) {
@@ -172,7 +172,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String changeImage(final String identityId, final Part part) {
@@ -195,7 +195,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteImage(final String identityId) {
