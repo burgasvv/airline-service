@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -22,7 +22,7 @@ public class RestoreTokenService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public RestoreToken createOrUpdateByIdentityId(final Long identityId) {

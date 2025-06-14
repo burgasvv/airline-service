@@ -30,7 +30,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.hotelbackend.log.HotelLogs.*;
 import static org.burgas.hotelbackend.message.HotelMessages.*;
 import static org.burgas.hotelbackend.message.ImageMessages.IMAGE_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 
 @Service
@@ -115,7 +115,7 @@ public class HotelService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public HotelResponse createOrUpdate(final HotelRequest hotelRequest) {
@@ -130,7 +130,7 @@ public class HotelService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<HotelResponse> createOrUpdateAsync(final HotelRequest hotelRequest) {
@@ -147,7 +147,7 @@ public class HotelService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteById(final Long hotelId) {
@@ -168,7 +168,7 @@ public class HotelService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long hotelId) {
@@ -190,7 +190,7 @@ public class HotelService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String uploadHotelImage(final Long hotelId, final MultipartFile multipartFile) {
@@ -213,7 +213,7 @@ public class HotelService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadHotelImageAsync(final Long hotelId, final MultipartFile multipartFile) {
@@ -242,7 +242,7 @@ public class HotelService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String changeHotelImage(final Long hotelId, final MultipartFile multipartFile) {
@@ -269,7 +269,7 @@ public class HotelService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeHotelImageAsync(final Long hotelId, final MultipartFile multipartFile) {
@@ -302,7 +302,7 @@ public class HotelService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteHotelImage(final Long hotelId) {
@@ -329,7 +329,7 @@ public class HotelService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteHotelImageAsync(final Long hotelId) {

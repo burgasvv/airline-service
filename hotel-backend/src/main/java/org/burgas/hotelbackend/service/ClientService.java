@@ -4,7 +4,7 @@ import org.burgas.hotelbackend.dto.ClientRequest;
 import org.burgas.hotelbackend.dto.ClientResponse;
 import org.burgas.hotelbackend.exception.ClientNotCreatedOrUpdatedException;
 import org.burgas.hotelbackend.mapper.ClientMapper;
-import org.burgas.hotelbackend.repository.*;
+import org.burgas.hotelbackend.repository.ClientRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -22,7 +22,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.hotelbackend.log.ClientLogs.*;
 import static org.burgas.hotelbackend.message.ClientMessages.CLIENT_NOT_CREATED_OR_UPDATED;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 
 @Service
@@ -86,7 +86,7 @@ public class ClientService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public ClientResponse createOrUpdate(final ClientRequest clientRequest) {
@@ -103,7 +103,7 @@ public class ClientService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<ClientResponse> createOrUpdateAsync(final ClientRequest clientRequest) {

@@ -27,7 +27,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.excursionbackend.log.GuideLogs.*;
 import static org.burgas.excursionbackend.message.GuideMessages.*;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -93,7 +93,7 @@ public class GuideService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public GuideResponse createOrUpdate(final GuideRequest guideRequest) {
@@ -104,7 +104,7 @@ public class GuideService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<GuideResponse> createOrUpdateAsync(final GuideRequest guideRequest) {
@@ -146,7 +146,7 @@ public class GuideService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String uploadImage(final String guideId, final Part part) {
@@ -164,7 +164,7 @@ public class GuideService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadImageAsync(final String guideId, final Part part) {
@@ -188,7 +188,7 @@ public class GuideService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String changeImage(final String guideId, final Part part) {
@@ -208,7 +208,7 @@ public class GuideService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeImageAsync(final String guideId, final Part part) {

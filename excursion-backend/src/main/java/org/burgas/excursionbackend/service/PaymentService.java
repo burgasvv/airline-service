@@ -20,7 +20,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.excursionbackend.log.PaymentLogs.PAYMENT_FOUND_BY_ID;
 import static org.burgas.excursionbackend.log.PaymentLogs.PAYMENT_FOUND_BY_IDENTITY_ID;
 import static org.burgas.excursionbackend.message.IdentityMessages.IDENTITY_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -72,7 +72,7 @@ public class PaymentService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public PaymentResponse makeIdentityPayment(final PaymentRequest paymentRequest) {
@@ -93,7 +93,7 @@ public class PaymentService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<PaymentResponse> makeIdentityPaymentAsync(final PaymentRequest paymentRequest) {

@@ -31,7 +31,7 @@ import static org.burgas.excursionbackend.log.IdentityLogs.*;
 import static org.burgas.excursionbackend.log.ImageLogs.IMAGE_WAS_CREATED;
 import static org.burgas.excursionbackend.log.ImageLogs.IMAGE_WAS_CREATED_ASYNC;
 import static org.burgas.excursionbackend.message.IdentityMessages.*;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -125,7 +125,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public IdentityResponse createOrUpdate(final IdentityRequest identityRequest) {
@@ -140,7 +140,7 @@ public class IdentityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<IdentityResponse> createOrUpdateAsync(final IdentityRequest identityRequest) {
@@ -186,7 +186,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String accountControl(final String identityId, final String enable) {
@@ -204,7 +204,7 @@ public class IdentityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> accountControlAsync(final String identityId, final String enable) {
@@ -223,7 +223,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String uploadImage(final String identityId, final Part part) {
@@ -242,7 +242,7 @@ public class IdentityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadImageAsync(final String identityId, final Part part) {
@@ -267,7 +267,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String changeImage(final String identityId, final Part part) {
@@ -287,7 +287,7 @@ public class IdentityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeImageAsync(final String identityId, final Part part) {

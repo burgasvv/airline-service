@@ -32,7 +32,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.hotelbackend.log.IdentityLogs.*;
 import static org.burgas.hotelbackend.message.IdentityMessages.*;
 import static org.burgas.hotelbackend.message.ImageMessages.IMAGE_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -97,7 +97,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public IdentityResponse createOrUpdate(final IdentityRequest identityRequest) {
@@ -111,7 +111,7 @@ public class IdentityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<IdentityResponse> createOrUpdateAsync(final IdentityRequest identityRequest) {
@@ -121,7 +121,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String activateOrDeactivate(final Long identityId, final Boolean enable) {
@@ -146,7 +146,7 @@ public class IdentityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> activateOrDeactivateAsync(final Long identityId, final Boolean enable) {
@@ -172,7 +172,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String uploadIdentityImage(final Long identityId, final MultipartFile multipartFile) {
@@ -195,7 +195,7 @@ public class IdentityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadIdentityImageAsync(final Long identityId, final MultipartFile multipartFile) {
@@ -224,7 +224,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String changeIdentityImage(final Long identityId, final MultipartFile multipartFile) {
@@ -251,7 +251,7 @@ public class IdentityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeIdentityImageAsync(final Long identityId, final MultipartFile multipartFile) {
@@ -284,7 +284,7 @@ public class IdentityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteIdentityImage(final Long identityId) {
@@ -311,7 +311,7 @@ public class IdentityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteIdentityImageAsync(final Long identityId) {

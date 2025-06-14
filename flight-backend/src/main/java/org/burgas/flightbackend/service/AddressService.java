@@ -25,6 +25,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.flightbackend.log.AddressLogs.ADDRESS_FOUND_ALL;
 import static org.burgas.flightbackend.log.AddressLogs.ADDRESS_FOUND_ALL_ASYNC;
 import static org.burgas.flightbackend.message.AddressMessages.*;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -69,7 +70,7 @@ public class AddressService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public AddressResponse createOrUpdateSecured(final AddressRequest addressRequest) {
@@ -81,7 +82,7 @@ public class AddressService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<AddressResponse> createOrUpdateSecuresAsync(final AddressRequest addressRequest) {
@@ -91,7 +92,7 @@ public class AddressService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteById(final String addressId) {

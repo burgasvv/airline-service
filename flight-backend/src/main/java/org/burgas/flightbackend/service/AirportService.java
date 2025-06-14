@@ -25,6 +25,7 @@ import static java.util.Optional.of;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.flightbackend.log.AirportLogs.*;
 import static org.burgas.flightbackend.message.AirportMessages.*;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -113,7 +114,7 @@ public class AirportService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public AirportResponse createOrUpdate(final AirportRequest airportRequest) {
@@ -132,7 +133,7 @@ public class AirportService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<AirportResponse> createOrUpdateAsync(final AirportRequest airportRequest) {
@@ -163,6 +164,10 @@ public class AirportService {
                 .orElseThrow(() -> new AirportNotFoundException(AIRPORT_NOT_FOUND.getMessage()));
     }
 
+    @Transactional(
+            isolation = SERIALIZABLE, propagation = REQUIRED,
+            rollbackFor = Exception.class
+    )
     public CompletableFuture<String> deleteByIdAsync(final String airportId) {
         return supplyAsync(() -> this.airportRepository.findById(Long.parseLong(airportId == null ? "0" : airportId)))
                 .thenApplyAsync(

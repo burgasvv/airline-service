@@ -30,7 +30,7 @@ import static org.burgas.flightbackend.log.EmployeeLogs.EMPLOYEE_FOUND_BY_ID;
 import static org.burgas.flightbackend.log.EmployeeLogs.EMPLOYEE_FOUND_BY_ID_ASYNC;
 import static org.burgas.flightbackend.message.EmployeeMessages.*;
 import static org.burgas.flightbackend.message.IdentityMessages.*;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -111,7 +111,7 @@ public class EmployeeService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public EmployeeResponse createEmployee(final EmployeeRequest employeeRequest, final String token) {
@@ -166,7 +166,7 @@ public class EmployeeService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<EmployeeResponse> createEmployeeAsync(final EmployeeRequest employeeRequest, final String token) {
@@ -174,7 +174,7 @@ public class EmployeeService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public EmployeeResponse updateEmployee(final EmployeeRequest employeeRequest) {
@@ -188,7 +188,7 @@ public class EmployeeService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<EmployeeResponse> updateEmployeeAsync(final EmployeeRequest employeeRequest) {

@@ -23,7 +23,7 @@ import static java.util.Optional.of;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.hotelbackend.log.CityLogs.*;
 import static org.burgas.hotelbackend.message.CityMessages.*;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -107,7 +107,7 @@ public class CityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CityResponse createOrUpdate(final CityRequest cityRequest) {
@@ -124,7 +124,7 @@ public class CityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<CityResponse> createOrUpdateAsync(final CityRequest cityRequest) {
@@ -142,7 +142,7 @@ public class CityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteById(final Long cityId) {
@@ -163,7 +163,7 @@ public class CityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long cityId) {

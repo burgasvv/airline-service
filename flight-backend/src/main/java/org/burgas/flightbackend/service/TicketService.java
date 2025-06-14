@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Optional.of;
 import static org.burgas.flightbackend.log.TicketLogs.TICKET_FOUND_ALL;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -60,7 +60,7 @@ public class TicketService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public TicketResponse createOrUpdate(final TicketRequest ticketRequest) {

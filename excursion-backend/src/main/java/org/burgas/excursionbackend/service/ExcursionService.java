@@ -38,8 +38,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.burgas.excursionbackend.log.ExcursionLogs.*;
 import static org.burgas.excursionbackend.message.ExcursionMessages.*;
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -193,7 +192,7 @@ public class ExcursionService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String addExcursionByIdentityId(final String excursionId, final String identityId) {
@@ -228,13 +227,16 @@ public class ExcursionService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> addExcursionByIdentityIdAsync(final String excursionId, final String identityId) {
         return supplyAsync(() -> this.addExcursionByIdentityId(excursionId, identityId));
     }
 
+    @Transactional(
+            isolation = READ_COMMITTED, propagation = REQUIRED, rollbackFor = Exception.class
+    )
     public String addExcursionToSession(final String excursionId, final HttpServletRequest httpServletRequest) {
         return this.excursionRepository.findExcursionByIdAndPassed(Long.valueOf(excursionId), false)
                 .stream()
@@ -266,6 +268,9 @@ public class ExcursionService {
     }
 
     @Async(value = "taskExecutor")
+    @Transactional(
+            isolation = READ_COMMITTED, propagation = REQUIRED, rollbackFor = Exception.class
+    )
     public CompletableFuture<String> addExcursionToSessionAsync(final String excursionId, final HttpServletRequest httpServletRequest) {
         return supplyAsync(
                 () -> this.excursionRepository.findById(Long.valueOf(excursionId))
@@ -356,7 +361,7 @@ public class ExcursionService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String uploadImage(final String excursionId, final Part part) {
@@ -377,7 +382,7 @@ public class ExcursionService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadImageAsync(final String excursionId, final Part part) {
@@ -404,7 +409,7 @@ public class ExcursionService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String changeImage(final String excursionId, final Part part) {
@@ -427,7 +432,7 @@ public class ExcursionService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeImageAsync(final String excursionId, final Part part) {
@@ -456,7 +461,7 @@ public class ExcursionService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteImage(final String excursionId) {

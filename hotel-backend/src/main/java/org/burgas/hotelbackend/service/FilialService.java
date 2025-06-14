@@ -30,7 +30,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.hotelbackend.log.FilialLogs.*;
 import static org.burgas.hotelbackend.message.FilialMessages.*;
 import static org.burgas.hotelbackend.message.ImageMessages.IMAGE_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.*;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -97,7 +97,7 @@ public class FilialService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public FilialResponse createOrUpdate(final FilialRequest filialRequest) {
@@ -113,7 +113,7 @@ public class FilialService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<FilialResponse> createOrUpdateAsync(final FilialRequest filialRequest) {
@@ -130,7 +130,7 @@ public class FilialService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteById(final Long filialId) {
@@ -154,7 +154,7 @@ public class FilialService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long filialId) {
@@ -179,7 +179,7 @@ public class FilialService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String uploadFilialImage(final Long filialId, final MultipartFile multipartFile) {
@@ -202,7 +202,7 @@ public class FilialService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> uploadFilialImageAsync(final Long filialId, final MultipartFile multipartFile) {
@@ -231,7 +231,7 @@ public class FilialService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String changeFilialImage(final Long filialId, final MultipartFile multipartFile) {
@@ -258,7 +258,7 @@ public class FilialService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> changeFilialImageAsync(final Long filialId, final MultipartFile multipartFile) {
@@ -291,7 +291,7 @@ public class FilialService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteFilialImage(final Long filialId) {
@@ -318,7 +318,7 @@ public class FilialService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteFilialImageAsync(final Long filialId) {

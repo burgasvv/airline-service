@@ -24,7 +24,7 @@ import static org.burgas.flightbackend.log.RequireAnswerLogs.REQUIRE_ANSWER_FOUN
 import static org.burgas.flightbackend.log.RequireAnswerLogs.REQUIRE_ANSWER_FOUND_ALL_BY_USER_ID;
 import static org.burgas.flightbackend.message.RequireAnswerMessages.REQUIRE_ANSWER_NOT_TRANSFORMED;
 import static org.burgas.flightbackend.message.RequireMessages.REQUIRE_CLOSED;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -68,7 +68,7 @@ public class RequireAnswerService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Object sendAnswerOrToken(final RequireAnswerRequest requireAnswerRequest) {

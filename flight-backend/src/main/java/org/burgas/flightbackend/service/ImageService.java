@@ -17,7 +17,6 @@ import static java.util.Optional.of;
 import static org.burgas.flightbackend.log.ImageLogs.IMAGE_FOUND_BY_ID;
 import static org.burgas.flightbackend.message.ImageMessages.*;
 import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -64,7 +63,7 @@ public class ImageService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public Image changeImage(final Long imageId, final Part part) {
@@ -90,7 +89,7 @@ public class ImageService {
 
     @SuppressWarnings("UnusedReturnValue")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteImage(final Long imageId) {

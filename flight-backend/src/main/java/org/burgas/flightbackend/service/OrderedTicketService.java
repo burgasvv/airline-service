@@ -20,7 +20,7 @@ import static java.util.Optional.ofNullable;
 import static org.burgas.flightbackend.log.OrderedTicketLogs.*;
 import static org.burgas.flightbackend.message.OrderedTicketMessages.ORDERED_TICKET_CANCELLED;
 import static org.burgas.flightbackend.message.OrderedTicketMessages.ORDERED_TICKET_NOT_FOUND;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -75,7 +75,7 @@ public class OrderedTicketService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public OrderedTicketResponse orderTicketByIdentity(final OrderedTicketRequest orderedTicketRequest) {
@@ -85,7 +85,7 @@ public class OrderedTicketService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public OrderedTicketResponse orderTicketBySession(final OrderedTicketRequest orderedTicketRequest, final HttpServletRequest httpServletRequest) {
@@ -101,7 +101,7 @@ public class OrderedTicketService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = REPEATABLE_READ, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String cancelOrderedTicket(final String orderedTicketId) {

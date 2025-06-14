@@ -20,7 +20,7 @@ import static java.util.Optional.of;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.burgas.hotelbackend.log.AuthorityLogs.*;
 import static org.burgas.hotelbackend.message.AuthorityMessages.*;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
 
@@ -78,7 +78,7 @@ public class AuthorityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public AuthorityResponse createOrUpdate(final AuthorityRequest authorityRequest) {
@@ -90,7 +90,7 @@ public class AuthorityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<AuthorityResponse> createOrUpdateAsync(final AuthorityRequest authorityRequest) {
@@ -100,7 +100,7 @@ public class AuthorityService {
     }
 
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public String deleteById(final Long authorityId) {
@@ -118,7 +118,7 @@ public class AuthorityService {
 
     @Async(value = "taskExecutor")
     @Transactional(
-            isolation = SERIALIZABLE, propagation = REQUIRED,
+            isolation = READ_COMMITTED, propagation = REQUIRED,
             rollbackFor = Exception.class
     )
     public CompletableFuture<String> deleteByIdAsync(final Long authorityId) {
